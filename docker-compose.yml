@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: wealthwise-db
+    restart: always
+    environment:
+      POSTGRES_DB: wealthwise_db
+      POSTGRES_USER: wealthwise_user
+      POSTGRES_PASSWORD: securepassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: wealthwise-web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_NAME: wealthwise_db
+      DATABASE_USER: wealthwise_user
+      DATABASE_PASSWORD: securepassword
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
