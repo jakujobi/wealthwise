@@ -4,13 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-# Replace this:
-# RUN apt-get update && apt-get install -y netcat
-
-# With either remove it if you don't need netcat:
-# RUN apt-get update
-
-# Or explicitly install netcat-openbsd:
+# Explicitly install netcat-openbsd:
 RUN apt-get update && apt-get install -y netcat-openbsd
 
 RUN pip install --upgrade pip
