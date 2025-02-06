@@ -1,18 +1,30 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:15
     container_name: wealthwise-db
-    restart: always
+    image: postgres
+    hostname: localhost
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: wealthwise_db
       POSTGRES_USER: wealthwise_user
       POSTGRES_PASSWORD: securepassword
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+  dbadmin:
+    container_name: wealthwise-dbAdmin
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+     - dbadmin-data:/var/lib/dbadmin
+    restart: unless-stopped
 
   web:
     build: .
@@ -32,4 +44,5 @@ services:
       - .:/app
 
 volumes:
-  postgres_data:
+  db-data:
+  dbadmin-data:
