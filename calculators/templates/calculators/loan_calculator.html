@@ -4,27 +4,72 @@
 <head>
   <meta charset="UTF-8" />
   <title>Loan Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Loan Calculator</h1>
-  <form method="POST">
-    {% csrf_token %}
-    <label for="loan_amount">Loan Amount:</label>
-    <input type="number" step="0.01" name="loan_amount" id="loan_amount" required><br><br>
+<body class="bg-light">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Loan Calculator</h1>
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="loan_amount" class="form-label">Loan Amount:</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" step="0.01" name="loan_amount" id="loan_amount" class="form-control" required>
+                </div>
+              </div>
 
-    <label for="interest_rate">Annual Interest Rate (%):</label>
-    <input type="number" step="0.01" name="interest_rate" id="interest_rate" required><br><br>
+              <div class="mb-3">
+                <label for="interest_rate" class="form-label">Annual Interest Rate (%):</label>
+                <div class="input-group">
+                  <input type="number" step="0.01" name="interest_rate" id="interest_rate" class="form-control" required>
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
 
-    <label for="loan_term">Loan Term (Years):</label>
-    <input type="number" name="loan_term" id="loan_term" required><br><br>
+              <div class="mb-3">
+                <label for="loan_term" class="form-label">Loan Term (Years):</label>
+                <input type="number" name="loan_term" id="loan_term" class="form-control" required>
+              </div>
 
-    <button type="submit">Calculate</button>
-  </form>
+              <button type="submit" class="btn btn-primary w-100">Calculate</button>
+            </form>
 
-  {% if monthly_payment %}
-    <h2>Results</h2>
-    <p>Monthly Payment: ${{ monthly_payment }}</p>
-    <p>Total Interest: ${{ total_interest }}</p>
-  {% endif %}
+            {% if monthly_payment %}
+            <div class="mt-4">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h2 class="h4 mb-3">Results</h2>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="mb-2">
+                        <strong>Monthly Payment:</strong>
+                        <div class="h5 text-primary">${{ monthly_payment }}</div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="mb-2">
+                        <strong>Total Interest:</strong>
+                        <div class="h5 text-primary">${{ total_interest }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
