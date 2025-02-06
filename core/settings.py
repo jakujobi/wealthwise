@@ -75,15 +75,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'wealthwise_db'),
-        'USER': os.getenv('DATABASE_USER', 'wealthwise_user'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'securepassword'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-        'PORT': os.getenv('DATABASE_PORT', '5432'),
+        'NAME': 'wealthwise_db',
+        'USER': 'wealthwise_user',
+        'PASSWORD': 'securepassword',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
