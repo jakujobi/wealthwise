@@ -2,7 +2,7 @@ services:
   db:
     container_name: wealthwise-db
     image: postgres
-    hostname: hostname
+    hostname: localhost
     ports:
       - "5432:5432"
     environment:
@@ -46,6 +46,3 @@ services:
 volumes:
   db-data:
   dbadmin-data:
-
-networks:
-  wealthwise-network:
