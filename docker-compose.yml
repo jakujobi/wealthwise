@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: securepassword
     volumes:
       - db-data:/var/lib/postgresql/data
-    restart: unless-stopped
+    restart: always
     
   dbadmin:
     container_name: wealthwise-dbAdmin
@@ -25,12 +25,12 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     volumes:
      - dbadmin-data:/var/lib/dbadmin
-    restart: unless-stopped
+    restart: always
 
   web:
     build: .
     container_name: wealthwise-web
-    restart: unless-stopped
+    restart: always
     depends_on:
       - db
     ports:
