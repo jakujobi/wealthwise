@@ -23,4 +23,5 @@ urlpatterns = [
     path('', home_view, name='home'),      # <-- The empty path
     path('admin/', admin.site.urls),
     path('calculators/', include('calculators.urls')),
+    path('users/', include('users.urls')),
 ]
