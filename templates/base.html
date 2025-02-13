@@ -1,3 +1,4 @@
+<!-- filepath: /c:/Users/sawye/Documents/GitHub/wealthwise/templates/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +26,19 @@
           <li class="nav-item">
             <a class="nav-link" href="/calculators/loan/">Loan Calculator</a>
           </li>
-          <!-- Add more nav links as needed -->
+          <!-- add login and register to the navbar and replace with logout if logged in-->
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Register</a>
+            </li>
+          {% endif %}
         </ul>
       </div>
     </div>

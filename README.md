@@ -1,12 +1,17 @@
 # WealthWise
 Project for SE 306
 
+Server starts on
+http://localhost:8000/
+
+# (most of these are run automaticly)
 # Command for running the server
-## run dev server
-python manage.py runserver
 
 ## create app
 python manage.py startapp [app name]
+
+## run dev server
+python manage.py runserver
 
 ## create databases for libraries
 python manage.py migrate
