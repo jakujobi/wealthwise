@@ -7,6 +7,10 @@ class Event(models.Model):
     description = models.TextField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    location = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    isPublished = models.BooleanField(default=False)
+    timezone = models.CharField(max_length=200, default='UTC-6') # default to central time
 
     def __str__(self):
         return self.title

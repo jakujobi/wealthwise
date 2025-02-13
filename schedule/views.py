@@ -5,8 +5,8 @@ import datetime
 import math
 
 """  
-! ALL TIME WILL CONVERT TO UTC TIME FORMAT
-! REQUIRE CONVERT TO THE USER LOCAL TIME ZONE
+! ALL TIME WILL CONVERT TO UTC-6 TIME FORMAT
+! CONVERT TO THE USER LOCAL TIME ZONE IF NEEDED
 """
 
 # Create your views here.
@@ -27,7 +27,7 @@ def myEvents(request):
           events = [
                {
                     'title': 'Test Event 1',
-                    'description': 'This is a test event',
+                    'description': 'Huh',
                     'start_time': datetime.datetime(year_now, month_now, day_now, 10, 0, 0, 0, local_tzone),
                     'end_time': datetime.datetime(year_now, month_now, day_now, 11, 0, 0, 0, local_tzone)
                },
@@ -39,7 +39,7 @@ def myEvents(request):
                },
                {
                     'title': 'Test Event 3',
-                    'description': 'This is a test event',
+                    'description': 'WTF',
                     'start_time': datetime.datetime(year_now, month_now, day_now, 14, 0, 0, 0, local_tzone),
                     'end_time': datetime.datetime(year_now, month_now, day_now, 15, 0, 0, 0, local_tzone)
                }
