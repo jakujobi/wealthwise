@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'calculators',
     'users',
+    'schedule',
 ]
 
 MIDDLEWARE = [
