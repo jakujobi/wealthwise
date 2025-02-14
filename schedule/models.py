@@ -1,24 +1,22 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.auth.models import User
+
+class Event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    location = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    isPublished = models.BooleanField(default=False)
+    timezone = models.CharField(max_length=200, default='UTC-6') # default to central time
+
+    def __str__(self):
+        return self.title
+
+# Create your models here.
 
 # Consultation
-class Consultation(models.Model):
-    consultation_id = models.AutoField(primary_key=True)
-    client_id = models.ForeignKey(users.Profile, related_name='client', on_delete=models.CASCADE)
-    advisor_id = models.ForeignKey(users.Advisor, on_delete=models.CASCADE)
-    scheduled_date = models.DateTimeField()
-    status = models.CharField(max_length=20, blank=True, null=True)
-    client_rating = models.IntegerField(blank=True, null=True)
-    session_notes = models.TextField(blank=True, null=True)
 
 # Event
-class Event(models.Model):
-    event_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(users.Profile, on_delete=models.CASCADE)
-    registration_date = models.DateTimeField(auto_now_add=True)
-    organizer_id = models.ForeignKey(users.Profile, related_name='organizer', on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    event_date = models.DateTimeField()
-    location = models.CharField(max_length=255, blank=True, null=True)
-    event_type = models.CharField(max_length=20, blank=True, null=True)
