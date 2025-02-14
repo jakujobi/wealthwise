@@ -4,8 +4,8 @@ from django.contrib.postgres.fields import JSONField
 # Consultation
 class Consultation(models.Model):
     consultation_id = models.AutoField(primary_key=True)
-    client_id = models.ForeignKey(users.Profile, related_name='client', on_delete=models.CASCADE)
-    advisor_id = models.ForeignKey(users.Advisor, on_delete=models.CASCADE)
+    client_id = models.ForeignKey('users.Profile', related_name='client', on_delete=models.CASCADE)
+    advisor_id = models.ForeignKey('users.Advisor', on_delete=models.CASCADE)
     scheduled_date = models.DateTimeField()
     status = models.CharField(max_length=20, blank=True, null=True)
     client_rating = models.IntegerField(blank=True, null=True)
@@ -14,9 +14,9 @@ class Consultation(models.Model):
 # Event
 class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(users.Profile, on_delete=models.CASCADE)
+    user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     registration_date = models.DateTimeField(auto_now_add=True)
-    organizer_id = models.ForeignKey(users.Profile, related_name='organizer', on_delete=models.CASCADE)
+    organizer_id = models.ForeignKey('users.Profile', related_name='organizer', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     event_date = models.DateTimeField()
