@@ -1,33 +1,31 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.auth.models import User
 
 # Profile
 class Profile(models.Model):
-    user_id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    user_role = models.CharField(max_length=20)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     profile_picture = models.CharField(max_length=255, blank=True, null=True)
-    financial_goals = JSONField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
-    privacy_settings = JSONField(blank=True, null=True)
+    privacy_settings = models.JSONField(blank=True, null=True)
 
 # AdvisorProfile
 class Advisor(models.Model):
     advisor_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    certifications = JSONField(blank=True, null=True)
-    specialties = JSONField(blank=True, null=True)
+    certifications = models.JSONField(blank=True, null=True)
+    specialties = models.JSONField(blank=True, null=True)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
 # Subsciption
