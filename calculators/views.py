@@ -2,6 +2,10 @@
 from django.shortcuts import render
 import math
 
+# Add new calculators homepage view
+def calculators_home(request):
+    return render(request, 'calculators/calculators.html')
+
 def loan_calculator(request):
     monthly_payment = None
     total_interest = None
