@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 # Profile
 class Profile(models.Model):
@@ -26,7 +27,7 @@ class Advisor(models.Model):
     bio = models.TextField(blank=True, null=True)
     certifications = models.JSONField(blank=True, null=True)
     specialties = models.JSONField(blank=True, null=True)
-    rating = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
 
 # Subsciption
 class Subscription(models.Model):

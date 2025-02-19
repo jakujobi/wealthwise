@@ -1,0 +1,58 @@
+<!-- filepath: /c:/Users/sawye/Documents/GitHub/wealthwise/users/templates/profile.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          {% if user.profile.profile_picture %}
+          <img
+            src="{{ user.profile.profile_picture }}"
+            class="rounded-circle img-fluid"
+            alt="Profile Picture"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/default_profile.png' %}"
+            class="rounded-circle img-fluid"
+            alt="Default Profile Picture"
+          />
+          {% endif %}
+          <h3 class="mt-3">{{ user.first_name }} {{ user.last_name }}</h3>
+          <p class="text-muted">{{ user.profile.bio }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Profile Information</h4>
+          <p><strong>Username:</strong> {{ user.username }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
+          <div class="card mt-3">
+            <div class="card-body">
+              <h5 class="card-title">Address</h5>
+              <p class="card-text">{{ user.profile.address }}</p>
+              <p class="card-text">
+                {{ user.profile.city }}
+                {% if user.profile.city and user.profile.state %}, 
+                {% endif %}
+                {{ user.profile.state }}
+              </p>
+              <p class="card-text">
+                {{ user.profile.country }}
+                {% if user.profile.country and user.profile.postal_code %} - 
+                {% endif %}
+                {{user.profile.postal_code }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

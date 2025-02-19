@@ -26,8 +26,10 @@
           <li class="nav-item">
             <a class="nav-link" href="/calculators/loan/">Loan Calculator</a>
           </li>
-          <!-- add login and register to the navbar and replace with logout if logged in-->
           {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </li>

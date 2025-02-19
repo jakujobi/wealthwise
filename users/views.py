@@ -35,6 +35,8 @@ def logout_view(request):
     return redirect('home')
 
 # Profile
+def profile(request):
+    return render(request, 'profile.html')
 
 # PasswordReset
 
