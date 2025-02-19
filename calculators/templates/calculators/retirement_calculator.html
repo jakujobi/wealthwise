@@ -1,0 +1,126 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h3 mb-0">Retirement Calculator</h1>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="current_age" class="form-label">Current Age:</label>
+              <input
+                type="number"
+                name="current_age"
+                id="current_age"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="retirement_age" class="form-label">Retirement Age:</label>
+              <input
+                type="number"
+                name="retirement_age"
+                id="retirement_age"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="present_savings" class="form-label">Present Savings:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  name="present_savings"
+                  id="present_savings"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="monthly_contributions" class="form-label">Monthly Contributions:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  name="monthly_contributions"
+                  id="monthly_contributions"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="rate_of_return" class="form-label">Annual Rate of Return (%):</label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  step="0.01"
+                  name="rate_of_return"
+                  id="rate_of_return"
+                  class="form-control"
+                  required
+                />
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="retirement_goal" class="form-label">Retirement Goal:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  name="retirement_goal"
+                  id="retirement_goal"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Calculate</button>
+          </form>
+          {% if expected_savings %}
+          <div class="mt-4">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Results</h2>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Expected Savings:</strong>
+                      <div class="h5 text-primary">${{ expected_savings }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Meet Goal:</strong>
+                      <div class="h5 text-primary">{{ meet_goal }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Payment to Meet Goal:</strong>
+                      <div class="h5 text-primary">${{ payment_to_meet_goal }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h3 mb-0">Car Payment Calculator</h1>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <!-- Input fields -->
+            <div class="mb-3">
+              <label for="loan_amount" class="form-label">Loan Amount:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="loan_amount" id="loan_amount" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="down_payment" class="form-label">Down Payment:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="down_payment" id="down_payment" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="interest_rate" class="form-label">Annual Interest Rate (%):</label>
+              <div class="input-group">
+                <input type="number" step="0.01" name="interest_rate" id="interest_rate" class="form-control" required />
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="loan_term" class="form-label">Loan Term (Years):</label>
+              <input type="number" name="loan_term" id="loan_term" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Calculate</button>
+          </form>
+          {% if monthly_payment %}
+          <div class="mt-4">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Results</h2>
+                <div class="row">
+                  <!-- Display calculated results -->
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Monthly Payment:</strong> <div class="h5 text-primary">${{ monthly_payment }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Total Interest:</strong> <div class="h5 text-primary">${{ total_interest }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Total Cost:</strong> <div class="h5 text-primary">${{ total_cost }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Doubled Down Payment:</strong> <div class="h5 text-primary">${{ adjust_double_initial_payment }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Monthly Payment (Adjusted):</strong> <div class="h5 text-primary">${{ monthly_payment_adj_pay }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Total Interest (Adjusted):</strong> <div class="h5 text-primary">${{ total_interest_adj_pay }}</div></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2"><strong>Total Cost (Adjusted):</strong> <div class="h5 text-primary">${{ total_cost_adj_pay }}</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
