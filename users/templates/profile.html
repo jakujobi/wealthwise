@@ -1,7 +1,5 @@
 <!-- filepath: /c:/Users/sawye/Documents/GitHub/wealthwise/users/templates/profile.html -->
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 <div class="container my-5">
   <div class="row">
     <div class="col-md-4">
@@ -31,23 +29,30 @@
           <h4 class="card-title">Profile Information</h4>
           <p><strong>Username:</strong> {{ user.username }}</p>
           <p><strong>Email:</strong> {{ user.email }}</p>
+          {% if user.profile.phone_number %}
           <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
+          {% endif %}
           <div class="card mt-3">
             <div class="card-body">
               <h5 class="card-title">Address</h5>
+              {% if user.profile.address %}
               <p class="card-text">{{ user.profile.address }}</p>
+              {% endif %} 
+              {% if user.profile.city or user.profile.state %}
               <p class="card-text">
-                {{ user.profile.city }}
+                {{ user.profile.city }} 
                 {% if user.profile.city and user.profile.state %}, 
-                {% endif %}
-                {{ user.profile.state }}
+                {% endif %} {{ user.profile.state }}
               </p>
+              {% endif %} 
+              {% if user.profile.country or user.profile.postal_code %}
               <p class="card-text">
-                {{ user.profile.country }}
+                {{ user.profile.country }} 
                 {% if user.profile.country and user.profile.postal_code %} - 
-                {% endif %}
-                {{user.profile.postal_code }}
+                {% endif %} 
+                {{ user.profile.postal_code }}
               </p>
+              {% endif %}
             </div>
           </div>
         </div>
