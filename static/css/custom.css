@@ -1,7 +1,41 @@
+/* Import a financial font */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap");
+
 body {
-    background-color: #f8f9fa; /* Light gray background */
-  }
-  h1 {
-    color: #007bff; /* Blue text */
-  }
-  
+  font-family: "Roboto Slab", serif;
+  background-color: #f8f9fa; /* Light background for contrast */
+}
+
+.navbar {
+  background-color: #004085; /* Dark blue for navbar */
+}
+
+.navbar-brand,
+.nav-link {
+  color: #ffffff !important; /* White text for navbar links */
+}
+
+.nav-link:hover {
+  color: #ffc107 !important; /* Gold color on hover */
+}
+
+.container {
+  color: #212529; /* Default text color */
+}
+
+.btn-primary {
+  background-color: #28a745; /* Green button */
+  border-color: #28a745;
+}
+
+.btn-primary:hover {
+  background-color: #218838; /* Darker green on hover */
+  border-color: #1e7e34;
+}
+
+.footer {
+  background-color: #004085; /* Dark blue for footer */
+  color: #ffffff;
+  padding: 1rem 0;
+  text-align: center;
+}
