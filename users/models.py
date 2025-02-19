@@ -19,6 +19,18 @@ class Profile(models.Model):
     country = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     privacy_settings = models.JSONField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.user.username
+    
+    def save(self, *args, **kwargs):
+        try:
+            this = Profile.objects.get(id=self.id) # type: ignore
+            if this.profile_picture != self.profile_picture:
+                this.profile_picture.delete(save=False)
+        except Profile.DoesNotExist:
+            pass
+        super(Profile, self).save(*args, **kwargs)
 
 # AdvisorProfile
 class Advisor(models.Model):
