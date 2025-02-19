@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 # Profile
 class Profile(models.Model):
@@ -11,7 +12,7 @@ class Profile(models.Model):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    profile_picture = models.CharField(max_length=255, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
@@ -26,7 +27,7 @@ class Advisor(models.Model):
     bio = models.TextField(blank=True, null=True)
     certifications = models.JSONField(blank=True, null=True)
     specialties = models.JSONField(blank=True, null=True)
-    rating = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
 
 # Subsciption
 class Subscription(models.Model):
