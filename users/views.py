@@ -3,7 +3,6 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile  # Import the Profile model
-from .forms import ProfileForm  # Import the ProfileForm
 
 def register(request):
     if request.method == 'POST':
