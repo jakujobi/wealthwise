@@ -30,7 +30,7 @@ services:
   web:
     build: .
     container_name: wealthwise-web
-    restart: always
+    restart: on-failure
     depends_on:
       - db
     ports:
@@ -43,6 +43,10 @@ services:
       DATABASE_PORT: 5432
     volumes:
       - .:/app
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
 
 volumes:
   db-data:
