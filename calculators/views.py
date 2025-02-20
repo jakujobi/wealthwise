@@ -4,7 +4,7 @@ import math
 
 # Add new calculators homepage view
 def calculators_home(request):
-    return render(request, 'calculators/calculators.html')
+    return render(request, 'calculators.html')
 
 def loan_calculator(request):
     monthly_payment = None
@@ -33,7 +33,7 @@ def loan_calculator(request):
         monthly_payment = round(monthly_payment, 2)
         total_interest = round(total_interest, 2)
 
-    return render(request, 'calculators/loan_calculator.html', {
+    return render(request, 'loan_calculator.html', {
         'monthly_payment': monthly_payment,
         'total_interest': total_interest
     })
@@ -99,7 +99,7 @@ def mortgage_calculator(request):
         total_payment = monthly_payment_IR * loan_term
         interest_rate_adj_IA = total_payment - interest_rate_adj_PA
 
-    return render(request, 'calculators/mortgage_calculator.html', {
+    return render(request, 'mortgage_calculator.html', {
         'monthly_payment': monthly_payment,
         'principle_amount': principle_amount,
         'interest_amount': interest_amount,
@@ -162,7 +162,7 @@ def budgeting_tool(request):
         else:
             savings_goal_message = "You are on track to meet your savings goal! You will have ${} by the end of a year!".format((total_income - total_expenses) * 12)
 
-    return render(request, 'calculators/budgeting_tool.html', {
+    return render(request, 'budgeting_tool.html', {
         'overspend_areas': overspend_areas,
         'savings_goal_message': savings_goal_message
     })
@@ -194,7 +194,7 @@ def retirement_calculator(request):
         else:
             payment_to_meet_goal = 0
 
-    return render(request, 'calculators/retirement_calculator.html', {
+    return render(request, 'retirement_calculator.html', {
         'expected_savings': expected_savings,
         'meet_goal': meet_goal,
         'payment_to_meet_goal': payment_to_meet_goal
@@ -227,7 +227,7 @@ def insurance_calculator(request):
         elif option3_avg_cost <= option1_avg_cost and option3_avg_cost <= option2_avg_cost:
             best_option = 'Option 3'
 
-    return render(request, 'calculators/insurance_calculator.html', {
+    return render(request, 'insurance_calculator.html', {
         'option1_avg_cost': option1_avg_cost,
         'option2_avg_cost': option2_avg_cost,
         'option3_avg_cost': option3_avg_cost,
@@ -264,7 +264,7 @@ def student_loan_calculator(request):
         total_cost_adj_term = monthly_payment_adj_term * adjusted_term
         total_interest_adj_term = total_cost_adj_term - loan_amount
 
-    return render(request, 'calculators/student_loan_calculator.html', {
+    return render(request, 'student_loan_calculator.html', {
         'monthly_payment': monthly_payment,
         'total_interest': total_interest,
         'total_cost': total_cost,
@@ -312,7 +312,7 @@ def car_payment_calcualtor(request):
         total_cost_adj_pay = monthly_payment_adj_pay * loan_term
         total_interest_adj_pay = total_cost_adj_pay - loan_principal_adj
 
-    return render(request, 'calculators/car_payment_calculator.html', {
+    return render(request, 'car_payment_calculator.html', {
         'monthly_payment': monthly_payment,
         'total_interest': total_interest,
         'total_cost': total_cost,
