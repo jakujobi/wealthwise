@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 
@@ -7,3 +7,6 @@ from django.shortcuts import render
 # Stock
 
 # News
+
+def redirect_to_blog(request):
+    return redirect('https://blog-wealthwise.netlify.app/')
