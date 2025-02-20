@@ -45,7 +45,7 @@ def mortgage_calculator(request):
     down_payment_adj = None
     down_payment_adj_PA = None
     down_payment_adj_IA = None
-    interest_rate_adj = None
+    interest_rate_adj_disp = None
     interest_rate_adj_PA = None
     interest_rate_adj_IA = None
 
@@ -201,9 +201,9 @@ def retirement_calculator(request):
     })
 
 def insurance_calculator(request):
-    expected_savings = None
-    meet_goal = None
-    payment_to_meet_goal = None
+    option1_avg_cost = None
+    option2_avg_cost = None
+    option3_avg_cost = None
     best_option = None
 
     if request.method == 'POST':
