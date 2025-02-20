@@ -7,7 +7,7 @@
         <div class="card-body text-center">
           {% if user.profile.profile_picture %}
           <img
-            src="{{ user.profile.profile_picture }}"
+            src="{{ user.profile.profile_picture.url }}"
             class="rounded-circle img-fluid"
             alt="Profile Picture"
           />
@@ -20,6 +20,7 @@
           {% endif %}
           <h3 class="mt-3">{{ user.first_name }} {{ user.last_name }}</h3>
           <p class="text-muted">{{ user.profile.bio }}</p>
+          <a href="{% url 'edit_profile' %}" class="btn btn-primary mt-3">Edit Profile</a>
         </div>
       </div>
     </div>
@@ -40,9 +41,7 @@
               {% endif %} 
               {% if user.profile.city or user.profile.state %}
               <p class="card-text">
-                {{ user.profile.city }} 
-                {% if user.profile.city and user.profile.state %}, 
-                {% endif %} {{ user.profile.state }}
+                {{ user.profile.city }}{% if user.profile.city and user.profile.state %}, {% endif %}{{ user.profile.state }}
               </p>
               {% endif %} 
               {% if user.profile.country or user.profile.postal_code %}
