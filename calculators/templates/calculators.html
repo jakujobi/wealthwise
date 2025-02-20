@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h1 class="mb-4">Calculators</h1>
+  <ul class="list-group">
+    <li class="list-group-item"><a href="{% url 'loan_calculator' %}">Loan Calculator</a></li>
+    <li class="list-group-item"><a href="{% url 'mortgage_calculator' %}">Mortgage Calculator</a></li>
+    <li class="list-group-item"><a href="{% url 'budgeting_tool' %}">Budgeting Tool</a></li>
+    <li class="list-group-item"><a href="{% url 'retirement_calculator' %}">Retirement Calculator</a></li>
+    <li class="list-group-item"><a href="{% url 'insurance_calculator' %}">Insurance Calculator</a></li>
+    <li class="list-group-item"><a href="{% url 'student_loan_calculator' %}">Student Loan Calculator</a></li>
+    <li class="list-group-item"><a href="{% url 'car_payment_calcualtor' %}">Car Payment Calculator</a></li>
+  </ul>
+</div>
+{% endblock content %}
