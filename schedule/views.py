@@ -20,32 +20,19 @@ def myEvents(request):
      day_now = today.day
      local_tzone = today.astimezone().tzinfo
 
+     errors = Event.check()
+     if(errors):
+          return render(request, 'myEvents.html', 
+                   {'errors': errors})
+     
      if request.method == 'GET':
-        # load the events data
-          # events = Event.objects.filter(user=request.user)
-          # create a test list of events
-          events = [
-               {
-                    'title': 'Test Event 1',
-                    'description': 'Huh',
-                    'start_time': datetime.datetime(year_now, month_now, day_now, 10, 0, 0, 0, local_tzone),
-                    'end_time': datetime.datetime(year_now, month_now, day_now, 11, 0, 0, 0, local_tzone)
-               },
-               {
-                    'title': 'Test Event 2',
-                    'description': 'This is a test event',
-                    'start_time': datetime.datetime(year_now, month_now, day_now, 12, 0, 0, 0, local_tzone),
-                    'end_time': datetime.datetime(year_now, month_now, day_now, 13, 0, 0, 0, local_tzone)
-               },
-               {
-                    'title': 'Test Event 3',
-                    'description': 'WTF',
-                    'start_time': datetime.datetime(year_now, month_now, day_now, 14, 0, 0, 0, local_tzone),
-                    'end_time': datetime.datetime(year_now, month_now, day_now, 15, 0, 0, 0, local_tzone)
-               }
-          ]
+        # Get all events
+            events = Event.objects.all()
 
-     return render(request, 'myEvents.html', {'events': events})
+     return render(request, 'myEvents.html', 
+                   {'errors': []},
+                   {'events': events}
+                   )
 
 # Events
 
