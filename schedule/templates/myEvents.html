@@ -5,25 +5,40 @@
 </head>
 <body>
     <h1>My Events</h1>
-<table border="1">
+
+     {% if errors %}
      <tr>
-          <th>Title</th>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Description</th>
+          <td colspan="4">{{ errors }}</td>
      </tr>
-     {% for event in events %}
-     <tr>
-          <td>{{ event.title }}</td>
-          <td>{{ event.start_time }}</td>
-          <td>{{ event.end_time }}</td>
-          <td>{{ event.description }}  </td>
-     </tr>
-     {% empty %}
-     <tr>
-          <td colspan="3">No events found.</td>
-     </tr>
-     {% endfor %}
-</table>
+     {% endif %}
+     
+     {%if events%}
+     <table>
+          {% comment %} <tr>
+               <th>Event Name</th>
+               <th>Event Date</th>
+               <th>Event Time</th>
+               <th>Event Location</th>
+               <th>Event Description</th>
+               <th>Event Type</th>
+               <th>Event Status</th>
+               <th>Event Actions</th>
+          </tr> {% endcomment %}
+            {% for event in events %}
+            <tr>
+                  {% for field, value in event.items %}
+                  <td>{{ value }}</td>
+                  {% endfor %}
+                  <td>
+                         <a href="/schedule/edit/{{ event.id }}">Edit</a>
+                         <a href="/schedule/delete/{{ event.id }}">Delete</a>
+                  </td>
+            </tr>
+            {% endfor %}
+     </table>
+     {%else%}
+          <p>No events found</p>
+     {%endif%}
+
 </body>
 </html>
