@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from users.models import *
 
 # Consultation
 class Consultation(models.Model):
