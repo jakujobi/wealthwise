@@ -24,3 +24,11 @@ class Event(models.Model):
     event_end_date = models.DateTimeField()
     location = models.CharField(max_length=255, blank=True, null=True)
     event_type = models.CharField(max_length=20, blank=True, null=True)
+    
+# EventRegistration
+class EventRegistration(models.Model):
+    registration_id = models.AutoField(primary_key=True)
+    event_id = models.ForeignKey('Event', on_delete=models.CASCADE)
+    user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
+    registraion_timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, blank=True, null=True)

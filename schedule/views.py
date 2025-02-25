@@ -10,7 +10,6 @@ import math
 """
 
 # Create your views here.
-
 @login_required
 # myEvents
 def myEvents(request):
@@ -20,20 +19,43 @@ def myEvents(request):
      day_now = today.day
      local_tzone = today.astimezone().tzinfo
 
+     # Check if the current user is an advisor
+     isAllowToModify = hasattr(request.user.profile, 'advisor') or request.user.is_staff or request.user.is_superuser
+
+     # Get all events
+     # events = Event.objects.all()
+     events = Event.objects.filter(event_start_date__gt=datetime.datetime.now())
+
+     return render(request, 'myEvents.html', {
+         'events': events,
+         'isAllowToModify': isAllowToModify
+     })
+
+# Event Register
+@login_required
+def eventRegister(request):
+     today = datetime.datetime.now()
+     year_now = today.year
+     month_now = today.month
+     day_now = today.day
+     local_tzone = today.astimezone().tzinfo
+
+     # Check if the current user is an advisor
+     isAllowToModify = hasattr(request.user.profile, 'advisor') or request.user.is_staff or request.user.is_superuser
+
      errors = Event.check()
-     if(errors):
-          return render(request, 'myEvents.html', 
-                   {'errors': errors})
+     if errors:
+          return render(request, 'eventRegister.html', {'errors': errors})
      
      if request.method == 'GET':
-        # Get all events
-            events = Event.objects.all()
+        # Get all events in the future from the current time
+        events = Event.objects.filter(event_start_date__gt=datetime.datetime.now())
 
-     return render(request, 'myEvents.html', 
-                   {'errors': []},
-                   {'events': events}
-                   )
+     return render(request, 'eventRegister.html', {
+         'errors': [],
+         'events': events,
+         'isAllowToModify': isAllowToModify
+     })
 
-# Events
 
 # Advising

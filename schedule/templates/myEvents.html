@@ -1,44 +1,82 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>My Events</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'static\css\style.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <h1>My Events</h1>
+    <div class="container">
+        <h1>My Events</h1>
 
-     {% if errors %}
-     <tr>
-          <td colspan="4">{{ errors }}</td>
-     </tr>
-     {% endif %}
-     
-     {%if events%}
-     <table>
-          {% comment %} <tr>
-               <th>Event Name</th>
-               <th>Event Date</th>
-               <th>Event Time</th>
-               <th>Event Location</th>
-               <th>Event Description</th>
-               <th>Event Type</th>
-               <th>Event Status</th>
-               <th>Event Actions</th>
-          </tr> {% endcomment %}
-            {% for event in events %}
-            <tr>
-                  {% for field, value in event.items %}
-                  <td>{{ value }}</td>
-                  {% endfor %}
-                  <td>
-                         <a href="/schedule/edit/{{ event.id }}">Edit</a>
-                         <a href="/schedule/delete/{{ event.id }}">Delete</a>
-                  </td>
-            </tr>
-            {% endfor %}
-     </table>
-     {%else%}
-          <p>No events found</p>
-     {%endif%}
-
+        {% if errors %}
+        <div class="alert alert-danger">
+            {{ errors }}
+        </div>
+        {% endif %}
+        
+        {% if events %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Event Date</th>
+                    <th>Event Time</th>
+                    <th>Event Location</th>
+                    <th>Event Description</th>
+                    <th>Event Type</th>
+                    {% if isAllowToModify %}
+                         <th>Event Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.event_start_date|date:"Y-m-d" }}</td>
+                    <td>{{ event.event_start_date|time:"H:i" }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ event.description }}</td>
+                    <td>{{ event.event_type }}</td>
+                    {% if isAllowToModify %}
+                         <td>
+                              <a href="/schedule/edit/{{ event.event_id }}" class="btn btn-primary btn-sm">Edit</a>
+                              <a href="/schedule/delete/{{ event.event_id }}" class="btn btn-danger btn-sm">Delete</a>
+                         </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No events found</p>
+        {% endif %}
+    </div>
 </body>
 </html>
