@@ -112,7 +112,7 @@ def mortgage_calculator(request):
     })
     
 def budgeting_tool(request):
-    overspend_areas = None
+    overspend_areas = ""
     savings_goal_message = ''
 
     if request.method == 'POST':
@@ -259,6 +259,7 @@ def student_loan_calculator(request):
         total_interest = total_cost - loan_amount
 
         adjusted_term_years = loan_term / 2
+        adjusted_term = adjusted_term_years * 12
 
         monthly_payment_adj_term = loan_amount * interest_rate / (1 - (1 + interest_rate) ** - adjusted_term)
         total_cost_adj_term = monthly_payment_adj_term * adjusted_term
@@ -274,7 +275,7 @@ def student_loan_calculator(request):
         'total_cost_adj_term': total_cost_adj_term
     })
 
-def car_payment_calcualtor(request):
+def car_payment_calculator(request):
     monthly_payment = None
     total_interest = None
     total_cost = None
