@@ -258,9 +258,9 @@ def student_loan_calculator(request):
         total_cost = monthly_payment * loan_term
         total_interest = total_cost - loan_amount
 
-        adjusted_term_years = loan_term / 2
+        adjusted_term = loan_term / 2
 
-        monthly_payment_adj_term = loan_amount * interest_rate / (1 - (1 + interest_rate) ** - adjusted_term)
+        monthly_payment_adj_term = loan_amount * interest_rate / (1 - (1 + interest_rate) ** -adjusted_term)
         total_cost_adj_term = monthly_payment_adj_term * adjusted_term
         total_interest_adj_term = total_cost_adj_term - loan_amount
 
