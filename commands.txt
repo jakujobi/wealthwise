@@ -22,5 +22,4 @@ pip install -r requirements.txt
 
 
 # Docker stuf
-
 docker-compose up

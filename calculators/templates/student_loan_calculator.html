@@ -1,13 +1,12 @@
-<!-- calculators/templates/calculators/loan_calculator.html -->
 
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
-          <h1 class="h3 mb-0">Loan Calculator</h1>
+          <h1 class="h3 mb-0">Student Loan Calculator</h1>
         </div>
         <div class="card-body">
           <form method="POST">
@@ -27,9 +26,7 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="interest_rate" class="form-label"
-                >Annual Interest Rate (%):</label
-              >
+              <label for="interest_rate" class="form-label">Annual Interest Rate (%):</label>
               <div class="input-group">
                 <input
                   type="number"
@@ -43,9 +40,7 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="loan_term" class="form-label"
-                >Loan Term (Years):</label
-              >
+              <label for="loan_term" class="form-label">Loan Term (Years):</label>
               <input
                 type="number"
                 name="loan_term"
@@ -54,9 +49,7 @@
                 required
               />
             </div>
-            <button type="submit" class="btn btn-primary w-100">
-              Calculate
-            </button>
+            <button type="submit" class="btn btn-primary w-100">Calculate</button>
           </form>
           {% if monthly_payment %}
           <div class="mt-4">
@@ -74,6 +67,36 @@
                     <div class="mb-2">
                       <strong>Total Interest:</strong>
                       <div class="h5 text-primary">${{ total_interest }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Total Cost:</strong>
+                      <div class="h5 text-primary">${{ total_cost }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Adjusted Term:</strong>
+                      <div class="h5 text-primary">{{ adjusted_term }} months</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Monthly Payment (Adjusted Term):</strong>
+                      <div class="h5 text-primary">${{ monthly_payment_adj_term }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Total Interest (Adjusted Term):</strong>
+                      <div class="h5 text-primary">${{ total_interest_adj_term }}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-2">
+                      <strong>Total Cost (Adjusted Term):</strong>
+                      <div class="h5 text-primary">${{ total_cost_adj_term }}</div>
                     </div>
                   </div>
                 </div>

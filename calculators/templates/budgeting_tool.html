@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h3 mb-0">Budgeting Tool</h1>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <!-- Income fields -->
+            <div class="mb-3">
+              <label for="fixed_income" class="form-label">Fixed Income:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="fixed_income" id="fixed_income" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="variable_income" class="form-label">Variable Income:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="variable_income" id="variable_income" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="one_year_savings_goal" class="form-label">One Year Savings Goal:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="one_year_savings_goal" id="one_year_savings_goal" class="form-control" required />
+              </div>
+            </div>
+            <!-- Expense fields -->
+            <!-- Repeat for each expense category -->
+            <div class="mb-3">
+              <label for="housing" class="form-label">Housing:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="housing" id="housing" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="taxes" class="form-label">Taxes:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="taxes" id="taxes" class="form-control" required />
+              </div>
+            </div>
+            <!-- ...existing code for other expenses: car_payment, internet_phone, subscriptions, food, entertainment, personal_items, utilities, transportation, medical, misc... -->
+            <button type="submit" class="btn btn-primary w-100">Calculate</button>
+          </form>
+          {% if overspend_areas or savings_goal_message %}
+          <div class="mt-4">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Results</h2>
+                {% if overspend_areas %}
+                <div class="mb-3">
+                  <strong>Warning:</strong>
+                  <pre>{{ overspend_areas }}</pre>
+                </div>
+                {% endif %}
+                {% if savings_goal_message %}
+                <div class="mb-3">
+                  <strong>Savings Goal:</strong>
+                  <div class="h5 text-primary">{{ savings_goal_message }}</div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
