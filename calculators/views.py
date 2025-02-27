@@ -112,7 +112,7 @@ def mortgage_calculator(request):
     })
     
 def budgeting_tool(request):
-    overspend_areas = None
+    overspend_areas = ''
     savings_goal_message = ''
 
     if request.method == 'POST':

@@ -48,7 +48,76 @@
                 <input type="number" step="0.01" name="taxes" id="taxes" class="form-control" required />
               </div>
             </div>
-            <!-- ...existing code for other expenses: car_payment, internet_phone, subscriptions, food, entertainment, personal_items, utilities, transportation, medical, misc... -->
+            <div class="mb-3">
+              <label for="car_payment" class="form-label">car_payment:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="car_payment" id="car_payment" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="internet_phone" class="form-label">internet_phone:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="internet_phone" id="internet_phone" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="subscriptions" class="form-label">subscriptions:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="subscriptions" id="subscriptions" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="food" class="form-label">food:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="food" id="food" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="entertainment" class="form-label">entertainment:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="entertainment" id="entertainment" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="personal_items" class="form-label">personal_items:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="personal_items" id="personal_items" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="utilities" class="form-label">utilities:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="utilities" id="utilities" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="transportation" class="form-label">transportation:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="transportation" id="transportation" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="medical" class="form-label">medical:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="medical" id="medical" class="form-control" required />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="misc" class="form-label">misc:</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" name="misc" id="misc" class="form-control" required />
+              </div>
+            </div>
             <button type="submit" class="btn btn-primary w-100">Calculate</button>
           </form>
           {% if overspend_areas or savings_goal_message %}
