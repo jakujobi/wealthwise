@@ -1,5 +1,9 @@
 # calculators/views.py
 from django.shortcuts import render
+from .models import FinancialToolUsage
+from users.models import Profile
+from datetime import date, datetime
+import json
 import math
 
 # Add new calculators homepage view
@@ -127,6 +131,9 @@ def budgeting_tool(request):
     savings_goal_message = ''
 
     if request.method == 'POST':
+        budget_month = int(request.POST.get('budget_month'))
+        budget_year = int(request.POST.get('budget_year'))
+
         fixed_income = float(request.POST.get('fixed_income'))
         variable_income = float(request.POST.get('variable_income'))
 
@@ -146,6 +153,14 @@ def budgeting_tool(request):
             'medical': float(request.POST.get('medical')),
             'misc': float(request.POST.get('misc'))
         }
+
+        input_data = {
+            'fixed_income:': fixed_income, 
+            'variable_income': variable_income,
+            'one_year_savings_goal': one_year_savings_goal,
+            'expenses': expenses
+        }
+
         spending_thresholds = {
             'housing': .30,
             'taxes': .30,
@@ -172,6 +187,19 @@ def budgeting_tool(request):
             savings_goal_message = "Your current spending exceeds your savings goal. You will have ${} by the end of a year. Consider reducing expenses, especially in any highlighted areas.".format(round((total_income - total_expenses) * 12, 2))
         else:
             savings_goal_message = "You are on track to meet your savings goal! You will have ${} by the end of a year!".format(round((total_income - total_expenses) * 12, 2))
+
+        if 'action' in request.POST:
+            if request.POST['action'] == 'save':
+                profile = request.user.profile
+                financial_tool_usage = FinancialToolUsage(
+                    user_id = profile,
+                    tool_type = 'budget_tool',
+                    input_data=json.dumps(input_data),
+                    usage_date=datetime.now(),
+                    budget_for_date=date(budget_year, budget_month, 1)
+                )
+                financial_tool_usage.save()
+    
 
     return render(request, 'budgeting_tool.html', {
         'overspend_areas': overspend_areas,
