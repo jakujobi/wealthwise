@@ -99,6 +99,17 @@ def mortgage_calculator(request):
         total_payment = monthly_payment_IR * loan_term
         interest_rate_adj_IA = total_payment - interest_rate_adj_PA
 
+        # Round results
+        monthly_payment = round(monthly_payment, 2)
+        principle_amount = round(principle_amount, 2)
+        interest_amount = round(interest_amount, 2)
+        down_payment_adj = round(down_payment_adj, 2)
+        down_payment_adj_PA = round(down_payment_adj_PA, 2)
+        down_payment_adj_IA = round(down_payment_adj_IA, 2)
+        interest_rate_adj_disp = round(interest_rate_adj_disp, 2)
+        interest_rate_adj_PA = round(interest_rate_adj_PA, 2)
+        interest_rate_adj_IA = round(interest_rate_adj_IA, 2)
+
     return render(request, 'mortgage_calculator.html', {
         'monthly_payment': monthly_payment,
         'principle_amount': principle_amount,
@@ -155,12 +166,12 @@ def budgeting_tool(request):
 
         for category, amount in expenses.items():
             if amount > spending_thresholds.get(category) * total_income:
-                overspend_areas += ("Spending in {} exceeds recomended value of {}%.\n").format(category, spending_thresholds.get(category) * 100)
+                overspend_areas += ("Spending in {} exceeds recomended value of {}%.\n").format(category, round(spending_thresholds.get(category) * 100, 2))
 
         if (total_income - total_expenses) * 12 < one_year_savings_goal:
-            savings_goal_message = "Your current spending exceeds your savings goal. You will have ${} by the end of a year. Consider reducing expenses, especially in any highlighted areas.".format((total_income - total_expenses) * 12)
+            savings_goal_message = "Your current spending exceeds your savings goal. You will have ${} by the end of a year. Consider reducing expenses, especially in any highlighted areas.".format(round((total_income - total_expenses) * 12, 2))
         else:
-            savings_goal_message = "You are on track to meet your savings goal! You will have ${} by the end of a year!".format((total_income - total_expenses) * 12)
+            savings_goal_message = "You are on track to meet your savings goal! You will have ${} by the end of a year!".format(round((total_income - total_expenses) * 12, 2))
 
     return render(request, 'budgeting_tool.html', {
         'overspend_areas': overspend_areas,
@@ -169,7 +180,7 @@ def budgeting_tool(request):
 
 def retirement_calculator(request):
     expected_savings = None
-    meet_goal = None
+    meet_goal = ''
     payment_to_meet_goal = None
 
     if request.method == 'POST':
@@ -186,13 +197,21 @@ def retirement_calculator(request):
 
         expected_savings += monthly_contributions * (((1 + rate_of_return) ** months_to_retirement - 1) / rate_of_return) * (1 + rate_of_return)
 
-        meet_goal = expected_savings >= retirement_goal
+        meet_goal_bool = expected_savings >= retirement_goal
 
         if not meet_goal:
             required_savings = retirement_goal - present_savings * ((1 + rate_of_return) ** months_to_retirement)
             payment_to_meet_goal = required_savings * (rate_of_return / ((1 + rate_of_return) ** months_to_retirement - 1))
         else:
             payment_to_meet_goal = 0
+        
+        # Round Results
+        expected_savings = round(expected_savings, 2)
+        if meet_goal_bool:
+            meet_goal = 'Yes'
+        else:
+            meet_goal = 'No'
+        payment_to_meet_goal = round(payment_to_meet_goal, 2)
 
     return render(request, 'retirement_calculator.html', {
         'expected_savings': expected_savings,
@@ -226,6 +245,11 @@ def insurance_calculator(request):
             best_option = 'Option 2'
         elif option3_avg_cost <= option1_avg_cost and option3_avg_cost <= option2_avg_cost:
             best_option = 'Option 3'
+
+        # Round Results
+        option1_avg_cost = round(option1_avg_cost, 2)
+        option2_avg_cost = round(option2_avg_cost, 2)
+        option3_avg_cost = round(option3_avg_cost, 2)
 
     return render(request, 'insurance_calculator.html', {
         'option1_avg_cost': option1_avg_cost,
@@ -263,6 +287,15 @@ def student_loan_calculator(request):
         monthly_payment_adj_term = loan_amount * interest_rate / (1 - (1 + interest_rate) ** -adjusted_term)
         total_cost_adj_term = monthly_payment_adj_term * adjusted_term
         total_interest_adj_term = total_cost_adj_term - loan_amount
+
+        # Round results
+        monthly_payment = round(monthly_payment, 2)
+        total_interest = round(total_interest, 2)
+        total_cost = round(total_cost, 2)
+        adjusted_term = round(adjusted_term, 2)
+        monthly_payment_adj_term = round(monthly_payment_adj_term, 2)
+        total_interest_adj_term = round(total_interest_adj_term, 2)
+        total_cost_adj_term = round(total_cost_adj_term, 2)
 
     return render(request, 'student_loan_calculator.html', {
         'monthly_payment': monthly_payment,
@@ -311,6 +344,15 @@ def car_payment_calcualtor(request):
             monthly_payment_adj_pay = loan_principal_adj * (numerator / denominator)
         total_cost_adj_pay = monthly_payment_adj_pay * loan_term
         total_interest_adj_pay = total_cost_adj_pay - loan_principal_adj
+
+        # Round results
+        monthly_payment = round(monthly_payment, 2)
+        total_interest = round(total_interest, 2)
+        total_cost = round(total_cost, 2)
+        adjust_double_initial_payment = round(adjust_double_initial_payment, 2)
+        monthly_payment_adj_pay = round(monthly_payment_adj_pay, 2)
+        total_interest_adj_pay = round(total_interest_adj_pay, 2)
+        total_cost_adj_pay = round(total_cost_adj_pay, 2)
 
     return render(request, 'car_payment_calculator.html', {
         'monthly_payment': monthly_payment,
