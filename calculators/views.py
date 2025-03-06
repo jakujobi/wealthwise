@@ -207,6 +207,8 @@ def retirement_calculator(request):
     expected_savings = None
     meet_goal = ''
     payment_to_meet_goal = None
+    additional_savings_needed = None
+    monthly_contributions = 0
 
     if request.method == 'POST':
         current_age = float(request.POST.get('current_age'))
@@ -224,11 +226,13 @@ def retirement_calculator(request):
 
         meet_goal_bool = expected_savings >= retirement_goal
 
-        if not meet_goal:
+        if not meet_goal_bool:
             required_savings = retirement_goal - present_savings * ((1 + rate_of_return) ** months_to_retirement)
             payment_to_meet_goal = required_savings * (rate_of_return / ((1 + rate_of_return) ** months_to_retirement - 1))
+            additional_savings_needed = payment_to_meet_goal - monthly_contributions
         else:
             payment_to_meet_goal = 0
+            additional_savings_needed = 0
         
         # Round Results
         expected_savings = round(expected_savings, 2)
@@ -237,11 +241,15 @@ def retirement_calculator(request):
         else:
             meet_goal = 'No'
         payment_to_meet_goal = round(payment_to_meet_goal, 2)
+        additional_savings_needed = round(additional_savings_needed, 2)
 
     return render(request, 'retirement_calculator.html', {
         'expected_savings': expected_savings,
         'meet_goal': meet_goal,
-        'payment_to_meet_goal': payment_to_meet_goal
+        'payment_to_meet_goal': payment_to_meet_goal,
+        'monthly_contributions': monthly_contributions,
+        'additional_savings_needed': additional_savings_needed,
+        'retirement_goal': retirement_goal if request.method == 'POST' else None
     })
 
 def insurance_calculator(request):
