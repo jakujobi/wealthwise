@@ -1,85 +1,178 @@
-<!-- calculators/templates/calculators/loan_calculator.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="calculator-header py-4 text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold mb-2">Loan Calculator</h1>
+    <p class="lead mb-0">Plan your loan payments and understand the total cost of borrowing</p>
+  </div>
+</div>
 
-{% extends "base.html" %} {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h1 class="h3 mb-0">Loan Calculator</h1>
-        </div>
-        <div class="card-body">
-          <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="loan_amount" class="form-label">Loan Amount:</label>
-              <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="loan_amount"
-                  id="loan_amount"
-                  class="form-control"
-                  required
-                />
+    <div class="col-lg-10">
+      <div class="calculator-container">
+        <div class="row g-0">
+          <!-- Calculator Form -->
+          <div class="col-md-6">
+            <div class="calculator-form-container p-4 p-md-5">
+              <h2 class="h4 mb-4">Enter Loan Details</h2>
+              <form method="POST" id="loanCalculatorForm">
+                {% csrf_token %}
+                <div class="form-floating mb-4">
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="loan_amount"
+                    id="loan_amount"
+                    class="form-control"
+                    placeholder="Loan Amount"
+                    required
+                  />
+                  <label for="loan_amount">Loan Amount ($)</label>
+                </div>
+                
+                <div class="form-floating mb-4">
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="interest_rate"
+                    id="interest_rate"
+                    class="form-control"
+                    placeholder="Interest Rate"
+                    required
+                  />
+                  <label for="interest_rate">Annual Interest Rate (%)</label>
+                </div>
+                
+                <div class="form-floating mb-4">
+                  <select name="loan_term" id="loan_term" class="form-select" required>
+                    <option value="">Select loan term</option>
+                    <option value="1">1 year</option>
+                    <option value="2">2 years</option>
+                    <option value="3">3 years</option>
+                    <option value="4">4 years</option>
+                    <option value="5">5 years</option>
+                    <option value="7">7 years</option>
+                    <option value="10">10 years</option>
+                    <option value="15">15 years</option>
+                    <option value="20">20 years</option>
+                    <option value="25">25 years</option>
+                    <option value="30">30 years</option>
+                  </select>
+                  <label for="loan_term">Loan Term</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                  <i class="bi bi-calculator me-2"></i>Calculate
+                </button>
+              </form>
+              
+              <div class="calculator-tips mt-4">
+                <h3 class="h6 mb-3"><i class="bi bi-lightbulb me-2"></i>Quick Tips</h3>
+                <ul class="small">
+                  <li>A shorter loan term means higher monthly payments but less total interest.</li>
+                  <li>Even a small reduction in interest rate can save you thousands over the life of the loan.</li>
+                  <li>Consider making extra payments to reduce the principal faster.</li>
+                </ul>
               </div>
             </div>
-            <div class="mb-3">
-              <label for="interest_rate" class="form-label"
-                >Annual Interest Rate (%):</label
-              >
-              <div class="input-group">
-                <input
-                  type="number"
-                  step="0.01"
-                  name="interest_rate"
-                  id="interest_rate"
-                  class="form-control"
-                  required
-                />
-                <span class="input-group-text">%</span>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="loan_term" class="form-label"
-                >Loan Term (Years):</label
-              >
-              <input
-                type="number"
-                name="loan_term"
-                id="loan_term"
-                class="form-control"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-primary w-100">
-              Calculate
-            </button>
-          </form>
-          {% if monthly_payment %}
-          <div class="mt-4">
-            <div class="card bg-light">
-              <div class="card-body">
-                <h2 class="h4 mb-3">Results</h2>
-                <div class="row">
-                  <div class="col-sm-6">
-                    <div class="mb-2">
-                      <strong>Monthly Payment:</strong>
-                      <div class="h5 text-primary">${{ monthly_payment }}</div>
+          </div>
+          
+          <!-- Results Section -->
+          <div class="col-md-6">
+            <div class="calculator-results-container p-4 p-md-5">
+              <h2 class="h4 mb-4">Loan Summary</h2>
+              
+              {% if monthly_payment %}
+                <div class="result-highlight mb-4 text-center">
+                  <span class="result-label">Monthly Payment</span>
+                  <div class="result-value">${{ monthly_payment }}</div>
+                </div>
+                
+                <div class="result-details">
+                  <div class="row">
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Principal</span>
+                        <span class="result-item-value">${{ loan_amount }}</span>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Interest Rate</span>
+                        <span class="result-item-value">{{ interest_rate }}%</span>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Loan Term</span>
+                        <span class="result-item-value">{{ loan_term }} years</span>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Total Interest</span>
+                        <span class="result-item-value">${{ total_interest }}</span>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Total Cost</span>
+                        <span class="result-item-value">${{ total_cost }}</span>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <div class="result-item">
+                        <span class="result-item-label">Total Payments</span>
+                        <span class="result-item-value">{{ total_payments }}</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-sm-6">
-                    <div class="mb-2">
-                      <strong>Total Interest:</strong>
-                      <div class="h5 text-primary">${{ total_interest }}</div>
+                </div>
+                
+                <div class="payment-breakdown mt-4">
+                  <h3 class="h6 mb-3">Payment Breakdown</h3>
+                  <div class="chart-container">
+                    <div class="payment-chart">
+                      <div class="chart-segment principal-segment" style="width: {{ principal_percentage }}%">
+                        <span class="segment-label">Principal</span>
+                      </div>
+                      <div class="chart-segment interest-segment" style="width: {{ interest_percentage }}%">
+                        <span class="segment-label">Interest</span>
+                      </div>
                     </div>
+                    <div class="chart-legend mt-2 small">
+                      <div class="d-flex justify-content-between">
+                        <span><i class="bi bi-square-fill principal-color me-1"></i> Principal: {{ principal_percentage }}%</span>
+                        <span><i class="bi bi-square-fill interest-color me-1"></i> Interest: {{ interest_percentage }}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <div class="empty-results text-center">
+                  <img src="{% static 'images/calculator-illustration.svg' %}" alt="Loan Calculator" class="img-fluid mb-3" style="max-height: 200px;">
+                  <p class="text-muted">Enter your loan details to see your monthly payment and other important information.</p>
+                </div>
+              {% endif %}
+              
+              <div class="calculator-actions mt-4">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <button class="btn btn-outline-primary w-100" onclick="window.print()">
+                      <i class="bi bi-printer me-1"></i> Print
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <a href="{% url 'calculators_home' %}" class="btn btn-outline-secondary w-100">
+                      <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {% endif %}
         </div>
       </div>
     </div>

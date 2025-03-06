@@ -1,15 +1,98 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+<div class="calculator-header py-5 text-center">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3">Financial Calculators</h1>
+    <p class="lead mb-0">Powerful tools to help you make informed financial decisions</p>
+  </div>
+</div>
+
 <div class="container py-5">
-  <h1 class="mb-4">Calculators</h1>
-  <ul class="list-group">
-    <li class="list-group-item"><a href="{% url 'loan_calculator' %}">Loan Calculator</a></li>
-    <li class="list-group-item"><a href="{% url 'mortgage_calculator' %}">Mortgage Calculator</a></li>
-    <li class="list-group-item"><a href="{% url 'budgeting_tool' %}">Budgeting Tool</a></li>
-    <li class="list-group-item"><a href="{% url 'retirement_calculator' %}">Retirement Calculator</a></li>
-    <li class="list-group-item"><a href="{% url 'insurance_calculator' %}">Insurance Calculator</a></li>
-    <li class="list-group-item"><a href="{% url 'student_loan_calculator' %}">Student Loan Calculator</a></li>
-    <li class="list-group-item"><a href="{% url 'car_payment_calcualtor' %}">Car Payment Calculator</a></li>
-  </ul>
+  <div class="row g-4">
+    <!-- Loan Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-cash-coin"></i>
+        </div>
+        <h3>Loan Calculator</h3>
+        <p>Calculate monthly payments, total interest, and more for any type of loan.</p>
+        <a href="{% url 'loan_calculator' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Mortgage Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-house"></i>
+        </div>
+        <h3>Mortgage Calculator</h3>
+        <p>Plan your home purchase with our comprehensive mortgage calculator.</p>
+        <a href="{% url 'mortgage_calculator' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Budgeting Tool -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-wallet2"></i>
+        </div>
+        <h3>Budgeting Tool</h3>
+        <p>Create and manage your personal or household budget with our interactive tool.</p>
+        <a href="{% url 'budgeting_tool' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Retirement Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-piggy-bank"></i>
+        </div>
+        <h3>Retirement Calculator</h3>
+        <p>Plan for your future with our retirement savings and income calculator.</p>
+        <a href="{% url 'retirement_calculator' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Insurance Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <h3>Insurance Calculator</h3>
+        <p>Estimate your insurance needs and potential costs with our calculator.</p>
+        <a href="{% url 'insurance_calculator' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Student Loan Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-mortarboard"></i>
+        </div>
+        <h3>Student Loan Calculator</h3>
+        <p>Understand repayment options and strategies for your student loans.</p>
+        <a href="{% url 'student_loan_calculator' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+    
+    <!-- Car Payment Calculator -->
+    <div class="col-md-6 col-lg-4">
+      <div class="calculator-card h-100">
+        <div class="calculator-icon">
+          <i class="bi bi-car-front"></i>
+        </div>
+        <h3>Car Payment Calculator</h3>
+        <p>Estimate monthly payments and total costs for your auto loan.</p>
+        <a href="{% url 'car_payment_calcualtor' %}" class="btn btn-primary">Calculate Now</a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock content %}
