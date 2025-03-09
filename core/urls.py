@@ -29,3 +29,5 @@ urlpatterns = [
     path('learning/', include('learning.urls')),  # Add this line
     path('schedule/', include('schedule.urls')),  # Add this line
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'core.views.custom_404_view'
