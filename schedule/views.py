@@ -11,14 +11,20 @@ def scheduleView(request):
         profile = Profile.objects.get(user=user)
         advisor = Advisor.objects.get(user_id=profile)
         
-        Events = listMyEvents(request)
-        return render(request, 'scheduleView_advisor.html', {'profile': profile, 'events': Events})
+        Events, Consultation = listMyEvents(request)
+        return render(request, 'scheduleView_advisor.html', 
+                      {'profile': profile,
+                        'events': Events,
+                        'consultation': Consultation})
 
     except Advisor.DoesNotExist:
         # user is not an advisor
         advisor = None
-        Events = listMyEvents(request)
-        return render(request, 'scheduleView.html', {'profile': profile, 'events': Events})
+        Events, Consultation = listMyEvents(request)
+        return render(request, 'scheduleView.html',
+                      {'profile': profile,
+                        'events': Events,
+                        'consultations': Consultation})
 
     except Profile.DoesNotExist:
         profile = None
@@ -31,15 +37,21 @@ def listMyEvents(request):
     try:
         profile = Profile.objects.get(user=user)
         events = Event.objects.filter(user_id=profile)
-        consultation = Consultation.objects.filter(client_id=profile)
+        try:
+            advisor = Advisor.objects.get(user_id=profile)
+        except Advisor.DoesNotExist:
+            advisor = None
+
+        consultation = Consultation.objects.filter(advisor_id=advisor)
                                                     
         # combine events and consultation into one list
         myEvents = []
+        myConsultation = []
         for event in events:
             myEvents.append(event)
         for consult in consultation:
-            myEvents.append(consult)
-        return myEvents
+            myConsultation.append(consult)
+        return [myEvents, myConsultation]
 
     except Profile.DoesNotExist:
         return None
