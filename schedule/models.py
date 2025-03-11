@@ -19,6 +19,7 @@ class Event(models.Model):
     organizer_id = models.ForeignKey('users.Profile', related_name='organizer', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    event_date = models.DateTimeField()
+    event_start_time = models.TimeField()
+    event_end_time = models.TimeField()
     location = models.CharField(max_length=255, blank=True, null=True)
     event_type = models.CharField(max_length=20, blank=True, null=True)
