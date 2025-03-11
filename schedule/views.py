@@ -15,7 +15,7 @@ def scheduleView(request):
         return render(request, 'scheduleView_advisor.html', 
                       {'profile': profile,
                         'events': Events,
-                        'consultation': Consultation})
+                        'consultations': Consultation})
 
     except Advisor.DoesNotExist:
         # user is not an advisor
@@ -51,7 +51,7 @@ def listMyEvents(request):
             myEvents.append(event)
         for consult in consultation:
             myConsultation.append(consult)
-        return [myEvents, myConsultation]
+        return myEvents, myConsultation
 
     except Profile.DoesNotExist:
         return None

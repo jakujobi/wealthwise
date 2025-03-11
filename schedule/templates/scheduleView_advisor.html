@@ -2,9 +2,46 @@
 {% load static %}
 {% block content %}
 
-<h1>This is advisor</h1>
-<p>Username: {{profile.first_name}}</p>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
 
+<h1>This is advisor</h1>
+<h3>Username: {{profile.first_name}}</h3>
+
+<br>
+
+<h2>Consultations</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Client Name</th>
+            <th>Scheduled Date</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for consultation in consultations %}
+        <tr>
+            <td>{{ consultation.consultation_id }}</td>
+            <td>{{ consultation.client_id.first_name }} {{ consultation.client_id.last_name }}</td>
+            <td>{{ consultation.scheduled_date }}</td>
+            <td>{{ consultation.session_notes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
 <h2>Events</h2>
 <table>
     <thead>
@@ -25,28 +62,5 @@
     </tbody>
 </table>
 
-<h2>Consultations</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Client</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for consultation in consultations %}
-        <tr>
-            <td>{{ consultation.title }}</td>
-            <td>{{ consultation.date }}</td>
-            <td>{{ consultation.time }}</td>
-            <td>{{ consultation.client_name }}</td>
-            <td>{{ consultation.notes }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
 {% endblock %}
