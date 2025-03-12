@@ -52,6 +52,7 @@
             <th>Title</th>
             <th>Time</th>
             <th>Description</th>
+            <th>Edit</th>
         </tr>
     </thead>
     <tbody>
@@ -60,6 +61,7 @@
             <td>{{ event.title }}</td>
             <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
             <td>{{ event.description }}</td>
+            {% comment %} <td style="text-align: right;"><a href="{% url 'modifyEvent' event.id %}"><img src="{% static 'edit_icon.png' %}" alt="Edit" style="width:20px;height:20px;"></a></td> {% endcomment %}
         </tr>
         {% endfor %}
     </tbody>

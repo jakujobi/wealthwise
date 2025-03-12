@@ -4,9 +4,9 @@ from .models import *
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'advisor_id']
+        fields = ['title', 'description', 'event_start_timestamp', 'event_end_timestamp', 'location']
 
 class ConsultationForm(ModelForm):
     class Meta:
         model = Consultation
-        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'advisor_id', 'client_id']
+        fields = ['scheduled_date', 'status', 'client_rating', 'session_notes']
