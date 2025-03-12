@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Modify Event</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" maxlength="255" required value="{{ title|default:'' }}">
+    <br>
+
+    <label for="start_date">Start Date Time</label>
+    <input type="datetime-local" name="start_timestamp" id="start_timestamp" required value="{{ start_timestamp|default:'' }}">
+    <br>
+
+    <label for="end_date">End Date Time</label>
+    <input type="datetime-local" name="end_timestamp" id="end_timestamp" required value="{{ end_timestamp|default:'' }}">
+    <br>
+    <br>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" rows="4" cols="50">{{ description|default:'' }}</textarea>
+    <br>
+
+    <label for="location">Location</label>
+    <textarea name="location" id="location" rows="2" cols="50">{{ location|default:'' }}</textarea>
+    <br>
+
+    <label for="event_type">Event Type</label>
+    <select name="event_type" id="event_type">
+        <option value="1" {% if event_type == '1' %}selected{% endif %}>Meeting</option>
+        <option value="2" {% if event_type == '2' %}selected{% endif %}>Seminar</option>
+        <option value="3" {% if event_type == '3' %}selected{% endif %}>Webinar</option>
+        <option value="4" {% if event_type == '4' %}selected{% endif %}>Conference</option>
+        <option value="5" {% if event_type == '5' %}selected{% endif %}>Other</option>
+    </select>
+    <br>
+
+    <br>
+    <button type="submit" class="btn btn-primary">Modify Event</button>
+
+{% endblock content %}

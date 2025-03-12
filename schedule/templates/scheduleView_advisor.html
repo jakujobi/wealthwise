@@ -42,7 +42,10 @@
 </table>
 
 <br>
-<h2>Events</h2>
+<div class="events-header">
+    <h2>Events</h2>
+    <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">Add New Event</button>
+</div>
 <table>
     <thead>
         <tr>
@@ -61,6 +64,5 @@
         {% endfor %}
     </tbody>
 </table>
-
 
 {% endblock %}
