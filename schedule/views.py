@@ -76,10 +76,27 @@ def createNewEvent(request):
             end_datetime = form.cleaned_data['event_end_timestamp']
             
             # Check if the dates are in the future
-            if timezone.make_aware(start_datetime) < timezone.now() or timezone.make_aware(end_datetime) < timezone.now():
+            if start_datetime < timezone.now() or end_datetime < timezone.now():
                 error_message = "Start and End date must be in the future."
                 return render(request, 'Advisor/createEvent.html', {
                     'form': form,
+                    'title': form.cleaned_data['title'],
+                    'description': form.cleaned_data['description'],
+                    'location': form.cleaned_data['location'],
+                    'event_start_timestamp': form.cleaned_data['event_start_timestamp'],
+                    'event_end_timestamp': form.cleaned_data['event_end_timestamp'],
+                    'error_message': error_message
+                })
+            
+            if start_datetime > end_datetime:
+                error_message = "End date must be after the start date."
+                return render(request, 'Advisor/createEvent.html', {
+                    'form': form,
+                    'title': form.cleaned_data['title'],
+                    'description': form.cleaned_data['description'],
+                    'location': form.cleaned_data['location'],
+                    'event_start_timestamp': form.cleaned_data['event_start_timestamp'],
+                    'event_end_timestamp': form.cleaned_data['event_end_timestamp'],
                     'error_message': error_message
                 })
             
@@ -89,6 +106,13 @@ def createNewEvent(request):
             event.save()
             
             return redirect('view')
+        else:
+            # Display form errors
+            return render(request, 'Advisor/createEvent.html', {
+                'form': form,
+                'error_message': "There were errors in the form. Please correct them and try again.",
+                'form_errors': form.errors
+            })
     else:
         form = EventForm()
     
