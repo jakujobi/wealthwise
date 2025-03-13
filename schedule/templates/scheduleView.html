@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<h1>This is normal user view</h1>
+<p>Username: {{profile.first_name}}</p>
+
+<h2>Events</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.time }}</td>
+            <td>{{ event.description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Consultations</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Client</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for consultation in consultations %}
+        <tr>
+            <td>{{ consultation.title }}</td>
+            <td>{{ consultation.date }}</td>
+            <td>{{ consultation.time }}</td>
+            <td>{{ consultation.client_name }}</td>
+            <td>{{ consultation.notes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

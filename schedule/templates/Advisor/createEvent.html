@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Create Event</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+    {% if form_errors %}
+        <ul style="color: red;">
+            {% for field, errors in form_errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" maxlength="255" required value="{{ title|default:'' }}">
+    <br>
+
+    <label for="event_start_timestamp">Start Date Time</label>
+    <input type="datetime-local" name="event_start_timestamp" id="event_start_timestamp" required value="{{ start_timestamp|default:'' }}">
+    <br>
+
+    <label for="event_start_timestamp">End Date Time</label>
+    <input type="datetime-local" name="event_end_timestamp" id="event_end_timestamp" required value="{{ end_timestamp|default:'' }}">
+    <br>
+    <br>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" rows="4" cols="50">{{ description|default:'' }}</textarea>
+    <br>
+
+    <label for="location">Location</label>
+    <textarea name="location" id="location" rows="2" cols="50">{{ location|default:'' }}</textarea>
+    <br>
+
+    <br>
+    <button type="submit" class="btn btn-primary">Create Event</button>
+
+{% endblock content %}
