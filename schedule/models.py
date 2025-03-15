@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.urls import reverse
+from django.utils import timezone
 
 # Consultation
 class Consultation(models.Model):
@@ -21,4 +23,18 @@ class Event(models.Model):
     event_start_timestamp = models.DateTimeField()
     event_end_timestamp = models.DateTimeField()
     location = models.CharField(max_length=255, blank=True, null=True)
-  
+
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"eventId": self.event_id})
+    
+    def __str__(self):
+        return str(self.event_id)
+    
+    def save(self, *args, **kwargs):
+        if self.event_start_timestamp > self.event_end_timestamp:
+            raise ValueError("Event start time cannot be after end time")
+        
+        if self.event_start_timestamp < timezone.now() or self.event_end_timestamp < timezone.now():
+            raise ValueError("Event start and end time must be in the future")
+        
+        super(Event, self).save(*args, **kwargs)
