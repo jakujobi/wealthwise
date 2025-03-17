@@ -15,9 +15,17 @@
 </style>
 
 <h1>This is advisor</h1>
+{% if profile %}
 <h3>Username: {{profile.first_name}}</h3>
+{% endif %}
 
 <br>
+
+{% if message %}
+<div style="background-color: rgba(161, 228, 161, 0.6); padding: 10px; border-radius: 5px; color: black;">
+    {{ message }}
+</div>
+{% endif %}
 
 <h2>Consultations</h2>
 <table>
@@ -51,6 +59,7 @@
         <tr>
             <th>Title</th>
             <th>Time</th>
+            <th>Location</th>
             <th>Description</th>
             <th>Edit</th>
         </tr>
@@ -60,8 +69,9 @@
         <tr>
             <td>{{ event.title }}</td>
             <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
+            <td>{{ event.location }}</td>
             <td>{{ event.description }}</td>
-            {% comment %} <td style="text-align: right;"><a href="{% url 'modifyEvent' event.id %}"><img src="{% static 'edit_icon.png' %}" alt="Edit" style="width:20px;height:20px;"></a></td> {% endcomment %}
+            <td style="text-align: right;"><a href="{% url "eventDetail" event %}"><img src="{% static 'edit_icon.png' %}" alt="Edit" style="width:20px;height:20px;"></a></td>
         </tr>
         {% endfor %}
     </tbody>

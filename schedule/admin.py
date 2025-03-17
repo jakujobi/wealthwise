@@ -12,6 +12,6 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = ('event_start_timestamp', 'event_end_timestamp', 'location')
     
     # list of fields to search by in the admin panel
-    search_fields = ('title', 'location')
+    search_fields = ( 'event_id', 'title', 'location')
 
 admin.site.register(Event, EventAdmin)
