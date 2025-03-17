@@ -34,7 +34,8 @@ def authorizeUser(request):
             raise Exception("User is unauthorized.")
 
     except Exception:
-        return None
+        logger.exception("Error during user authorization")
+        return userType['user'] # Default to 'user' or raise an exception
     
 
 @login_required
