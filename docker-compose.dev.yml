@@ -1,0 +1,51 @@
+services:
+  db:
+    container_name: wealthwise-db
+    image: postgres
+    hostname: localhost
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: wealthwise_db
+      POSTGRES_USER: wealthwise_user
+      POSTGRES_PASSWORD: securepassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: always
+    
+  dbadmin:
+    container_name: wealthwise-dbAdmin
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+     - dbadmin-data:/var/lib/dbadmin
+    restart: always
+
+  web:
+    build: .
+    container_name: wealthwise-web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_HOST=db
+      - DATABASE_NAME=wealthwise_db
+      - DATABASE_USER=wealthwise_user
+      - DATABASE_PASSWORD=securepassword
+      - DATABASE_PORT=5432
+    volumes:
+      - .:/app
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  db-data:
+  dbadmin-data:

@@ -9,8 +9,8 @@
 #https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
-
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u_3@nil5bpj5hpqc992w*li^1a%gzg@kqz!d@&+x*ofx)7fnpn'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-u_3@nil5bpj5hpqc992w*li^1a%gzg@kqz!d@&+x*ofx)7fnpn')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
 # Application definition
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,14 +76,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'wealthwise_db'),
-        'USER': os.getenv('DATABASE_USER', 'wealthwise_user'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'securepassword'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-        'PORT': os.getenv('DATABASE_PORT', '5432')
-    }
+    'default': dj_database_url.config(
+        default=f'postgresql://{os.getenv("DATABASE_USER", "wealthwise_user")}:{os.getenv("DATABASE_PASSWORD", "securepassword")}@{os.getenv("DATABASE_HOST", "localhost")}:{os.getenv("DATABASE_PORT", "5432")}/{os.getenv("DATABASE_NAME", "wealthwise_db")}',
+        conn_max_age=600
+    )
 }
 
 # Password validation
@@ -117,14 +114,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / 'productionfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
-
-
+# Use WhiteNoise for static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
