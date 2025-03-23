@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.urls import reverse
+from django.utils import timezone
 
 # Consultation
 class Consultation(models.Model):
@@ -16,9 +18,12 @@ class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     registration_date = models.DateTimeField(auto_now_add=True)
-    organizer_id = models.ForeignKey('users.Profile', related_name='organizer', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    event_date = models.DateTimeField()
+    event_start_timestamp = models.DateTimeField()
+    event_end_timestamp = models.DateTimeField()
     location = models.CharField(max_length=255, blank=True, null=True)
-    event_type = models.CharField(max_length=20, blank=True, null=True)
+    
+    def __str__(self):
+        return str(self.event_id)
+    
