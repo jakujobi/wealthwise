@@ -4,7 +4,6 @@ services:
     env: docker
     plan: free
     buildCommand: docker build -t wealthwise .
-    startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
         generateValue: true
