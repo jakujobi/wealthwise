@@ -23,3 +23,6 @@ pip install -r requirements.txt
 
 # Docker stuf
 docker-compose up
+
+TO run the dev server
+docker-compose -f docker-compose.dev.yml up
