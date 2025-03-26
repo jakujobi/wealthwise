@@ -1,25 +1,27 @@
 Project for SE 306
 
-Command for running the server
-run dev server
-python manage.py runserver
+# Commands for running the server
+run dev server:
+    python manage.py runserver
 
-create app
-python manage.py startapp [app name]
+# Commands for creating an app
+create app:
+    python manage.py startapp [app name]
 
-create databases for libraries
-python manage.py migrate
+# Commands for database migrations
+create databases for libraries:
+    python manage.py migrate
 
-create file to make models for database
-python manage.py makemigrations [app name]
+create file to make models for database:
+    python manage.py makemigrations [app name]
 
-create admin user
-python manage.py createsuperuser
+# Command for creating an admin user
+create admin user:
+    python manage.py createsuperuser
 
-In order to auto install required python Libraries
-pip install -r requirements.txt
+# Command to auto install required python libraries
+install requirements:
+    pip install -r requirements.txt
 
-
-
-# Docker stuf
+# Docker commands
 docker-compose up

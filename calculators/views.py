@@ -11,12 +11,21 @@ def calculators_home(request):
 def loan_calculator(request):
     monthly_payment = None
     total_interest = None
+    loan_amount = None
+    interest_rate = None
+    loan_term = None
+    total_cost = None
+    total_payments = None
+    principal_percentage = None
+    interest_percentage = None
 
     if request.method == 'POST':
         # 1. Get form data
         loan_amount = float(request.POST.get('loan_amount'))
-        interest_rate = (1 + (float(request.POST.get('interest_rate')) / 100)) ** (1/12) - 1
-        loan_term = int(request.POST.get('loan_term')) * 12  # Convert years to months
+        interest_rate_annual = float(request.POST.get('interest_rate'))
+        interest_rate = (1 + (interest_rate_annual / 100)) ** (1/12) - 1
+        loan_term_years = int(request.POST.get('loan_term'))
+        loan_term = loan_term_years * 12  # Convert years to months
 
         # 2. Calculate monthly payment (amortization formula)
         if interest_rate == 0:
@@ -30,14 +39,30 @@ def loan_calculator(request):
         # 3. Calculate total interest
         total_paid = monthly_payment * loan_term
         total_interest = total_paid - loan_amount
+        
+        # 4. Calculate additional metrics for enhanced display
+        total_cost = loan_amount + total_interest
+        total_payments = loan_term
+        
+        # 5. Calculate percentages for the payment breakdown chart
+        principal_percentage = round((loan_amount / total_cost) * 100)
+        interest_percentage = round((total_interest / total_cost) * 100)
 
         # Round results
         monthly_payment = round(monthly_payment, 2)
         total_interest = round(total_interest, 2)
+        total_cost = round(total_cost, 2)
 
     return render(request, 'loan_calculator.html', {
         'monthly_payment': monthly_payment,
-        'total_interest': total_interest
+        'total_interest': total_interest,
+        'loan_amount': loan_amount,
+        'interest_rate': interest_rate_annual if 'interest_rate_annual' in locals() else None,
+        'loan_term': loan_term_years if 'loan_term_years' in locals() else None,
+        'total_cost': total_cost,
+        'total_payments': total_payments,
+        'principal_percentage': principal_percentage,
+        'interest_percentage': interest_percentage
     })
 
 def mortgage_calculator(request):
@@ -298,6 +323,8 @@ def retirement_calculator(request):
     expected_savings = None
     meet_goal = ''
     payment_to_meet_goal = None
+    additional_savings_needed = None
+    monthly_contributions = 0
 
     if request.method == 'POST':
         current_age = float(request.POST.get('current_age'))
@@ -315,11 +342,13 @@ def retirement_calculator(request):
 
         meet_goal_bool = expected_savings >= retirement_goal
 
-        if not meet_goal:
+        if not meet_goal_bool:
             required_savings = retirement_goal - present_savings * ((1 + rate_of_return) ** months_to_retirement)
             payment_to_meet_goal = required_savings * (rate_of_return / ((1 + rate_of_return) ** months_to_retirement - 1))
+            additional_savings_needed = payment_to_meet_goal - monthly_contributions
         else:
             payment_to_meet_goal = 0
+            additional_savings_needed = 0
         
         # Round Results
         expected_savings = round(expected_savings, 2)
@@ -328,11 +357,15 @@ def retirement_calculator(request):
         else:
             meet_goal = 'No'
         payment_to_meet_goal = round(payment_to_meet_goal, 2)
+        additional_savings_needed = round(additional_savings_needed, 2)
 
     return render(request, 'retirement_calculator.html', {
         'expected_savings': expected_savings,
         'meet_goal': meet_goal,
-        'payment_to_meet_goal': payment_to_meet_goal
+        'payment_to_meet_goal': payment_to_meet_goal,
+        'monthly_contributions': monthly_contributions,
+        'additional_savings_needed': additional_savings_needed,
+        'retirement_goal': retirement_goal if request.method == 'POST' else None
     })
 
 def insurance_calculator(request):

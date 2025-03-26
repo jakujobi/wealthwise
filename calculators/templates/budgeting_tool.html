@@ -1,14 +1,23 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+<div class="calculator-header py-4 text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold mb-2">Budgeting Tool</h1>
+    <p class="lead mb-0">Plan your finances and track your spending to meet your savings goals</p>
+  </div>
+</div>
+
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h1 class="h3 mb-0">Budgeting Tool</h1>
+  <div class="row">
+    <!-- Calculator Form -->
+    <div class="col-lg-7 mb-4 mb-lg-0">
+      <div class="calculator-card">
+        <div class="calculator-card-header p-4">
+          <h2 class="h4 mb-0"><i class="bi bi-wallet2 me-2"></i>Budget Details</h2>
         </div>
-        <div class="card-body">
-          <form method="POST">
+        <div class="calculator-card-body p-4">
+          <form method="POST" class="calculator-form">
             {% csrf_token %}
             <!-- Income fields -->
             <div class="mb-3">
@@ -163,9 +172,26 @@
               </div>
             </div>
           </div>
-          {% endif %}
+          
+          <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'calculators_home' %}" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-2"></i>Back to Calculators
+            </a>
+            <button class="btn btn-outline-primary" onclick="window.print()">
+              <i class="bi bi-printer me-2"></i>Print Results
+            </button>
+          </div>
         </div>
       </div>
+      {% else %}
+      <div class="calculator-card h-100 d-flex flex-column justify-content-center align-items-center p-5">
+        <div class="empty-state text-center">
+          <img src="{% static 'images/calculator-illustration.svg' %}" alt="Calculator" class="empty-state-image mb-4" style="max-width: 200px;">
+          <h3 class="h4 mb-3">No Results Yet</h3>
+          <p class="text-muted mb-0">Fill out the form to analyze your budget and savings plan</p>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
