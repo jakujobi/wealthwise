@@ -12,6 +12,9 @@ class Consultation(models.Model):
     status = models.CharField(max_length=20, blank=True, null=True)
     client_rating = models.IntegerField(blank=True, null=True)
     session_notes = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"Consultation {self.consultation_id} - {self.scheduled_date}"
 
 # Event
 class Event(models.Model):
