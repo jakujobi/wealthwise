@@ -56,93 +56,41 @@
     <!-- Profile Content -->
     <div class="col-lg-8">
       <div class="profile-content">
+        <!-- Personal Information Section -->
         <div class="profile-section mb-4">
           <div class="profile-section-header d-flex justify-content-between align-items-center mb-3">
             <h2 class="h4 mb-0"><i class="bi bi-person-vcard me-2"></i>Personal Information</h2>
           </div>
           <div class="profile-section-body p-4">
             <div class="row g-3">
+              {% for label, value in personal_info.items %}
               <div class="col-md-6">
                 <div class="profile-info-item">
-                  <span class="profile-info-label">Username</span>
-                  <span class="profile-info-value">{{ user.username }}</span>
+                  <span class="profile-info-label">{{ label }}</span>
+                  <span class="profile-info-value">{{ value }}</span>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="profile-info-item">
-                  <span class="profile-info-label">Email</span>
-                  <span class="profile-info-value">{{ user.email }}</span>
-                </div>
-              </div>
-              {% if user.profile.phone_number %}
-              <div class="col-md-6">
-                <div class="profile-info-item">
-                  <span class="profile-info-label">Phone Number</span>
-                  <span class="profile-info-value">{{ user.profile.phone_number }}</span>
-                </div>
-              </div>
-              {% endif %}
-              <div class="col-md-6">
-                <div class="profile-info-item">
-                  <span class="profile-info-label">Member Since</span>
-                  <span class="profile-info-value">{{ user.date_joined|date:"F j, Y" }}</span>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
         </div>
         
+        <!-- Address Information Section -->
         <div class="profile-section mb-4">
           <div class="profile-section-header d-flex justify-content-between align-items-center mb-3">
             <h2 class="h4 mb-0"><i class="bi bi-geo-alt me-2"></i>Address Information</h2>
           </div>
           <div class="profile-section-body p-4">
-            {% if user.profile.address or user.profile.city or user.profile.state or user.profile.country or user.profile.postal_code %}
+            {% if address_info %}
               <div class="row g-3">
-                {% if user.profile.address %}
-                <div class="col-md-12">
-                  <div class="profile-info-item">
-                    <span class="profile-info-label">Street Address</span>
-                    <span class="profile-info-value">{{ user.profile.address }}</span>
-                  </div>
-                </div>
-                {% endif %}
-                
-                {% if user.profile.city %}
+                {% for label, value in address_info.items %}
                 <div class="col-md-6">
                   <div class="profile-info-item">
-                    <span class="profile-info-label">City</span>
-                    <span class="profile-info-value">{{ user.profile.city }}</span>
+                    <span class="profile-info-label">{{ label }}</span>
+                    <span class="profile-info-value">{{ value }}</span>
                   </div>
                 </div>
-                {% endif %}
-                
-                {% if user.profile.state %}
-                <div class="col-md-6">
-                  <div class="profile-info-item">
-                    <span class="profile-info-label">State/Province</span>
-                    <span class="profile-info-value">{{ user.profile.state }}</span>
-                  </div>
-                </div>
-                {% endif %}
-                
-                {% if user.profile.country %}
-                <div class="col-md-6">
-                  <div class="profile-info-item">
-                    <span class="profile-info-label">Country</span>
-                    <span class="profile-info-value">{{ user.profile.country }}</span>
-                  </div>
-                </div>
-                {% endif %}
-                
-                {% if user.profile.postal_code %}
-                <div class="col-md-6">
-                  <div class="profile-info-item">
-                    <span class="profile-info-label">Postal Code</span>
-                    <span class="profile-info-value">{{ user.profile.postal_code }}</span>
-                  </div>
-                </div>
-                {% endif %}
+                {% endfor %}
               </div>
             {% else %}
               <div class="text-center py-3">
@@ -155,6 +103,7 @@
           </div>
         </div>
         
+        <!-- Financial Overview Section -->
         <div class="profile-section">
           <div class="profile-section-header d-flex justify-content-between align-items-center mb-3">
             <h2 class="h4 mb-0"><i class="bi bi-graph-up me-2"></i>Financial Overview</h2>

@@ -10,7 +10,8 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.create(user=user)  # Create a profile for the new user
+            email = request.POST.get('email')  # Get email from the form
+            Profile.objects.create(user=user, email=email)  # Create a profile with email
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
