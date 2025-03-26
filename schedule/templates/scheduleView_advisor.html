@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+
+<h1>This is advisor</h1>
+{% if profile %}
+<h3>Username: {{profile.first_name}}</h3>
+{% endif %}
+
+<br>
+
+{% if message %}
+<div style="background-color: rgba(161, 228, 161, 0.6); padding: 10px; border-radius: 5px; color: black;">
+    {{ message }}
+</div>
+{% endif %}
+
+<h2>Consultations</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Client Name</th>
+            <th>Scheduled Date</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for consultation in consultations %}
+        <tr>
+            <td>{{ consultation.consultation_id }}</td>
+            <td>{{ consultation.client_id.first_name }} {{ consultation.client_id.last_name }}</td>
+            <td>{{ consultation.scheduled_date }}</td>
+            <td>{{ consultation.session_notes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<div class="events-header">
+    <h2>Events</h2>
+    <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">Add New Event</button>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
+            <td>{{ event.location }}</td>
+            <td>{{ event.description }}</td>
+            <td style="text-align: right;"><a href="{% url "eventDetail" event %}"><img src="{% static 'edit_icon.png' %}" alt="Edit" style="width:20px;height:20px;"></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

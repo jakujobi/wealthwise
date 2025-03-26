@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'calculators',
     'users',
+    'schedule',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Login URL. If the user is not logged in, they will be redirected to this URL to login
+# before they can access the page they are trying to access.
+LOGIN_URL = '/users/login/'
