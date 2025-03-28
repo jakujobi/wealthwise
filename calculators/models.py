@@ -9,3 +9,6 @@ class FinancialToolUsage(models.Model):
     input_data = models.JSONField()
     usage_date = models.DateTimeField(auto_now_add=True)
     budget_for_date = models.DateField(default=date(1000, 10, 10))
+    
+    def __str__(self):
+        return f"{self.tool_type} usage by User {self.user_id} on {self.usage_date}"
