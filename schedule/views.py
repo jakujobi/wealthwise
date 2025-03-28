@@ -93,14 +93,14 @@ def listMyEvents(user, userTypeRequested):
             # combine events and consultation into one list
             myEvents = []
             myConsultation = []
-            for event in events:
+            for event in events.order_by('event_start_timestamp'):
                 myEvents.append(event)
             for consult in consultation:
                 myConsultation.append(consult)
             return myEvents, myConsultation
         
         elif userTypeRequested == userType['admin']:
-            events = Event.objects.filter(event_start_timestamp__gte=now())
+            events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
             consultation = Consultation.objects.filter()
             return events, consultation
         
