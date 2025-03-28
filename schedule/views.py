@@ -5,6 +5,7 @@ from .models import *
 from users.models import Profile, Advisor
 from .forms import *
 from logging import getLogger
+from django.utils.timezone import now
 
 logger = getLogger(__name__)
 
@@ -86,29 +87,29 @@ def listMyEvents(user, userTypeRequested):
         if userTypeRequested == userType['advisor']:
             profile = Profile.objects.get(user=user)
             advisor = Advisor.objects.get(user_id=profile)
-            events = Event.objects.filter(user_id=profile)
+            events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
             consultation = Consultation.objects.filter(advisor_id=advisor)
 
             # combine events and consultation into one list
             myEvents = []
             myConsultation = []
-            for event in events:
+            for event in events.order_by('event_start_timestamp'):
                 myEvents.append(event)
             for consult in consultation:
                 myConsultation.append(consult)
             return myEvents, myConsultation
         
         elif userTypeRequested == userType['admin']:
-            events = Event.objects.all()
-            consultation = Consultation.objects.all()
+            events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+            consultation = Consultation.objects.filter()
             return events, consultation
         
         # TODO: Implement user view
         # elif userTypeRequested == userType['user']:
         #     profile = Profile.objects.get(user=user)
 
-        #     events = Event.objects.filter(user_id=profile)
-        #     consultation = Consultation.objects.all()
+        #     events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
+        #     consultation = Consultation.objects.filter(schedule_date_timestamp__gte=now())
         #     return events, consultation
 
         else:
@@ -141,7 +142,7 @@ def createNewEvent(request):
             
             # Check if the dates are in the future
             if start_datetime < timezone.now() or end_datetime < timezone.now():
-                error_message = "Start and End date must be in the future."
+                error_message = "Start or End date must be in the future."
                 return render(request, 'Advisor/createEvent.html', {
                     'form': form,
                     'title': form.cleaned_data['title'],
@@ -152,7 +153,7 @@ def createNewEvent(request):
                     'error_message': error_message
                 })
             
-            if start_datetime > end_datetime:
+            if start_datetime >= end_datetime:
                 error_message = "End date must be after the start date."
                 return render(request, 'Advisor/createEvent.html', {
                     'form': form,
@@ -248,5 +249,5 @@ def deleteEvent(request, eventId=None):
         event = Event.objects.get(event_id=eventId)
         event.delete()
         return redirect('view', message="Event deleted successfully.")
-    except Event.DoesNotExist:
-        return render(request, 'view.html', {'message': "Something wrong. Event does not exist. It may be already deleted."})
+    except Exception as e:
+        return redirect('view.html', message= "Something wrong. Event does not exist. It may be already deleted.")

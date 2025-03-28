@@ -14,18 +14,18 @@
     <br>
     
     <label>Start Date Time - </label>
-    <t> {{ event.event_start_timestamp|default:'' }}</t>
+    <t> {{ event.event_start_timestamp }}</t>
     <br>
     <label for="event_start_timestamp">New Start Date Time</label>
-    <input type="datetime-local" name="event_start_timestamp" id="start_timestamp" required value="{{ event.event_start_timestamp|default:'' }}">
+    <input type="datetime-local" name="event_start_timestamp" id="start_timestamp" required value="{{ event.event_start_timestamp|date:"Y-m-d\TH:i" }}">
     <br>
     <br>
     
     <label>End Date Time - </label>
-    <t> {{ event.event_end_timestamp|default:'' }}</t>
+    <t> {{ event.event_end_timestamp }}</t>
     <br>
     <label for="event_end_timestamp">New End Date Time</label>
-    <input type="datetime-local" name="event_end_timestamp" id="end_timestamp" required value="{{ event.event_end_timestamp|default:'' }}">
+    <input type="datetime-local" name="event_end_timestamp" id="end_timestamp" required value="{{ event.event_end_timestamp|date:"Y-m-d\TH:i" }}">
     <br>
     <br>
 
