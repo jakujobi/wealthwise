@@ -142,7 +142,7 @@ def createNewEvent(request):
             
             # Check if the dates are in the future
             if start_datetime < timezone.now() or end_datetime < timezone.now():
-                error_message = "Start and End date must be in the future."
+                error_message = "Start or End date must be in the future."
                 return render(request, 'Advisor/createEvent.html', {
                     'form': form,
                     'title': form.cleaned_data['title'],
@@ -153,7 +153,7 @@ def createNewEvent(request):
                     'error_message': error_message
                 })
             
-            if start_datetime > end_datetime:
+            if start_datetime >= end_datetime:
                 error_message = "End date must be after the start date."
                 return render(request, 'Advisor/createEvent.html', {
                     'form': form,
