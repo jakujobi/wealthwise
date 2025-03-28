@@ -196,14 +196,7 @@ def eventDetail(request, eventId):
         event = None
     
     if request.method == "GET":
-        form = EventForm(initial={
-            'title': event.title,
-            'description': event.description,
-            'location': event.location,
-            'event_start_timestamp': event.event_start_timestamp,
-            'event_end_timestamp': event.event_end_timestamp
-        })
-        return render(request, 'Advisor/eventDetails.html', {'event': event, 'form': form})
+        return render(request, 'Advisor/eventDetails.html', {'event': event})
     
     if request.method == 'POST':
         form = EventForm(request.POST)
