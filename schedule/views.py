@@ -226,7 +226,7 @@ def modifyEvent(event, form):
     if start_datetime < timezone.now() or end_datetime < timezone.now():
         raise Exception("Start and End date must be in the future.")
     
-    if start_datetime > end_datetime:
+    if start_datetime >= end_datetime:
         raise Exception("End date must be after the start date.")
 
     event.title = form.cleaned_data['title']
