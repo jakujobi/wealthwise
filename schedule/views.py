@@ -5,6 +5,7 @@ from .models import *
 from users.models import Profile, Advisor
 from .forms import *
 from logging import getLogger
+from django.utils.timezone import now
 
 logger = getLogger(__name__)
 
@@ -86,7 +87,7 @@ def listMyEvents(user, userTypeRequested):
         if userTypeRequested == userType['advisor']:
             profile = Profile.objects.get(user=user)
             advisor = Advisor.objects.get(user_id=profile)
-            events = Event.objects.filter(user_id=profile)
+            events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
             consultation = Consultation.objects.filter(advisor_id=advisor)
 
             # combine events and consultation into one list
@@ -99,16 +100,16 @@ def listMyEvents(user, userTypeRequested):
             return myEvents, myConsultation
         
         elif userTypeRequested == userType['admin']:
-            events = Event.objects.all()
-            consultation = Consultation.objects.all()
+            events = Event.objects.filter(event_start_timestamp__gte=now())
+            consultation = Consultation.objects.filter()
             return events, consultation
         
         # TODO: Implement user view
         # elif userTypeRequested == userType['user']:
         #     profile = Profile.objects.get(user=user)
 
-        #     events = Event.objects.filter(user_id=profile)
-        #     consultation = Consultation.objects.all()
+        #     events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
+        #     consultation = Consultation.objects.filter(schedule_date_timestamp__gte=now())
         #     return events, consultation
 
         else:
@@ -195,7 +196,14 @@ def eventDetail(request, eventId):
         event = None
     
     if request.method == "GET":
-        return render(request, 'Advisor/eventDetails.html', {'event': event})
+        form = EventForm(initial={
+            'title': event.title,
+            'description': event.description,
+            'location': event.location,
+            'event_start_timestamp': event.event_start_timestamp,
+            'event_end_timestamp': event.event_end_timestamp
+        })
+        return render(request, 'Advisor/eventDetails.html', {'event': event, 'form': form})
     
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -248,5 +256,5 @@ def deleteEvent(request, eventId=None):
         event = Event.objects.get(event_id=eventId)
         event.delete()
         return redirect('view', message="Event deleted successfully.")
-    except Event.DoesNotExist:
-        return render(request, 'view.html', {'message': "Something wrong. Event does not exist. It may be already deleted."})
+    except Exception as e:
+        return redirect('view.html', message= "Something wrong. Event does not exist. It may be already deleted.")
