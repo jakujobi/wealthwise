@@ -43,6 +43,19 @@
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
     <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">New Event</button>
+    
+</div>
+
+<div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <select name="eventListRequest" class="form-select" style="display: inline-block; width: auto; margin-right: 1rem;">
+            <option value="UPCOMING" {% if eventListRequest == "UPCOMING" %}selected{% endif %}>Upcoming Events</option>
+            <option value="" {% if eventListRequest == "" %}selected{% endif %}>All Events</option>
+            <option value="PAST" {% if eventListRequest == "PAST" %}selected{% endif %}>Past Events</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
 </div>
 
 <table class="table table-bordered table-striped mx-auto" style="width: 95%;">
