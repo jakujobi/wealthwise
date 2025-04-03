@@ -2,34 +2,22 @@
 {% load static %}
 {% block content %}
 
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-</style>
-
-<h1>This is advisor</h1>
+<h1 class="text-primary text-center" style="margin: 1rem">This is advisor</h1>
 {% if profile %}
-<h3>Username: {{profile.first_name}}</h3>
+<h3 class="text-center">Name: {{profile.first_name}}</h3>
 {% endif %}
 
 <br>
 
 {% if message %}
-<div style="background-color: rgba(161, 228, 161, 0.6); padding: 10px; border-radius: 5px; color: black;">
+<div class="alert alert-success text-center">
     {{ message }}
 </div>
 {% endif %}
 
-<h2>Consultations</h2>
-<table>
-    <thead>
+<h2 class="text-center">Consultations</h2>
+<table class="table table-bordered table-striped mx-auto" style="width: 95%;">
+    <thead class="thead-dark">
         <tr>
             <th>Id</th>
             <th>Client Name</th>
@@ -50,12 +38,15 @@
 </table>
 
 <br>
-<div class="events-header">
-    <h2>Events</h2>
-    <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">Add New Event</button>
+
+<h2 class="text-center">Events</h2>
+
+<div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
+    <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">New Event</button>
 </div>
-<table>
-    <thead>
+
+<table class="table table-bordered table-striped mx-auto" style="width: 95%;">
+    <thead class="thead-dark">
         <tr>
             <th>Title</th>
             <th>Time</th>
@@ -71,7 +62,11 @@
             <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
             <td>{{ event.location }}</td>
             <td>{{ event.description }}</td>
-            <td style="text-align: right;"><a href="{% url "eventDetail" event %}"><img src="{% static 'edit_icon.png' %}" alt="Edit" style="width:20px;height:20px;"></a></td>
+            <td class="text-right">
+                <a href="{% url "eventDetail" event %}">
+                    <img src="{% static 'images/edit_icon.svg' %}" alt="Edit" style="width:20px;height:20px;">
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
