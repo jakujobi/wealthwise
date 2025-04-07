@@ -3,3 +3,14 @@ djangorestframework
 psycopg2
 pillow
 gunicorn
+
+# Testing dependencies
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+pytest-drf==0.3.0
+selenium==4.15.2
+pytest-selenium==4.0.1
+webdriver-manager==4.0.1
+pytest-mock==3.12.0
