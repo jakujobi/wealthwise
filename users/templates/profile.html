@@ -30,7 +30,6 @@
             {% endif %}
           </div>
           <h3 class="h4 mb-1">{{ user.first_name }} {{ user.last_name }}</h3>
-          <p class="text-muted mb-3">{{ user.username }}</p>
           {% if user.profile.bio %}
           <p class="profile-bio mb-3">{{ user.profile.bio }}</p>
           {% endif %}
@@ -77,6 +76,22 @@
           </div>
           <div class="profile-section-body p-4">
             <div class="row g-3">
+              <div class="col-md-6">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">First Name:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.first_name }}</span
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">Last Name:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.last_name }}</span
+                  >
+                </div>
+              </div>
               <div class="col-md-6">
                 <div class="profile-info-item">
                   <span class="profile-info-label fw-bold">Username:</span>

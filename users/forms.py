@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Advisor, Profile
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Required. Enter a valid email address.")
@@ -20,6 +20,15 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(required=True, help_text="Required")
+    last_name = forms.CharField(required=True, help_text="Required")
+    email = forms.EmailField(required=True, help_text="Required. Enter a valid email address.")
+
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'first_name', 'last_name', 'phone_number', 'phone_number', 'address', 'city', 'state', 'country', 'postal_code']
+        fields = ['email', 'profile_picture', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'country', 'postal_code']
+
+class AdvisorForm(forms.ModelForm):
+    class Meta:
+        model = Advisor
+        fields = ['bio', 'certifications', 'specialties']

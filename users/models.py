@@ -6,8 +6,6 @@ from decimal import Decimal
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=100)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,19 +28,21 @@ class Profile(models.Model):
                 this.profile_picture.delete(save=False)
         except Profile.DoesNotExist:
             pass
+        # Update related User model if needed
+        if hasattr(self, 'user'):
+            self.user.save()
         super(Profile, self).save(*args, **kwargs)
 
 # AdvisorProfile
 class Advisor(models.Model):
-    advisor_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
+    profile = models.OneToOneField('users.Profile', on_delete=models.CASCADE, related_name='advisor')
     bio = models.TextField(blank=True, null=True)
     certifications = models.JSONField(blank=True, null=True)
     specialties = models.JSONField(blank=True, null=True)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
     
     def __str__(self):
-        return f"Advisor: {self.user_id.user.username}"
+        return f"Advisor: {self.profile.user.username}"
 
 # Subsciption
 class Subscription(models.Model):

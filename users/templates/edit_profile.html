@@ -66,28 +66,19 @@
                   {% for field in form %} {% if field.name != 'profile_picture' %}
                   <div class="col-md-6">
                     <div class="form-group mb-3">
-                      <div class="row">
-                        <div class="col-12">
-                          <label
-                            for="{{ field.id_for_label }}"
-                            class="form-label"
-                            >{{ field.label }}</label
-                          >
+                        <div class="mb-1">
+                        <label for="{{ field.id_for_label }}" class="form-label"
+                          >{{ field.label }}</label
+                        >
                         </div>
+                      {{ field }} 
+                      {% if field.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in field.errors %} {{ error }} {% endfor %}
                       </div>
-                      <div class="row">
-                        <div class="col-12">
-                          {{ field }} {% if field.errors %}
-                          <div class="invalid-feedback d-block">
-                            {% for error in field.errors %} {{ error }} {% endfor %}
-                          </div>
-                          {% endif %} {% if field.help_text %}
-                          <div class="form-text small">
-                            {{ field.help_text }}
-                          </div>
-                          {% endif %}
-                        </div>
-                      </div>
+                      {% endif %} {% if field.help_text %}
+                      <div class="form-text small">{{ field.help_text }}</div>
+                      {% endif %}
                     </div>
                   </div>
                   {% endif %} {% endfor %}

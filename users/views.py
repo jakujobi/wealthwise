@@ -54,10 +54,17 @@ def edit_profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
-            form.save()
+            profile = form.save(commit=False)
+            profile.user.first_name = form.cleaned_data['first_name']
+            profile.user.last_name = form.cleaned_data['last_name']
+            profile.user.save()
+            profile.save()
             return redirect('profile')
     else:
-        form = ProfileForm(instance=request.user.profile)
+        form = ProfileForm(instance=request.user.profile, initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name
+        })
     return render(request, 'edit_profile.html', {'form': form})
 
 # Payment
