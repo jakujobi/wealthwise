@@ -35,18 +35,17 @@ class Profile(models.Model):
 
 # AdvisorProfile
 class Advisor(models.Model):
-    profile = models.OneToOneField('users.Profile', on_delete=models.CASCADE, related_name='advisor')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='advisor')
     bio = models.TextField(blank=True, null=True)
     certifications = models.JSONField(blank=True, null=True)
     specialties = models.JSONField(blank=True, null=True)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
     
     def __str__(self):
-        return f"Advisor: {self.profile.user.username}"
+        return f"Advisor: {self.user.username}"
 
 # Subsciption
 class Subscription(models.Model):
-    subscription_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     plan_type = models.CharField(max_length=10, blank=True, null=True)
     start_date = models.DateField()
@@ -55,7 +54,6 @@ class Subscription(models.Model):
 
 # PaymentHistory
 class Payment(models.Model):
-    payment_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, blank=True, null=True)
@@ -65,7 +63,6 @@ class Payment(models.Model):
 
 # Messages
 class Messaging(models.Model):
-    message_id = models.AutoField(primary_key=True)
     sender_id = models.ForeignKey('users.Profile', related_name='sender', on_delete=models.CASCADE)
     receiver_id = models.ForeignKey('users.Profile', related_name='receiver', on_delete=models.CASCADE)
     message_content = models.TextField()
@@ -74,7 +71,6 @@ class Messaging(models.Model):
 
 # Notification
 class Notification(models.Model):
-    notification_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     content = models.TextField()
     notification_type = models.CharField(max_length=20, blank=True, null=True)
