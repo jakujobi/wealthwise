@@ -43,36 +43,40 @@ def authorizeUser(request):
 def scheduleView(request,message=None):
     user = request.user
     userTypeRequested = authorizeUser(request)
-    
+
     try:
+        eventListRequest = request.POST.get('eventListRequest') if request.method == 'POST' else None
         if userTypeRequested == userType['advisor']:
             profile = Profile.objects.get(user=user)
-            Events, Consultation = listMyEvents(user, userTypeRequested)
+            Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
             return render(request, 'scheduleView_advisor.html', 
-                        {'profile': profile,
-                            'events': Events,
-                            'consultations': Consultation,
-                            'message': message})
+                          {'profile': profile,
+                           'events': Events,
+                           'consultations': Consultation,
+                           'message': message,
+                            'eventListRequest': eventListRequest
+                        })                           
         
         elif userTypeRequested == userType['admin']:
             profile = None
-            Events, Consultation = listMyEvents(user, userTypeRequested)
+            Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
             return render(request, 'scheduleView_advisor.html', 
-                        {   'profile': profile,
-                            'events': Events,
-                            'consultations': Consultation,
-                            'message': message})
+                          {'profile': profile,
+                           'events': Events,
+                           'consultations': Consultation,
+                           'message': message,
+                           'eventListRequest': eventListRequest})
         
         elif userTypeRequested == userType['user']:
             profile = Profile.objects.get(user=user)
-            Events, Consultation = listMyEvents(user, userTypeRequested)
-
+            Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
             return render(request, 'scheduleView.html', 
-                        {'profile': profile,
-                            'events': Events,
-                            'consultations': Consultation,
-                            'message': message})
-
+                          {'profile': profile,
+                           'events': Events,
+                           'consultations': Consultation,
+                           'message': message,
+                            'eventListRequest': eventListRequest
+                           })
     except Exception:
         logger.error("Error loading data for user: " + user.username + ". User Type: " + userTypeRequested)
         return redirect('errorPage', message="Something went wrong when loading your data. Please try again.")  
@@ -82,12 +86,21 @@ def errorPage(request, message=None):
     return render(request, 'scheduleView_Error.html', {'message': message})
 
 # myEvents
-def listMyEvents(user, userTypeRequested):
+def listMyEvents(user, userTypeRequested, eventListRequest=None):
+    # event list request is used to filter the events list
+    # if eventListRequest is None, return all events
+    # if eventListRequest is not None, return events that match the request
     try:
         if userTypeRequested == userType['advisor']:
+            
             profile = Profile.objects.get(user=user)
             advisor = Advisor.objects.get(user_id=profile)
-            events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
+            if eventListRequest == "PAST":
+                events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
+            elif eventListRequest == "UPCOMING":
+                events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+            else:
+                events = Event.objects.filter(user_id=profile).order_by('event_start_timestamp')
             consultation = Consultation.objects.filter(advisor_id=advisor)
 
             # combine events and consultation into one list
@@ -100,27 +113,34 @@ def listMyEvents(user, userTypeRequested):
             return myEvents, myConsultation
         
         elif userTypeRequested == userType['admin']:
-            events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+            
+            if eventListRequest == "past":
+                events = Event.objects.filter(event_start_timestamp__lt=now()).order_by('event_start_timestamp')
+            elif eventListRequest == "upcoming":
+                events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+            else:
+                events = Event.objects.all().order_by('event_start_timestamp')
             consultation = Consultation.objects.filter()
             return events, consultation
         
-        # TODO: Implement user view
-        # elif userTypeRequested == userType['user']:
-        #     profile = Profile.objects.get(user=user)
+        elif userTypeRequested == userType['user']:
+            profile = Profile.objects.get(user=user)
 
-        #     events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now())
-        #     consultation = Consultation.objects.filter(schedule_date_timestamp__gte=now())
-        #     return events, consultation
+            if eventListRequest == "past":
+                events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
+            elif eventListRequest == "upcoming":
+                events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+            else:
+                events = Event.objects.filter(user_id=profile).order_by('event_start_timestamp')
+            consultation = Consultation.objects.filter(schedule_date_timestamp__gte=now())
+            return events, consultation
 
         else:
             return None
                                                     
-    except Profile.DoesNotExist:
+    except Exception as e:
+        logger.error("Error loading events: " + str(e))
         return None
-    
-
-# Events
-
 
 # Create new events
 # Only advisors can create events
@@ -226,7 +246,7 @@ def modifyEvent(event, form):
     if start_datetime < timezone.now() or end_datetime < timezone.now():
         raise Exception("Start and End date must be in the future.")
     
-    if start_datetime > end_datetime:
+    if start_datetime >= end_datetime:
         raise Exception("End date must be after the start date.")
 
     event.title = form.cleaned_data['title']
