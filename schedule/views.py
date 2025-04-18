@@ -70,16 +70,18 @@ def scheduleView(request,message=None):
         elif userTypeRequested == userType['user']:
             profile = Profile.objects.get(user=user)
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
-            return render(request, 'scheduleView.html', 
+            return render(request, 'scheduleView_user.html', 
                           {'profile': profile,
                            'events': Events,
                            'consultations': Consultation,
                            'message': message,
                             'eventListRequest': eventListRequest
                            })
-    except Exception:
-        logger.error("Error loading data for user: " + user.username + ". User Type: " + userTypeRequested)
-        return redirect('errorPage', message="Something went wrong when loading your data. Please try again.")  
+        
+    except Exception as e:
+        logger.error(f"Error loading data for user: {user.username}. User Type: {userTypeRequested}")
+        logger.error(f"Error: {str(e)}")
+        return redirect('errorPage', message="Something went wrong when loading your data.")  
 
 def errorPage(request, message=None):
     logger.error("Error: " + message + " Source user: " + request.user.username)
@@ -126,13 +128,17 @@ def listMyEvents(user, userTypeRequested, eventListRequest=None):
         elif userTypeRequested == userType['user']:
             profile = Profile.objects.get(user=user)
 
+            # Fetch registered events for the user
+            registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
+
             if eventListRequest == "past":
-                events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
+                events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp < now()]
             elif eventListRequest == "upcoming":
-                events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now()).order_by('event_start_timestamp')
+                events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp >= now()]
             else:
-                events = Event.objects.filter(user_id=profile).order_by('event_start_timestamp')
-            consultation = Consultation.objects.filter(schedule_date_timestamp__gte=now())
+                events = [reg.event_id for reg in registered_events]
+
+            consultation = Consultation.objects.filter(client_id=profile, scheduled_date__gte=now())
             return events, consultation
 
         else:
@@ -271,3 +277,30 @@ def deleteEvent(request, eventId=None):
         return redirect('view', message="Event deleted successfully.")
     except Exception as e:
         return redirect('view.html', message= "Something wrong. Event does not exist. It may be already deleted.")
+
+
+
+@login_required
+def eventRegister_List(request):
+    try:
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        events = Event.objects.order_by('event_start_timestamp').filter(scheduled_date__gte=now())
+        registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
+    
+        event_status = {}
+        for event in events:
+            event_status[event.event_id] = "None"
+
+        for reg_event in registered_events:
+            if reg_event.event_id.event_id in event_status:
+                event_status[reg_event.event_id.event_id] = "Registered"
+
+        for event in events:
+            event.status = event_status.get(event.event_id, "None")
+
+        return render(request, 'User/eventRegistration_list.html', {'events': events})
+    except Exception as e:  
+        logger.error(f"Error loading event registrations for user: {user.username}.")
+        logger.error(f"Error: {str(e)}")
+        return redirect('errorPage', message="Something went wrong when loading event data.")
