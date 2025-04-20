@@ -5,6 +5,7 @@ from .models import FinancialToolUsage
 from users.models import Subscription
 from datetime import date, datetime
 import json
+from django.utils.timezone import now
 
 # Add new calculators homepage view
 def calculators_home(request):
@@ -171,7 +172,7 @@ def budgeting_tool(request):
     profile = request.user.profile
     
     # Ensuser User is subscribed
-    if not Subscription.objects.filter(user_id = profile).exists():
+    if not Subscription.objects.filter(user_id=profile, start_date__lte=now(), end_date__gte=now()).exists():
         messages.error(request, "Warning: You must have an active subscription to use this calculator.")
         return render(request, 'budgeting_tool.html', {
                 'overspend_areas': overspend_areas,
