@@ -20,15 +20,15 @@ Our system is broken into five main apps that can be navigated from the navigati
 
 To make sure our acceptance test activities are consistent, reliable, and reproducible, we shall do evaluations within a controlled and clearly defined hardware and software environment.
 
-| **Category** | **Details** |
-| --- | --- |
-| **Operating Systems** | Windows 11 Pro (Versions 23H2 and 24H2) |
-| **Web Browsers** | Mozilla Firefox ^136.0, Microsoft Edge ^122.0, Google Chrome ^122.0 |
-| **Hardware Specs** | Intel Core i7 @ 2.3GHz, 16GB RAM, 1920x1080 screen resolution |
-| **Mobile Devices** | Android 13 emulator (Pixel 6) on DevTools |
-| **Network Environment** | Stable 100 Mbps Wi-Fi; latency simulation via Chrome DevTools |
-| **Testing Tools** | Manual UI testing using browser DevTools; internal test logs and reports |
-| **Development Tools** | GitHub (source control), Localhost test environments, PgAdmin, PostgreSQL |
+| **Category**            | **Details**                                                               |
+| ----------------------- | ------------------------------------------------------------------------- |
+| **Operating Systems**   | Windows 11 Pro (Versions 23H2 and 24H2)                                   |
+| **Web Browsers**        | Mozilla Firefox ^136.0, Microsoft Edge ^122.0, Google Chrome ^122.0       |
+| **Hardware Specs**      | Intel Core i7 @ 2.3GHz, 16GB RAM, 1920x1080 screen resolution             |
+| **Mobile Devices**      | Android 13 emulator (Pixel 6) on DevTools                                 |
+| **Network Environment** | Stable 100 Mbps Wi-Fi; latency simulation via Chrome DevTools             |
+| **Testing Tools**       | Manual UI testing using browser DevTools; internal test logs and reports  |
+| **Development Tools**   | GitHub (source control), Localhost test environments, PgAdmin, PostgreSQL |
 
 ## Operating Systems
 
@@ -117,13 +117,13 @@ Errors should be mitigated through the outlined error handling methodology:
 
 # Testing Sets
 
-| **Test #** | FWBS# | Test Name | Test Description | Who | Date | P/F |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1.1 | User Registration | This test to ensure the data validation for user registration handle properly | Sawyer | April 22 | P |
-| 2 | 1.2 | User Login* | Test the login if the system handle the login request logic correctly using white box testing method.  | John | April 22 | P |
-| 3 | 1.4 | Profile Management | Test the profile management system to ensure that the user can view and update their profile information | Norman | April 22 | P |
-| 4 | 2.3 | Budgeting Tool | Test the tool to make sure that user can perform calculations and save their records to the database. | Draix | April 22 | P |
-| 5 | 5-1.2 | Event Management System - Database - User Login | This is an integration test. Test to ensure that the event management system handles request from different user type and fetch/update data from/to the database | Draix | April 22 | P |
+| **Test #** | FWBS# | Test Name                                       | Test Description                                                                                                                                                 | Who    | Date     | P/F |
+| ---------- | ----- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- | --- |
+| 1          | 1.1   | User Registration                               | This test to ensure the data validation for user registration handle properly                                                                                    | Sawyer | April 22 | P   |
+| 2          | 1.2   | User Login*                                     | Test the login if the system handle the login request logic correctly using white box testing method.                                                            | John   | April 22 | P   |
+| 3          | 1.4   | Profile Management                              | Test the profile management system to ensure that the user can view and update their profile information                                                         | Norman | April 22 | P   |
+| 4          | 2.3   | Budgeting Tool                                  | Test the tool to make sure that user can perform calculations and save their records to the database.                                                            | Draix  | April 22 | P   |
+| 5          | 5-1.2 | Event Management System - Database - User Login | This is an integration test. Test to ensure that the event management system handles request from different user type and fetch/update data from/to the database | Draix  | April 22 | P   |
 
 [*] white box testing
 
@@ -133,179 +133,244 @@ Errors should be mitigated through the outlined error handling methodology:
 
 ## T1. User Registration (FWBS# 1.1)
 
-[here]
+| Test Number     | T1                                                                                |
+| --------------- | --------------------------------------------------------------------------------- |
+| Test Module     | User Registration                                                                 |
+| F/S(WBS) number |                                                                                   |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2;                                |
+|                 | **Browser**: Microsoft Edge 134.0.3124.72                                         |
+|                 | - **Network**: Xtream 5GHz Wifi at 1201mb/s                                       |
+| Hardware Setup  | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz - **Memory**: 32 GB |
+
+Purpose
+To verify that the user registration form correctly creates a new user and associated profile, enforces all field requirements, and handles invalid input as expected.
+
+Setup
+Navigate to [localhost:8000/register](http://localhost:8000/register)
+
+Test Cases
+| #   | Input Data                                                                               | Action      | Expected Output                                                                 |
+| --- | ---------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------- |
+| 1   | Valid username, valid email, valid password, matching password confirmation, TOS checked | Submit form | User and Profile are created, user is logged in, redirected to home             |
+| 2   | Username already exists                                                                  | Submit form | Form error: "A user with that username already exists."                         |
+| 3   | Passwords do not match                                                                   | Submit form | Form error: "The two password fields didn’t match."                             |
+| 4   | Password does not meet requirements (e.g., too short, missing special char)              | Submit form | Form error: "This password is too short/too common/entirely numeric" or similar |
+| 5   | Email missing or invalid                                                                 | Submit form | Form error: "Enter a valid email address."                                      |
+| 6   | TOS not checked (if enforced in backend)                                                 | Submit form | Form error or client-side error (if enforced in JS only)                        |
+| 7   | All fields blank                                                                         | Submit form | Form errors for all required fields                                             |
+
+Integration Points
+
+- User model (Django built-in)
+- Profile model (created in CustomUserCreationForm.save)
+- Authentication (user is logged in after registration)
+
+Notes
+
+- Registration uses Django’s UserCreationForm extended with an email field.
+- On success, user is authenticated and redirected to home.
+- Profile is created with the email and successful registration.
 
 ## T2. User Login (FWBS# 1.2)
 
-[here]
+| Test Number     | T2                                                                                |
+| --------------- | --------------------------------------------------------------------------------- |
+| Test Module     | User Login                                                                        |
+| F/S(WBS) number |                                                                                   |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2;                                |
+|                 | **Browser**: Microsoft Edge 134.0.3124.72                                         |
+|                 | - **Network**: Xtream 5GHz Wifi at 1201mb/s                                       |
+| Hardware Setup  | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz - **Memory**: 32 GB |
+
+Purpose
+To verify that the login form authenticates users with valid credentials and rejects invalid attempts, following Django’s standard authentication flow.
+Test Cases
+| #   | Input Data                                               | Action      | Expected Output                                                        |
+| --- | -------------------------------------------------------- | ----------- | ---------------------------------------------------------------------- |
+| 1   | Valid username and password                              | Submit form | User is authenticated, redirected to home                              |
+| 2   | Valid username, wrong password                           | Submit form | Form error: "Please enter a correct username and password."            |
+| 3   | Non-existent username                                    | Submit form | Form error: "Please enter a correct username and password."            |
+| 4   | Blank username or password                               | Submit form | Form error: "This field is required."                                  |
+| 5   | SQL injection or special characters in username/password | Submit form | Form error: "Please enter a correct username and password." (no crash) |
+
+Integration Points
+
+- User model (Django built-in)
+- Authentication (Django’s authenticate and login)
+
+Notes
+
+- Login uses Django’s AuthenticationForm.
+- On success, user is authenticated and redirected to home.
+On failure, form is re-rendered with errors.
 
 ## T3. Profile Management (FWBS# 1.4)
 
-| Test Number | T3 |
-| --- | --- |
-| Test Module | Profile Management |
-| F/S(WBS) number | 1.4 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T3                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Profile Management                                 |
+| F/S(WBS) number | 1.4                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 Purpose of module: This module tests the profile management system to ensure that the user can view and update their profile information
 
 Set up: The user logs into the system, then, on the home page, selects “Profile.” Under “Profile”, click “Edit Profile.” User edit field(s) and click “Save changes”
 
 | **Input Label** | **Data** |
-| --- | --- |
-| First name | [Empty] |
-| Last name | [Empty] |
-| Phone number | [Empty] |
-| Address | [Empty] |
-| City | [Empty] |
-| State | [Empty] |
-| Country | [Empty] |
-| Postal code | [Empty] |
-| Profile picture | [Empty] |
+| --------------- | -------- |
+| First name      | [Empty]  |
+| Last name       | [Empty]  |
+| Phone number    | [Empty]  |
+| Address         | [Empty]  |
+| City            | [Empty]  |
+| State           | [Empty]  |
+| Country         | [Empty]  |
+| Postal code     | [Empty]  |
+| Profile picture | [Empty]  |
 
 Output: show pop-up warning “Please fill out this field” at the first name field.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| First name | c |
-| Last name | [Empty] |
-| Phone number | [Empty] |
-| Address | [Empty] |
-| City | [Empty] |
-| State | [Empty] |
-| Country | [Empty] |
-| Postal code | [Empty] |
-| Profile picture | [Empty] |
+| --------------- | -------- |
+| First name      | c        |
+| Last name       | [Empty]  |
+| Phone number    | [Empty]  |
+| Address         | [Empty]  |
+| City            | [Empty]  |
+| State           | [Empty]  |
+| Country         | [Empty]  |
+| Postal code     | [Empty]  |
+| Profile picture | [Empty]  |
 
 Output: show pop-up warning “Please fill out this field.” at the last name field.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| First name | [Empty] |
-| Last name | c |
-| Phone number | [Empty] |
-| Address | [Empty] |
-| City | [Empty] |
-| State | [Empty] |
-| Country | [Empty] |
-| Postal code | [Empty] |
-| Profile picture | [Empty] |
+| --------------- | -------- |
+| First name      | [Empty]  |
+| Last name       | c        |
+| Phone number    | [Empty]  |
+| Address         | [Empty]  |
+| City            | [Empty]  |
+| State           | [Empty]  |
+| Country         | [Empty]  |
+| Postal code     | [Empty]  |
+| Profile picture | [Empty]  |
 
 Output: show pop-up warning “Please fill out this field.” at the first name field.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| First name | Aden |
-| Last name | Bill |
-| Phone number | [Empty] |
-| Address | [Empty] |
-| City | [Empty] |
-| State | [Empty] |
-| Country | [Empty] |
-| Postal code | [Empty] |
-| Profile picture | [Empty] |
+| --------------- | -------- |
+| First name      | Aden     |
+| Last name       | Bill     |
+| Phone number    | [Empty]  |
+| Address         | [Empty]  |
+| City            | [Empty]  |
+| State           | [Empty]  |
+| Country         | [Empty]  |
+| Postal code     | [Empty]  |
+| Profile picture | [Empty]  |
 
 Output: update user profile with first name of “Aden” and last name of “Bill”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| First name | Aden |
-| Last name | Bill |
-| Phone number | 555 555 555 |
-| Address | 2387 13st |
-| City | Sunny |
-| State | PA |
-| Country | US |
-| Postal code | 502339 |
-| Profile picture | [Empty] |
+| **Input Label** | **Data**    |
+| --------------- | ----------- |
+| First name      | Aden        |
+| Last name       | Bill        |
+| Phone number    | 555 555 555 |
+| Address         | 2387 13st   |
+| City            | Sunny       |
+| State           | PA          |
+| Country         | US          |
+| Postal code     | 502339      |
+| Profile picture | [Empty]     |
 
 Output: update the user profile with all the information provided.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| First name | Aden |
-| Last name | Bill |
-| Phone number | 555 555 555 |
-| Address | 2387 13st |
-| City | Sunny |
-| State | PA |
-| Country | US |
-| Postal code | 502339 |
+| **Input Label** | **Data**         |
+| --------------- | ---------------- |
+| First name      | Aden             |
+| Last name       | Bill             |
+| Phone number    | 555 555 555      |
+| Address         | 2387 13st        |
+| City            | Sunny            |
+| State           | PA               |
+| Country         | US               |
+| Postal code     | 502339           |
 | Profile picture | Picture uploaded |
 
 Output: Update the user profile with all the information provided, update the profile picture with the uploaded image file, and save the image file to the system.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| First name | Aden |
-| Last name | Bill |
-| Phone number | 555 555 555 |
-| Address | 1009 9th St |
-| City | Sunny |
-| State | PA |
-| Country | US |
-| Postal code | 502339 |
-| Profile picture | clear |
+| **Input Label** | **Data**    |
+| --------------- | ----------- |
+| First name      | Aden        |
+| Last name       | Bill        |
+| Phone number    | 555 555 555 |
+| Address         | 1009 9th St |
+| City            | Sunny       |
+| State           | PA          |
+| Country         | US          |
+| Postal code     | 502339      |
+| Profile picture | clear       |
 
 Output: update user profile address from “2387 13st” to “1009 9th St.” and clear the profile picture
 
 ## T4. Budgeting Tool (FWBS# 2.3)
 
-| Test Number | T4 |
-| --- | --- |
-| Test Module | Budgeting Tool |
-| F/S(WBS) number | 2.3 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T4                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Budgeting Tool                                     |
+| F/S(WBS) number | 2.3                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module**: This module tests the budgeting tool to ensure the user can calculate, store, and retrieve their input information.
 
 **Set up**: The user first logs into the system. Then, on the home page, selects “Calculators.” Next, the user clicks “Budgeting Tool”. The user then inputs the data or clicks buttons as per each test case.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Fixed Income | [Empty] |
-| Variable Income | [Empty] |
-| One Year Savings Goal | [Empty] |
-| Housing | [Empty] |
-| Taxes | [Empty] |
-| Car Payment | [Empty] |
-| Internet and Phone | [Empty] |
-| Subscriptions | [Empty] |
-| Food | [Empty] |
-| Entertainment | [Empty] |
-| Personal Items | [Empty] |
-| Utilities | [Empty] |
-| Transportation | [Empty] |
-| Medical | [Empty] |
-| Miscellaneous | [Empty] |
-| Budget Month | January [default] |
-| Budget Year | [Empty] |
+| **Input Label**       | **Data**          |
+| --------------------- | ----------------- |
+| Fixed Income          | [Empty]           |
+| Variable Income       | [Empty]           |
+| One Year Savings Goal | [Empty]           |
+| Housing               | [Empty]           |
+| Taxes                 | [Empty]           |
+| Car Payment           | [Empty]           |
+| Internet and Phone    | [Empty]           |
+| Subscriptions         | [Empty]           |
+| Food                  | [Empty]           |
+| Entertainment         | [Empty]           |
+| Personal Items        | [Empty]           |
+| Utilities             | [Empty]           |
+| Transportation        | [Empty]           |
+| Medical               | [Empty]           |
+| Miscellaneous         | [Empty]           |
+| Budget Month          | January [default] |
+| Budget Year           | [Empty]           |
 
 **Action**: User clicks “Calculate”.
 
 **Output**: User returned to the top of the page with “Fixed Income” field showing “Please enter a number” pop-up.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Fixed Income | 6400 |
-| Variable Income | 200 |
-| One Year Savings Goal | 2000 |
-| Housing | 1000 |
-| Taxes | 400 |
-| Car Payment | 100 |
-| Internet and Phone | 50 |
-| Subscriptions | 50 |
-| Food | 1000 |
-| Entertainment | 200 |
-| Personal Items | 100 |
-| Utilities | 300 |
-| Transportation | 100 |
-| Medical | 200 |
-| Miscellaneous | 100 |
-| Budget Month | May |
-| Budget Year | 2024 |
+| **Input Label**       | **Data** |
+| --------------------- | -------- |
+| Fixed Income          | 6400     |
+| Variable Income       | 200      |
+| One Year Savings Goal | 2000     |
+| Housing               | 1000     |
+| Taxes                 | 400      |
+| Car Payment           | 100      |
+| Internet and Phone    | 50       |
+| Subscriptions         | 50       |
+| Food                  | 1000     |
+| Entertainment         | 200      |
+| Personal Items        | 100      |
+| Utilities             | 300      |
+| Transportation        | 100      |
+| Medical               | 200      |
+| Miscellaneous         | 100      |
+| Budget Month          | May      |
+| Budget Year           | 2024     |
 
 **Action**: User clicks “Calculate”.
 
@@ -322,25 +387,25 @@ You are on track to meet your savings goal! You will have $36000.0 in a year!
 
 **Output**: Under “Previous Results”, an entry with matching data is presented.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Fixed Income | 7000 |
-| Variable Income | 0 |
-| One Year Savings Goal | 2000 |
-| Housing | 2500 |
-| Taxes | 400 |
-| Car Payment | 100 |
-| Internet and Phone | 50 |
-| Subscriptions | 50 |
-| Food | 800 |
-| Entertainment | 200 |
-| Personal Items | 100 |
-| Utilities | 300 |
-| Transportation | 100 |
-| Medical | 200 |
-| Miscellaneous | 100 |
-| Budget Month | June |
-| Budget Year | 2024 |
+| **Input Label**       | **Data** |
+| --------------------- | -------- |
+| Fixed Income          | 7000     |
+| Variable Income       | 0        |
+| One Year Savings Goal | 2000     |
+| Housing               | 2500     |
+| Taxes                 | 400      |
+| Car Payment           | 100      |
+| Internet and Phone    | 50       |
+| Subscriptions         | 50       |
+| Food                  | 800      |
+| Entertainment         | 200      |
+| Personal Items        | 100      |
+| Utilities             | 300      |
+| Transportation        | 100      |
+| Medical               | 200      |
+| Miscellaneous         | 100      |
+| Budget Month          | June     |
+| Budget Year           | 2024     |
 
 **Action**: User clicks “Calculate”.
 
@@ -357,25 +422,25 @@ You are on track to meet your savings goal! You will have $25200.0 in a year!
 
 **Output**: Under “Previous Results”, a second entry with matching data is present.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Fixed Income | 7100 |
-| Variable Income | 0 |
-| One Year Savings Goal | 2000 |
-| Housing | 2500 |
-| Taxes | 400 |
-| Car Payment | 100 |
-| Internet and Phone | 50 |
-| Subscriptions | 50 |
-| Food | 800 |
-| Entertainment | 200 |
-| Personal Items | 100 |
-| Utilities | 300 |
-| Transportation | 100 |
-| Medical | 200 |
-| Miscellaneous | 100 |
-| Budget Month | June |
-| Budget Year | 2024 |
+| **Input Label**       | **Data** |
+| --------------------- | -------- |
+| Fixed Income          | 7100     |
+| Variable Income       | 0        |
+| One Year Savings Goal | 2000     |
+| Housing               | 2500     |
+| Taxes                 | 400      |
+| Car Payment           | 100      |
+| Internet and Phone    | 50       |
+| Subscriptions         | 50       |
+| Food                  | 800      |
+| Entertainment         | 200      |
+| Personal Items        | 100      |
+| Utilities             | 300      |
+| Transportation        | 100      |
+| Medical               | 200      |
+| Miscellaneous         | 100      |
+| Budget Month          | June     |
+| Budget Year           | 2024     |
 
 **Action**: User clicks “Save To Database”.
 
@@ -385,25 +450,25 @@ You are on track to meet your savings goal! You will have $25200.0 in a year!
 
 **Output**: Data from the June 2024 entry is loaded into the form.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Fixed Income | 7200 |
-| Variable Income | 0 |
-| One Year Savings Goal | 2000 |
-| Housing | 2500 |
-| Taxes | 400 |
-| Car Payment | 100 |
-| Internet and Phone | 50 |
-| Subscriptions | 50 |
-| Food | 800 |
-| Entertainment | 200 |
-| Personal Items | 100 |
-| Utilities | 300 |
-| Transportation | 100 |
-| Medical | 200 |
-| Miscellaneous | 100 |
-| Budget Month | July |
-| Budget Year | 2024 |
+| **Input Label**       | **Data** |
+| --------------------- | -------- |
+| Fixed Income          | 7200     |
+| Variable Income       | 0        |
+| One Year Savings Goal | 2000     |
+| Housing               | 2500     |
+| Taxes                 | 400      |
+| Car Payment           | 100      |
+| Internet and Phone    | 50       |
+| Subscriptions         | 50       |
+| Food                  | 800      |
+| Entertainment         | 200      |
+| Personal Items        | 100      |
+| Utilities             | 300      |
+| Transportation        | 100      |
+| Medical               | 200      |
+| Miscellaneous         | 100      |
+| Budget Month          | July     |
+| Budget Year           | 2024     |
 
 **Action**: User clicks “Save To Database”.
 
@@ -441,9 +506,9 @@ Request: View event
 
 Setup: Click “Schedule” on the top navigation bar with an authenticated account.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| DB Contents | 1 Event (test) |
+| **Input Label** | **Data**       |
+| --------------- | -------------- |
+| DB Contents     | 1 Event (test) |
 
 Output: User is shown a page with one listed event, “test”.
 
@@ -459,10 +524,10 @@ Request: filter future events only
 
 Setup: Click “Schedule” on the top navigation bar while logged in as an advisor account.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| DB Contents | 1 Event (test)
-1 Consultation (client) |
+| **Input Label**         | **Data**       |
+| ----------------------- | -------------- |
+| DB Contents             | 1 Event (test) |
+| 1 Consultation (client) |
 
 Output: Advisor is shown a page with one listed event, “test”, and one listed consultation, “client”.
 
@@ -478,9 +543,9 @@ Request: Register for an event.
 
 Setup: Click “Schedule” on the top navigation bar with an authenticated account.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| DB Contents | 1 Event (test) |
+| **Input Label** | **Data**       |
+| --------------- | -------------- |
+| DB Contents     | 1 Event (test) |
 
 Action: Click “Register” next to the event labeled “test”.
 
@@ -509,72 +574,72 @@ User logged type: Advisor
 Request: Create an event with the below input cases sequentially:
 
 | **Input Label** | **Data** |
-| --- | --- |
-| Title | [Empty] |
-| Start Date Time | [Empty] |
-| End Date Time | [Empty] |
-| Description | [Any] |
-| Location | [Any] |
+| --------------- | -------- |
+| Title           | [Empty]  |
+| Start Date Time | [Empty]  |
+| End Date Time   | [Empty]  |
+| Description     | [Any]    |
+| Location        | [Any]    |
 
 Output: show a warning pop-up at the Title with the message: “Please fill out this field”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
-| Start Date Time | [Empty] |
-| End Date Time | [Empty] |
-| Description | [Any] |
-| Location | [Any] |
+| **Input Label** | **Data**         |
+| --------------- | ---------------- |
+| Title           | This is an event |
+| Start Date Time | [Empty]          |
+| End Date Time   | [Empty]          |
+| Description     | [Any]            |
+| Location        | [Any]            |
 
 Output: show a warning pop-up at the Start Date Time field with the message: “Please fill out this field”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
+| **Input Label** | **Data**                    |
+| --------------- | --------------------------- |
+| Title           | This is an event            |
 | Start Date Time | April 23rd, 2025 - 09:00 AM |
-| End Date Time | [Empty] |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | [Empty]                     |
+| Description     | [Any]                       |
+| Location        | [Any]                       |
 
 Output: show a warning pop-up at the End Date Time field with the message: “Please fill out this field”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
+| **Input Label** | **Data**                    |
+| --------------- | --------------------------- |
+| Title           | This is an event            |
 | Start Date Time | April 23rd, 2025 - 09:00 AM |
-| End Date Time | April 23rd, 2025 - 09:00 AM |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | April 23rd, 2025 - 09:00 AM |
+| Description     | [Any]                       |
+| Location        | [Any]                       |
 
 Output: Proceed with the filled form. Return the error message “End date must be after the start date.”
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
+| **Input Label** | **Data**                    |
+| --------------- | --------------------------- |
+| Title           | This is an event            |
 | Start Date Time | April 10th, 2025 - 09:00 AM |
-| End Date Time | April 23rd, 2025 - 09:00 AM |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | April 23rd, 2025 - 09:00 AM |
+| Description     | [Any]                       |
+| Location        | [Any]                       |
 
 Output: Proceed with the filled form. Return the error message “Start or End date must be in the future.”
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
+| **Input Label** | **Data**                    |
+| --------------- | --------------------------- |
+| Title           | This is an event            |
 | Start Date Time | April 25th, 2025 - 09:00 AM |
-| End Date Time | April 23rd, 2025 - 09:00 AM |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | April 23rd, 2025 - 09:00 AM |
+| Description     | [Any]                       |
+| Location        | [Any]                       |
 
 Output: Proceed with the filled form. Return the error message “End date must be after the start date.”
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Title | This is an event |
+| **Input Label** | **Data**                    |
+| --------------- | --------------------------- |
+| Title           | This is an event            |
 | Start Date Time | April 23rd, 2025 - 09:00 AM |
-| End Date Time | April 25th, 2025 - 09:00 AM |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | April 25th, 2025 - 09:00 AM |
+| Description     | [Any]                       |
+| Location        | [Any]                       |
 
 Output: Proceed with the filled form. Redirect user to the schedule view with the message: “Event created successfully”.
 
@@ -648,9 +713,9 @@ Signature:
 
 [Appendix - Unit and Integration Test Plan](https://www.notion.so/Appendix-Unit-and-Integration-Test-Plan-1d0791d78b47807f8dd7f49a22788825?pvs=21)
 
-| Title | [Empty] |
-| --- | --- |
+| Title           | [Empty] |
+| --------------- | ------- |
 | Start Date Time | [Empty] |
-| End Date Time | [Empty] |
-| Description | [Any] |
-| Location | [Any] |
+| End Date Time   | [Empty] |
+| Description     | [Any]   |
+| Location        | [Any]   |

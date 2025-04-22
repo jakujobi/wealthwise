@@ -32,15 +32,15 @@ This document outlines test cases to verify whether the program meets its requir
 
 To make sure our acceptance test activities are consistent, reliable, and reproducible, we shall do evaluations within a controlled and clearly defined hardware and software environment.
 
-| **Category** | **Details** |
-| --- | --- |
-| **Operating Systems** | Windows 11 Pro (Versions 23H2 and 24H2) |
-| **Web Browsers** | Mozilla Firefox ^136.0, Microsoft Edge ^122.0, Google Chrome ^122.0 |
-| **Hardware Specs** | Intel Core i7 @ 2.3GHz, 16GB RAM, 1920x1080 screen resolution |
-| **Mobile Devices** | Android 13 emulator (Pixel 6) on DevTools |
-| **Network Environment** | Stable 100 Mbps Wi-Fi; latency simulation via Chrome DevTools |
-| **Testing Tools** | Manual UI testing using browser DevTools; internal test logs and reports |
-| **Development Tools** | GitHub (source control), Localhost test environments, PgAdmin, PostgreSQL |
+| **Category**            | **Details**                                                               |
+| ----------------------- | ------------------------------------------------------------------------- |
+| **Operating Systems**   | Windows 11 Pro (Versions 23H2 and 24H2)                                   |
+| **Web Browsers**        | Mozilla Firefox ^136.0, Microsoft Edge ^122.0, Google Chrome ^122.0       |
+| **Hardware Specs**      | Intel Core i7 @ 2.3GHz, 16GB RAM, 1920x1080 screen resolution             |
+| **Mobile Devices**      | Android 13 emulator (Pixel 6) on DevTools                                 |
+| **Network Environment** | Stable 100 Mbps Wi-Fi; latency simulation via Chrome DevTools             |
+| **Testing Tools**       | Manual UI testing using browser DevTools; internal test logs and reports  |
+| **Development Tools**   | GitHub (source control), Localhost test environments, PgAdmin, PostgreSQL |
 
 ## Operating Systems
 
@@ -108,37 +108,37 @@ This controlled environment shall make sure our tests are valid, reproducible an
 
 # Test Schedule and Test Sets
 
-| Test # | FWBS # | Test Name | Test Description | Who | Date | P/F |
-| --- | --- | --- | --- | --- | --- | --- |
-| T1 | 1.1 | User registration | This test ensures the user can successfully register an account, passwords can be tested, and email verification is successful. | Draix | Apr. 30 |  |
-| T2 | 1.2 | User login | This test ensures the user can successfully re-authenticate with valid credentials. | Draix | Apr. 30 |  |
-| T3 | 1.3 | Password recovery | This test ensures the user can change a their password by with access of their registered email. | Draix | Apr. 30 |  |
-| T4 | 1.4 | Profile Management | This test ensures the user can update their profile with relevant information and advisor specific fields are only present for advisors. | Draix | Apr. 30 |  |
-| T5 | 1.5 | Subscription Management | This test ensure the user can see their subscription status and transaction history. Additionally, this test ensures payments can be made to purchase a subscription. | Draix | Apr. 30 |  |
-| T6 | 1.6 | Interaction History | This test ensures the user can see their event and consultant history. | Draix | Apr. 30 |  |
-| T7 | 1.7 | Advisor management system | This test ensures an advisor can be added by an administrator and can be managed by admins as needed. | Draix | Apr. 30 |  |
-| T8 | 1.8 | Messaging and Notification | This test ensures in app messages and notifications as well as email notifications are working. | Draix | Apr. 30 |  |
-| T9 | 3.1 | Advisor Booking System | This test ensures the advisor booking system for users allow users to search, filter, ensure confirmation and reminder. | Sawyer | Apr. 30 |  |
-| T10 | 3.2 | Virtual Consultation Session | This test checks if the creation of virtual consultation sessions and their virtual meetings links are functioning well. | Sawyer | Apr. 30 |  |
-| T11 | 5.2 | Event Integration | This test checks if the event registration system allows users to lookup and register for event. | Sawyer | Apr. 30 |  |
-| T12 | 5.1 | Create and manage event | This test ensures that event creation, editing, and deleting is functioning for advisors.  | Sawyer | Apr. 30 |  |
-| T13 | 6.1 | Payment Gateway Integration | This test ensures that the system can handle all matters dealing with money transaction processing, subscription payments securely and properly. | Norman | Apr. 30 |  |
-| T14 | 6.2 | Transaction Management | This test ensures the system returns the correct invoice and receipts to the user. Additionally, check if the user can initiate a refund or cancellation. | Norman | Apr. 30 |  |
-| T15 | 7.1 | User Reports | Test if the system can create a full financial reports and customize report options of a user. | Norman | Apr. 30 |  |
-| T16 | 7.2 | Administrative Analytics | This test ensure the admin be able to monitor and create report about user metrics, system analytics such as active user number, consultation rates, platform performance… And admin also can generate reports on system metrics in income and health. | Norman | Apr. 30 |  |
-| T17 | 2.1 | Loan Calculator | Validates that users can input loan terms to calculate accurate monthly payments, total interest, and overall loan cost with a visual breakdown of principal vs. interest. | John | Apr.30 |  |
-| T18 | 2.2 | Mortgage Calculator | Validates that users can input loan terms to calculate accurate monthly payments, total interest, and overall loan cost with a visual breakdown of principal vs. interest. | John | Apr.30 |  |
-| T19 | 2.4 | Retirement Calculator | Ensures that users can project retirement savings based on current age, contributions, and expected returns, and receive feedback on meeting retirement goals. | John | Apr.30 |  |
-| T20 | 2.3 | Budgeting Tool | Checks that users can enter income and expenses to generate a monthly surplus/deficit, track savings progress, and receive warnings for overspending. | John | Apr.30 |  |
-| T21 | 2.5 | Insurance Calculator | Ensures the system can estimate life insurance coverage needs by evaluating income replacement, debt payoff, education costs, and existing policy coverage. | John | Apr.30 |  |
-| T22 | 2.6 | Student Loan Calculator | Confirms users can evaluate student loan repayment options and see the effect of extra payments on interest savings and payoff timeline. | John | Apr.30 |  |
-| T- | 2.7 | Car Payment Calculator  | Verifies car loan calculations based on vehicle price, trade-in value, taxes, and fees, and displays monthly payment and total cost with a breakdown. | John | Apr.30 |  |
-| T- | 2 | Calculator responsiveness | This test ensures that all calculator interfaces are responsive and function correctly across different devices and screen sizes. | John | Apr. 30 |  |
-| T23 | 4.1 | Market News | This test ensures that the learning module displays the latest financial news articles from external news APIs, providing users with up-to-date market information. | John | Apr.30 |  |
-| T24 | 4.2 | Learning Module | This test ensures that the learning module blog integrates properly with the main WealthWise platform, and that it displays the main blog homepage with featured articles, categories, and navigation elements. | John | Apr.30 |  |
-|  |  |  |  |  | Apr.30 |  |
-|  |  |  |  |  | Apr.30 |  |
-|  |  |  |  |  | Apr.30 |  |
+| Test # | FWBS # | Test Name                    | Test Description                                                                                                                                                                                                                                       | Who    | Date    | P/F |
+| ------ | ------ | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------- | --- |
+| T1     | 1.1    | User registration            | This test ensures the user can successfully register an account, passwords can be tested, and email verification is successful.                                                                                                                        | Draix  | Apr. 30 |     |
+| T2     | 1.2    | User login                   | This test ensures the user can successfully re-authenticate with valid credentials.                                                                                                                                                                    | Draix  | Apr. 30 |     |
+| T3     | 1.3    | Password recovery            | This test ensures the user can change a their password by with access of their registered email.                                                                                                                                                       | Draix  | Apr. 30 |     |
+| T4     | 1.4    | Profile Management           | This test ensures the user can update their profile with relevant information and advisor specific fields are only present for advisors.                                                                                                               | Draix  | Apr. 30 |     |
+| T5     | 1.5    | Subscription Management      | This test ensure the user can see their subscription status and transaction history. Additionally, this test ensures payments can be made to purchase a subscription.                                                                                  | Draix  | Apr. 30 |     |
+| T6     | 1.6    | Interaction History          | This test ensures the user can see their event and consultant history.                                                                                                                                                                                 | Draix  | Apr. 30 |     |
+| T7     | 1.7    | Advisor management system    | This test ensures an advisor can be added by an administrator and can be managed by admins as needed.                                                                                                                                                  | Draix  | Apr. 30 |     |
+| T8     | 1.8    | Messaging and Notification   | This test ensures in app messages and notifications as well as email notifications are working.                                                                                                                                                        | Draix  | Apr. 30 |     |
+| T9     | 3.1    | Advisor Booking System       | This test ensures the advisor booking system for users allow users to search, filter, ensure confirmation and reminder.                                                                                                                                | Sawyer | Apr. 30 |     |
+| T10    | 3.2    | Virtual Consultation Session | This test checks if the creation of virtual consultation sessions and their virtual meetings links are functioning well.                                                                                                                               | Sawyer | Apr. 30 |     |
+| T11    | 5.2    | Event Integration            | This test checks if the event registration system allows users to lookup and register for event.                                                                                                                                                       | Sawyer | Apr. 30 |     |
+| T12    | 5.1    | Create and manage event      | This test ensures that event creation, editing, and deleting is functioning for advisors.                                                                                                                                                              | Sawyer | Apr. 30 |     |
+| T13    | 6.1    | Payment Gateway Integration  | This test ensures that the system can handle all matters dealing with money transaction processing, subscription payments securely and properly.                                                                                                       | Norman | Apr. 30 |     |
+| T14    | 6.2    | Transaction Management       | This test ensures the system returns the correct invoice and receipts to the user. Additionally, check if the user can initiate a refund or cancellation.                                                                                              | Norman | Apr. 30 |     |
+| T15    | 7.1    | User Reports                 | Test if the system can create a full financial reports and customize report options of a user.                                                                                                                                                         | Norman | Apr. 30 |     |
+| T16    | 7.2    | Administrative Analytics     | This test ensure the admin be able to monitor and create report about user metrics, system analytics such as active user number, consultation rates, platform performance… And admin also can generate reports on system metrics in income and health. | Norman | Apr. 30 |     |
+| T17    | 2.1    | Loan Calculator              | Validates that users can input loan terms to calculate accurate monthly payments, total interest, and overall loan cost with a visual breakdown of principal vs. interest.                                                                             | John   | Apr.30  |     |
+| T18    | 2.2    | Mortgage Calculator          | Validates that users can input loan terms to calculate accurate monthly payments, total interest, and overall loan cost with a visual breakdown of principal vs. interest.                                                                             | John   | Apr.30  |     |
+| T19    | 2.4    | Retirement Calculator        | Ensures that users can project retirement savings based on current age, contributions, and expected returns, and receive feedback on meeting retirement goals.                                                                                         | John   | Apr.30  |     |
+| T20    | 2.3    | Budgeting Tool               | Checks that users can enter income and expenses to generate a monthly surplus/deficit, track savings progress, and receive warnings for overspending.                                                                                                  | John   | Apr.30  |     |
+| T21    | 2.5    | Insurance Calculator         | Ensures the system can estimate life insurance coverage needs by evaluating income replacement, debt payoff, education costs, and existing policy coverage.                                                                                            | John   | Apr.30  |     |
+| T22    | 2.6    | Student Loan Calculator      | Confirms users can evaluate student loan repayment options and see the effect of extra payments on interest savings and payoff timeline.                                                                                                               | John   | Apr.30  |     |
+| T-     | 2.7    | Car Payment Calculator       | Verifies car loan calculations based on vehicle price, trade-in value, taxes, and fees, and displays monthly payment and total cost with a breakdown.                                                                                                  | John   | Apr.30  |     |
+| T-     | 2      | Calculator responsiveness    | This test ensures that all calculator interfaces are responsive and function correctly across different devices and screen sizes.                                                                                                                      | John   | Apr. 30 |     |
+| T23    | 4.1    | Market News                  | This test ensures that the learning module displays the latest financial news articles from external news APIs, providing users with up-to-date market information.                                                                                    | John   | Apr.30  |     |
+| T24    | 4.2    | Learning Module              | This test ensures that the learning module blog integrates properly with the main WealthWise platform, and that it displays the main blog homepage with featured articles, categories, and navigation elements.                                        | John   | Apr.30  |     |
+|        |        |                              |                                                                                                                                                                                                                                                        |        | Apr.30  |     |
+|        |        |                              |                                                                                                                                                                                                                                                        |        | Apr.30  |     |
+|        |        |                              |                                                                                                                                                                                                                                                        |        | Apr.30  |     |
 
 ---
 
@@ -169,59 +169,59 @@ Errors should be mitigated through the outlined error handling methodology:
 
 ## **T1. User Registration (FWBS 1.1)**
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | User Registration |
-| F/S(WBS) number | 1.1 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | User Registration                                  |
+| F/S(WBS) number | 1.1                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can successfully register an account, passwords are verified, and email verification is preformed.
 
 **Setup:** Navigate to the “User Registration” page. This can be achieved by clicking “Register” on the navigation bar. You will now be presented with the user registration page. Enter the relevant data, check “I agree to the Terms of Service and Privacy Policy”, and click “Register” when complete.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW@ |
+| **Input Label**  | **Data** |
+| ---------------- | -------- |
+| Username         | ExUser   |
+| Password         | 1qazXSW@ |
 | Confirm Password | 1qazXSW@ |
-| Agree to TOS | Yes |
+| Agree to TOS     | Yes      |
 
 Output: Successful user account creation.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW@ |
+| **Input Label**  | **Data**     |
+| ---------------- | ------------ |
+| Username         | ExUser       |
+| Password         | 1qazXSW@     |
 | Confirm Password | 2123qazXSW@2 |
-| Agree to TOS | Yes |
+| Agree to TOS     | Yes          |
 
 Output: User entity will not be created - passwords do not match.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | TakenUser |
-| Password | 1qazXSW@ |
-| Confirm Password | 1qazXSW@ |
-| Agree to TOS | Yes |
+| **Input Label**  | **Data**  |
+| ---------------- | --------- |
+| Username         | TakenUser |
+| Password         | 1qazXSW@  |
+| Confirm Password | 1qazXSW@  |
+| Agree to TOS     | Yes       |
 
 Output: User not created - an account with this username already exists.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW |
-| Confirm Password | 1qazXSW |
-| Agree to TOS | Yes |
+| **Input Label**  | **Data** |
+| ---------------- | -------- |
+| Username         | ExUser   |
+| Password         | 1qazXSW  |
+| Confirm Password | 1qazXSW  |
+| Agree to TOS     | Yes      |
 
 Output: User not created - password requirement not met, missing at least one special character.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW@ |
+| **Input Label**  | **Data** |
+| ---------------- | -------- |
+| Username         | ExUser   |
+| Password         | 1qazXSW@ |
 | Confirm Password | 1qazXSW@ |
-| Agree to TOS | No |
+| Agree to TOS     | No       |
 
 Output: User not created - terms of service and privacy policy not agreed to. Prompt the user to agree with them.
 
@@ -245,35 +245,35 @@ Signature:
 
 ## **T2. User login (FWBS 1.2)**
 
-| Test Number | T2 |
-| --- | --- |
-| Test Module | User login |
-| F/S(WBS) number | 1.2 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T2                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | User login                                         |
+| F/S(WBS) number | 1.2                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can successfully re-authenticate with valid credentials.
 
 **Setup:** Navigate to the “User Login” page. This can be achieved by clicking “Login” on the navigation bar. You will now be presented with the user login page. Enter the relevant data and click “Login” when complete.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW@ |
+| --------------- | -------- |
+| Username        | ExUser   |
+| Password        | 1qazXSW@ |
 
 **Output:** User successfully logged in.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser |
-| Password | 1qazXSW@2 |
+| **Input Label** | **Data**  |
+| --------------- | --------- |
+| Username        | ExUser    |
+| Password        | 1qazXSW@2 |
 
 **Output:** User will not be logged in - username and password do not match.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Username | ExUser765456765 |
-| Password | 1qazXSW@ |
+| **Input Label** | **Data**        |
+| --------------- | --------------- |
+| Username        | ExUser765456765 |
+| Password        | 1qazXSW@        |
 
 **Output:** User will not be logged in - username and password do not match.
 
@@ -297,35 +297,35 @@ Signature:
 
 ## **T3. Password recovery (FWBS 1.3)**
 
-| Test Number | T3 |
-| --- | --- |
-| Test Module | Password recovery |
-| F/S(WBS) number | 1.3 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T3                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Password recovery                                  |
+| F/S(WBS) number | 1.3                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can change their password with access to their registered email.
 
 **Setup:** While on the “user login” page, click on the “Forgot Password” link. A link will be sent to the email on file for that username. Follow the link in the email to the password reset page. Enter your New Password and the Confirm Password and click “Reset Password”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Password | 2wsxCDE# |
+| **Input Label**  | **Data** |
+| ---------------- | -------- |
+| Password         | 2wsxCDE# |
 | Confirm Password | 2wsxCDE# |
 
 **Output:** Password successfully reset.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Password | 2wsxCDE# |
+| **Input Label**  | **Data**  |
+| ---------------- | --------- |
+| Password         | 2wsxCDE#  |
 | Confirm Password | 2wsxCDE#2 |
 
 **Output:** Password not reset - passwords entered do not match.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Password | 2wsxCD |
-| Confirm Password | 2wsxCD |
+| **Input Label**  | **Data** |
+| ---------------- | -------- |
+| Password         | 2wsxCD   |
+| Confirm Password | 2wsxCD   |
 
 **Output:** Password not reset - password does not meet requirements.
 
@@ -349,30 +349,30 @@ Signature:
 
 ## **T4. Profile Management (FWBS 1.4)**
 
-| Test Number | T4 |
-| --- | --- |
-| Test Module | Profile Management |
-| F/S(WBS) number | 1.4 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T4                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Profile Management                                 |
+| F/S(WBS) number | 1.4                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can update their profile with relevant information hand advisor specific fields are only present for advisors.
 
 **Setup:** Navigate to the “User Profile” page by clicking “Profile” on the navigation bar. Next, click “Edit Profile”. Enter any relevant information you wish to change. Click “Save”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Account Type | User |
-| email | my.test.email@email.com |
-| Advisor Field Present | No |
+| **Input Label**       | **Data**                |
+| --------------------- | ----------------------- |
+| Account Type          | User                    |
+| email                 | my.test.email@email.com |
+| Advisor Field Present | No                      |
 
 **Output:** Advisor fields not present; email updated to my.test.email@.email.com
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Account Type | Advisor |
-| email | my.test.email@email.com |
-| Advisor Field Present | Yes |
+| **Input Label**       | **Data**                |
+| --------------------- | ----------------------- |
+| Account Type          | Advisor                 |
+| email                 | my.test.email@email.com |
+| Advisor Field Present | Yes                     |
 
 **Output:** Advisor fields present; email updated to my.test.email@email.com
 
@@ -396,46 +396,46 @@ Signature:
 
 ## **T5. Subscription Management (FWBS 1.5)**
 
-| Test Number | T5 |
-| --- | --- |
-| Test Module | Subscription Management |
-| F/S(WBS) number | 1.5 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T5                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Subscription Management                            |
+| F/S(WBS) number | 1.5                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can see their subscription status and transaction history. Additionally, this module ensures payments can be made to purchase a subscription.
 
 **Setup:** From the “User Profile” page, click “Subscription” on the left side of the page. Click “Transaction History” or “Subscribe” as relevant.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Subscribed | Yes |
-| Transaction History Clicked | No |
-| Subscribe Clicked | No |
+| **Input Label**             | **Data** |
+| --------------------------- | -------- |
+| Subscribed                  | Yes      |
+| Transaction History Clicked | No       |
+| Subscribe Clicked           | No       |
 
 **Output:** No payment history data shown; no payment fields shown; subscription status is shown: "subscribed”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Subscribed | No |
-| Transaction History Clicked | No |
-| Subscribe Clicked | No |
+| **Input Label**             | **Data** |
+| --------------------------- | -------- |
+| Subscribed                  | No       |
+| Transaction History Clicked | No       |
+| Subscribe Clicked           | No       |
 
 **Output:** No payment history data shown; no payment fields shown; subscription status is shown: "You have not subscribed”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Subscribed | No |
-| Transaction History Clicked | Yes |
-| Subscribe Clicked | No |
+| **Input Label**             | **Data** |
+| --------------------------- | -------- |
+| Subscribed                  | No       |
+| Transaction History Clicked | Yes      |
+| Subscribe Clicked           | No       |
 
 **Output:** Payment history data shown; no payment fields shown; subscription status is shown: “not subscribed”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Subscribed | No |
-| Transaction History Clicked | No |
-| Subscribe Clicked | Yes |
+| **Input Label**             | **Data** |
+| --------------------------- | -------- |
+| Subscribed                  | No       |
+| Transaction History Clicked | No       |
+| Subscribe Clicked           | Yes      |
 
 **Output:** No payment history data shown; payment fields are shown; subscription status is shown: “not subscribed”.
 
@@ -459,42 +459,42 @@ Signature:
 
 ## **T6. Interaction History (FWBS 1.6)**
 
-| Test Number | T6 |
-| --- | --- |
-| Test Module | Interaction History |
-| F/S(WBS) number | 1.6 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T6                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Interaction History                                |
+| F/S(WBS) number | 1.6                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures the user can see their event and consultant history.
 
 **Setup:** From the “User Profile” page, click “Interaction History”.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Event History Data Present | Yes |
-| Consultation History Data Present | Yes |
+| **Input Label**                   | **Data** |
+| --------------------------------- | -------- |
+| Event History Data Present        | Yes      |
+| Consultation History Data Present | Yes      |
 
 **Output:** Data for all events and consultations shown.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Event History Data Present | No |
-| Consultation History Data Present | Yes |
+| **Input Label**                   | **Data** |
+| --------------------------------- | -------- |
+| Event History Data Present        | No       |
+| Consultation History Data Present | Yes      |
 
 **Output:** Data for all consultations shown. “No Event History” is shown.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Event History Data Present | Yes |
-| Consultation History Data Present | No |
+| **Input Label**                   | **Data** |
+| --------------------------------- | -------- |
+| Event History Data Present        | Yes      |
+| Consultation History Data Present | No       |
 
 **Output:** Data for all events shown. “No Consultation History” is shown.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Event History Data Present | No |
-| Consultation History Data Present | No |
+| **Input Label**                   | **Data** |
+| --------------------------------- | -------- |
+| Event History Data Present        | No       |
+| Consultation History Data Present | No       |
 
 **Output:** “No Consultation History” shown. “No Event History” is shown.
 
@@ -518,54 +518,54 @@ Signature:
 
 ## **T7. Advisor management system (FWBS 1.7)**
 
-| Test Number | T7 |
-| --- | --- |
-| Test Module | Advisor management system |
-| F/S(WBS) number | 1.7 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T7                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Advisor management system                          |
+| F/S(WBS) number | 1.7                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures an advisor can be added by an administrator and can be managed by admins as needed.
 
 **Setup:** Navigate to the admin page by going to “localhost:8000/admin” and login with admin credentials. Click on the user you wish to modify.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| StaffStatus | No |
-| ChangeToStaff | Yes |
-| DeleteUser | No |
+| --------------- | -------- |
+| StaffStatus     | No       |
+| ChangeToStaff   | Yes      |
+| DeleteUser      | No       |
 
 **Output:** User will be promoted to advisor.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| StaffStatus | No |
-| ChangeToStaff | No |
-| DeleteUser | No |
+| --------------- | -------- |
+| StaffStatus     | No       |
+| ChangeToStaff   | No       |
+| DeleteUser      | No       |
 
 **Output:** User will not be promoted to advisor.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| StaffStatus | Yes |
-| ChangeToStaff | No |
-| DeleteUser | No |
+| --------------- | -------- |
+| StaffStatus     | Yes      |
+| ChangeToStaff   | No       |
+| DeleteUser      | No       |
 
 **Output:** Advisor will be demoted to user.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| StaffStatus | Yes |
-| ChangeToStaff | Yes |
-| DeleteUser | Yes |
+| --------------- | -------- |
+| StaffStatus     | Yes      |
+| ChangeToStaff   | Yes      |
+| DeleteUser      | Yes      |
 
 **Output:** Advisor account will be deleted.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| StaffStatus | Yes |
-| ChangeToStaff | No |
-| DeleteUser | Yes |
+| --------------- | -------- |
+| StaffStatus     | Yes      |
+| ChangeToStaff   | No       |
+| DeleteUser      | Yes      |
 
 **Output:** Advisor account will be deleted.
 
@@ -589,32 +589,32 @@ Signature:
 
 ## **T8. Messaging and Notification (FWBS 1.8)**
 
-| Test Number | T8 |
-| --- | --- |
-| Test Module | Messaging and Notification |
-| F/S(WBS) number | 1.8 |
-| Software Setup | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T8                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Messaging and Notification                         |
+| F/S(WBS) number | 1.8                                                |
+| Software Setup  | OS: Windows 11 23H2; Mozilla Firefox Version 136.0 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB             |
 
 **Purpose of module:** This module ensures in app messages and notifications as well as email notifications are working.
 
 **Setup:** Navigate to “User Profile” by clicking “Profile” on the navigation bar. Click “Message”.
 
 | **Input Label** | **Data** |
-| --- | --- |
-| sender | user1 |
-| recipient | user2 |
-| messageType | message |
-| message | Hello |
+| --------------- | -------- |
+| sender          | user1    |
+| recipient       | user2    |
+| messageType     | message  |
+| message         | Hello    |
 
 **Output:** user2 receives an in-app message: “Hello”. User1 will get an update about the message status.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| sender | System |
-| recipient | user2 |
-| messageType | message |
-| message | You have renewed your subscription. |
+| **Input Label** | **Data**                            |
+| --------------- | ----------------------------------- |
+| sender          | System                              |
+| recipient       | user2                               |
+| messageType     | message                             |
+| message         | You have renewed your subscription. |
 
 **Output:** user2 receives an in-app message and email notification: “You have renewed your subscription.”.
 
@@ -638,68 +638,68 @@ Signature:
 
 ## **T9. Advisor Booking System (FWBS 3.1)**
 
-| Test Number | T9 |
-| --- | --- |
-| Test Module |  Advisor Booking System |
-| F/S(WBS) number | 3.1 |
-| Software Setup | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T9                                                          |
+| --------------- | ----------------------------------------------------------- |
+| Test Module     | Advisor Booking System                                      |
+| F/S(WBS) number | 3.1                                                         |
+| Software Setup  | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB                      |
 
 **Purpose of module:** This module allows users to book an consultation session with an advisor
 
 **Setup:** Navigate to the “Schedule” page. This can be achieved by clicking “Calendar” on the navigation bar. You must login as a user and not a advisor. Search and filter with the search box show on the page to look for advisor and book a session with them. If there is upcoming meeting, the system will show a reminder on user screen.
 
-| Input Label | Data |
-| --- | --- |
-| User login | No |
-| Advisor found | No/yes |
+| Input Label                   | Data   |
+| ----------------------------- | ------ |
+| User login                    | No     |
+| Advisor found                 | No/yes |
 | Selected advisor availability | No/yes |
-| Confirmed upcoming meeting | No |
+| Confirmed upcoming meeting    | No     |
 
 Output: redirect user to the login page
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Advisor found | No |
-| Selected advisor availability | No |
-| Confirmed upcoming meeting | No |
+| Input Label                   | Data |
+| ----------------------------- | ---- |
+| User login                    | Yes  |
+| Advisor found                 | No   |
+| Selected advisor availability | No   |
+| Confirmed upcoming meeting    | No   |
 
 Output: show the list of all advisor.
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Advisor found | Yes |
-| Selected advisor availability | Yes |
-| Confirmed upcoming meeting | No |
+| Input Label                   | Data |
+| ----------------------------- | ---- |
+| User login                    | Yes  |
+| Advisor found                 | Yes  |
+| Selected advisor availability | Yes  |
+| Confirmed upcoming meeting    | No   |
 
 Output: list all the advisor that match the search text. For the selected advisor, allow user to book a session with them.
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Advisor found | Yes |
-| Selected advisor availability | No |
-| Confirmed upcoming meeting | No |
+| Input Label                   | Data |
+| ----------------------------- | ---- |
+| User login                    | Yes  |
+| Advisor found                 | Yes  |
+| Selected advisor availability | No   |
+| Confirmed upcoming meeting    | No   |
 
 Output: list all the advisor that match the search text. For the selected advisor, show user warning “advisor is not available” on the list and disable the booking button.
 
-| Input Label | Data |
-| --- | --- |
-| User login | No |
-| Advisor found | No/yes |
+| Input Label                   | Data   |
+| ----------------------------- | ------ |
+| User login                    | No     |
+| Advisor found                 | No/yes |
 | Selected advisor availability | No/yes |
-| Confirmed upcoming meeting | Yes |
+| Confirmed upcoming meeting    | Yes    |
 
 Output: send the reminder to the user preference communication method only.
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Advisor found | No |
+| Input Label                   | Data   |
+| ----------------------------- | ------ |
+| User login                    | Yes    |
+| Advisor found                 | No     |
 | Selected advisor availability | No/yes |
-| Confirmed upcoming meeting | Yes |
+| Confirmed upcoming meeting    | Yes    |
 
 Output: send the reminder to the user preference communication method and pop up notification on their view.
 
@@ -723,35 +723,35 @@ Signature:
 
 ## **T10.** Virtual Consultation Session **(FWBS 3.2)**
 
-| Test Number | T10 |
-| --- | --- |
-| Test Module | Virtual Consultation Session |
-| F/S(WBS) number | 3.2 |
-| Software Setup | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T10                                                         |
+| --------------- | ----------------------------------------------------------- |
+| Test Module     | Virtual Consultation Session                                |
+| F/S(WBS) number | 3.2                                                         |
+| Software Setup  | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB                      |
 
 **Purpose of module:** This module allows users and advisors to join a video call service 
 
 **Setup:** Navigate to the “Schedule” page. This can be achieved by clicking “Calendar” on the navigation bar. Make a consultation session for an advisor and user account. Then click the video call service link in the upcoming events section.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Is valid credential | True |
-| Video call service link | True |
+| **Input Label**         | **Data** |
+| ----------------------- | -------- |
+| Is valid credential     | True     |
+| Video call service link | True     |
 
 Output: Direct advisor/user to the video hosting service successfully
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Is valid credential | False |
-| Video call service link | True |
+| **Input Label**         | **Data** |
+| ----------------------- | -------- |
+| Is valid credential     | False    |
+| Video call service link | True     |
 
 Output: redirect user to login page.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Is valid credential | False/True |
-| Video call service link | False |
+| **Input Label**         | **Data**   |
+| ----------------------- | ---------- |
+| Is valid credential     | False/True |
+| Video call service link | False      |
 
 Output: show error and make log report to the system. Send request to the video call service to create a new room.
 
@@ -775,35 +775,35 @@ Signature:
 
 ## **T11.** Event Registration **(FWBS 5.2)**
 
-| Test Number | T11 |
-| --- | --- |
-| Test Module | Event Registration |
-| F/S(WBS) number | 5.2 |
-| Software Setup | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T11                                                         |
+| --------------- | ----------------------------------------------------------- |
+| Test Module     | Event Registration                                          |
+| F/S(WBS) number | 5.2                                                         |
+| Software Setup  | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB                      |
 
 **Purpose of module:** This test checks if the event registration system allows user to lookup and register for event.
 
 **Setup:** Navigate to the “Schedule” page. This can be achieved by clicking “Calendar” on the navigation bar. You will now be presented with a list of upcoming events. 
 
-| Input Label | Data |
-| --- | --- |
-| User login | No |
+| Input Label        | Data   |
+| ------------------ | ------ |
+| User login         | No     |
 | Event registration | Yes/No |
 
 output: redirect user to the login page
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Event registration | No |
+| Input Label        | Data |
+| ------------------ | ---- |
+| User login         | Yes  |
+| Event registration | No   |
 
 output: show the list of events and user registered events
 
-| Input Label | Data |
-| --- | --- |
-| User login | Yes |
-| Event registration | Yes |
+| Input Label        | Data |
+| ------------------ | ---- |
+| User login         | Yes  |
+| Event registration | Yes  |
 
 output: show the event detail in the confirmation page for user to double check their registration. 
 
@@ -827,100 +827,100 @@ Signature:
 
 ## **T12.** Event Creation and Editing **(FWBS 5.1)**
 
-| Test Number | T12 |
-| --- | --- |
-| Test Module | Event and Advisor Booking |
-| F/S(WBS) number | 5.1 |
-| Software Setup | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T12                                                         |
+| --------------- | ----------------------------------------------------------- |
+| Test Module     | Event and Advisor Booking                                   |
+| F/S(WBS) number | 5.1                                                         |
+| Software Setup  | OS: Windows 11 23H2; Google Chrome, Version ^122.0.6261.111 |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB                      |
 
 **Purpose of module:** This module allows advisors to create, edit, and delete events
 
 **Setup for creating:** Must login as an advisor. be Navigate to the “Schedule” page. This can be achieved by clicking “Calendar” on the navigation bar. Click on the create new event button.
 
-| **Input Label** | **Data** |
-| --- | --- |
+| **Input Label**     | **Data**             |
+| ------------------- | -------------------- |
 | Date and Time Start | 28 April 2025, 13:00 |
-| Date and Time End | 30 April 2025, 13:00 |
-| Description |  |
-| Title | Steak Fest |
-| Location | Brookings |
+| Date and Time End   | 30 April 2025, 13:00 |
+| Description         |                      |
+| Title               | Steak Fest           |
+| Location            | Brookings            |
 
 Output: Invalid because the start time has already occurred. Show error “Start and end time must be in the future”
 
-| **Input Label** | **Data** |
-| --- | --- |
+| **Input Label**     | **Data**             |
+| ------------------- | -------------------- |
 | Date and Time Start | 30 April 2025, 13:00 |
-| Date and Time End | 20 April 2025, 13:00 |
-| Description |  |
-| Title | Steak Fest |
-| Location | Brookings |
+| Date and Time End   | 20 April 2025, 13:00 |
+| Description         |                      |
+| Title               | Steak Fest           |
+| Location            | Brookings            |
 
 Output: Invalid because the end time is before the start time. Show error “end time must be after the start time”.
 
-| **Input Label** | **Data** |
-| --- | --- |
+| **Input Label**     | **Data**             |
+| ------------------- | -------------------- |
 | Date and Time Start | 30 April 2025, 13:00 |
-| Date and Time End | 30 April 2025, 14:00 |
-| Description | Hello Good Sir |
-| Title |  |
-| Location |  |
+| Date and Time End   | 30 April 2025, 14:00 |
+| Description         | Hello Good Sir       |
+| Title               |                      |
+| Location            |                      |
 
 Output: Invalid because event requires a title and location
 
-| **Input Label** | **Data** |
-| --- | --- |
+| **Input Label**     | **Data**             |
+| ------------------- | -------------------- |
 | Date and Time Start | 30 April 2025, 13:00 |
-| Date and Time End | 30 April 2025, 14:00 |
-| Description | Hello Good Sir |
-| Title | Steak Fest |
-| Location | Brookings |
+| Date and Time End   | 30 April 2025, 14:00 |
+| Description         | Hello Good Sir       |
+| Title               | Steak Fest           |
+| Location            | Brookings            |
 
 Output: Creates a new event that is displayed in the list of events
 
 **Setup for editing:** Must login as an advisor. Navigate to the “Schedule” page. This can be achieved by clicking “Calendar” on the navigation bar. Click on the edit event button on a newly created event. 
 
-| **Previous Input Label** | **Previous Data** | **New Data** |
-| --- | --- | --- |
-| Date and Time Start | 30 April 2025, 13:00 | N/A |
-| Date and Time End | 30 April 2025, 14:00 | 30 April 2025, 12:00 |
-| Description | Hello Good Sir | N/A |
-| Title | Steak Fest | N/A |
-| Location | Brookings | N/A |
-| Delete |  | False |
+| **Previous Input Label** | **Previous Data**    | **New Data**         |
+| ------------------------ | -------------------- | -------------------- |
+| Date and Time Start      | 30 April 2025, 13:00 | N/A                  |
+| Date and Time End        | 30 April 2025, 14:00 | 30 April 2025, 12:00 |
+| Description              | Hello Good Sir       | N/A                  |
+| Title                    | Steak Fest           | N/A                  |
+| Location                 | Brookings            | N/A                  |
+| Delete                   |                      | False                |
 
 Output: Invalid because new end time is before previous start time
 
-| **Previous Input Label** | **Previous Data** | **New Data** |
-| --- | --- | --- |
-| Date and Time Start | 30 April 2025, 13:00 | N/A |
-| Date and Time End | 30 April 2025, 14:00 | N/A |
-| Description | Hello Good Sir | N/A |
-| Title | Steak Fest |  |
-| Location | Brookings |  |
-| Delete |  | False |
+| **Previous Input Label** | **Previous Data**    | **New Data** |
+| ------------------------ | -------------------- | ------------ |
+| Date and Time Start      | 30 April 2025, 13:00 | N/A          |
+| Date and Time End        | 30 April 2025, 14:00 | N/A          |
+| Description              | Hello Good Sir       | N/A          |
+| Title                    | Steak Fest           |              |
+| Location                 | Brookings            |              |
+| Delete                   |                      | False        |
 
 Output: Invalid because event needs a title and location
 
-| **Previous Input Label** | **Previous Data** | **New Data** |
-| --- | --- | --- |
-| Date and Time Start | 30 April 2025, 13:00 | N/A |
-| Date and Time End | 30 April 2025, 14:00 | 1 May 2025, 17:00 |
-| Description | Hello Good Sir | What’s new |
-| Title | Steak Fest | Willy Wonka |
-| Location | Brookings | Lawsuit Impending |
-| Delete |  | False |
+| **Previous Input Label** | **Previous Data**    | **New Data**      |
+| ------------------------ | -------------------- | ----------------- |
+| Date and Time Start      | 30 April 2025, 13:00 | N/A               |
+| Date and Time End        | 30 April 2025, 14:00 | 1 May 2025, 17:00 |
+| Description              | Hello Good Sir       | What’s new        |
+| Title                    | Steak Fest           | Willy Wonka       |
+| Location                 | Brookings            | Lawsuit Impending |
+| Delete                   |                      | False             |
 
 Output: Updates the event with new values that should be displayed on the event list
 
-| **Previous Input Label** | **Previous Data** | **New Data** |
-| --- | --- | --- |
-| Date and Time Start | 35 April 2025, 13:00 | N/A |
-| Date and Time End | 35 April 2025, 14:00 | N/A |
-| Description | Hello Good Sir | N/A |
-| Title | Steak Fest | N/A |
-| Location | Brookings | N/A |
-| Delete |  | True |
+| **Previous Input Label** | **Previous Data**    | **New Data** |
+| ------------------------ | -------------------- | ------------ |
+| Date and Time Start      | 35 April 2025, 13:00 | N/A          |
+| Date and Time End        | 35 April 2025, 14:00 | N/A          |
+| Description              | Hello Good Sir       | N/A          |
+| Title                    | Steak Fest           | N/A          |
+| Location                 | Brookings            | N/A          |
+| Delete                   |                      | True         |
 
 Output: The event should be removed from the database and the event list
 
@@ -944,35 +944,35 @@ Signature:
 
 ## T13. Payment Gateway Integration (FWBS 6.1)
 
-| Test Number | T13 |
-| --- | --- |
-| Test Module | Payment Gateway Integration |
-| F/S(WBS) number | 6.1 |
-| Software Setup | OS: Windows 11 24H2; Microsoft Edge |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T13                                    |
+| --------------- | -------------------------------------- |
+| Test Module     | Payment Gateway Integration            |
+| F/S(WBS) number | 6.1                                    |
+| Software Setup  | OS: Windows 11 24H2; Microsoft Edge    |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB |
 
 **Purpose of module**: ensures that the system can handle all matters dealing with money transaction processing, subscription payments securely and properly.
 
 **Setup:** Select gateway to make a payment. The system will listen to the transaction status and check sum to ensure transaction security. 
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Transaction status | Succeed |
-| SHA256 check sum match | Yes |
+| **Input Label**        | **Data** |
+| ---------------------- | -------- |
+| Transaction status     | Succeed  |
+| SHA256 check sum match | Yes      |
 
 Output: Process to handle the payment by returning the success response
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Transaction status | Declined/Cancelled |
-| SHA256 check sum match | Yes |
+| **Input Label**        | **Data**           |
+| ---------------------- | ------------------ |
+| Transaction status     | Declined/Cancelled |
+| SHA256 check sum match | Yes                |
 
 Output: Process to handle the payment by returning false response with the reason if applicable.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Transaction status | Succeed/Declined/Cancelled |
-| SHA256 check sum match | No |
+| **Input Label**        | **Data**                   |
+| ---------------------- | -------------------------- |
+| Transaction status     | Succeed/Declined/Cancelled |
+| SHA256 check sum match | No                         |
 
 Output: Process to initiate security report and return user to the error page.
 
@@ -996,54 +996,54 @@ Signature:
 
 ## T14. Transaction Management (FWBS 6.2)
 
-| Test Number | T14 |
-| --- | --- |
-| Test Module | Transaction Management |
-| F/S(WBS) number | 6.2 |
-| Software Setup | OS: Windows 11 24H2; Microsoft Edge |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T14                                    |
+| --------------- | -------------------------------------- |
+| Test Module     | Transaction Management                 |
+| F/S(WBS) number | 6.2                                    |
+| Software Setup  | OS: Windows 11 24H2; Microsoft Edge    |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB |
 
 Purpose of Module: ensures the system returns the correct invoice and receipts to the user. Additionally, check if the user can initiate a refund or cancellation.
 
 Setup: user navigate to the payment section. The system will return all the invoices and receipts from that specific user.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User existed | Yes |
-| Invoice data existed | No |
-| Receipt data existed | No |
+| **Input Label**      | **Data** |
+| -------------------- | -------- |
+| User existed         | Yes      |
+| Invoice data existed | No       |
+| Receipt data existed | No       |
 
 Output: show “You have no invoice and receipt” message.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User existed | No |
-| Invoice data existed | No |
-| Receipt data existed | No |
+| **Input Label**      | **Data** |
+| -------------------- | -------- |
+| User existed         | No       |
+| Invoice data existed | No       |
+| Receipt data existed | No       |
 
 Output: redirect user to login page.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User existed | Yes |
-| Invoice data existed | Yes |
-| Receipt data existed | No |
+| **Input Label**      | **Data** |
+| -------------------- | -------- |
+| User existed         | Yes      |
+| Invoice data existed | Yes      |
+| Receipt data existed | No       |
 
 Output: show user invoice data. No receipt would show.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User existed | Yes |
-| Invoice data existed | No |
-| Receipt data existed | Yes |
+| **Input Label**      | **Data** |
+| -------------------- | -------- |
+| User existed         | Yes      |
+| Invoice data existed | No       |
+| Receipt data existed | Yes      |
 
 Output: Show user receipt data. No invoice would show.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User existed | Yes |
-| Invoice data existed | Yes |
-| Receipt data existed | Yes |
+| **Input Label**      | **Data** |
+| -------------------- | -------- |
+| User existed         | Yes      |
+| Invoice data existed | Yes      |
+| Receipt data existed | Yes      |
 
 Output: show both user invoice and receipt data.
 
@@ -1067,46 +1067,46 @@ Signature:
 
 ## **T15. User Reports (FWBS 7.1)**
 
-| Test Number | T15 |
-| --- | --- |
-| Test Module | User Reports |
-| F/S(WBS) number | 7.1 |
-| Software Setup | OS: Windows 11 24H2; Microsoft Edge |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T15                                    |
+| --------------- | -------------------------------------- |
+| Test Module     | User Reports                           |
+| F/S(WBS) number | 7.1                                    |
+| Software Setup  | OS: Windows 11 24H2; Microsoft Edge    |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB |
 
 **Purpose of module:** This module ensures the system can create full financial reports and customized report for the user.
 
 **Setup:** Navigate to “Reports” by clicking “Reports” on the navigation bar. Then click “Create report” for a full financial report using user financial data or select “Customize report” to create customized report.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User financial data available | No |
-| Create report selected | No/Yes |
-| Customized report selected | No/Yes |
+| **Input Label**               | **Data** |
+| ----------------------------- | -------- |
+| User financial data available | No       |
+| Create report selected        | No/Yes   |
+| Customized report selected    | No/Yes   |
 
 **Output:** Show message “You don’t have any financial data available on the system” with a button with label “Create new” that redirect them to create new financial record.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User financial data available | Yes |
-| Create report selected | No |
-| Customized report selected | No |
+| **Input Label**               | **Data** |
+| ----------------------------- | -------- |
+| User financial data available | Yes      |
+| Create report selected        | No       |
+| Customized report selected    | No       |
 
 **Output:** Show them the most recent of their data on the “Report” page
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User financial data available | Yes |
-| Create report selected | Yes |
-| Customized report selected | No |
+| **Input Label**               | **Data** |
+| ----------------------------- | -------- |
+| User financial data available | Yes      |
+| Create report selected        | Yes      |
+| Customized report selected    | No       |
 
 **Output:** Generate the full report from user’s data. Open the report in new tab in a PDF format.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| User financial data available | Yes |
-| Create report selected | No |
-| Customized report selected | Yes |
+| **Input Label**               | **Data** |
+| ----------------------------- | -------- |
+| User financial data available | Yes      |
+| Create report selected        | No       |
+| Customized report selected    | Yes      |
 
 **Output:** Show a list of available fields the user can select from. Generate a customize report from the selected fields. Open the report in new tab in a PDF format.
 
@@ -1130,54 +1130,54 @@ Signature:
 
 ## **T16.** Administrative Analytics**(FWBS 7.2)**
 
-| Test Number | T16 |
-| --- | --- |
-| Test Module | Administrative Analytics |
-| F/S(WBS) number | 7.2 |
-| Software Setup | OS: Windows 11 24H2; Microsoft Edge |
-| Hardware Setup | CPU 2.3GHz Intel Core i7; Memory 16 GB |
+| Test Number     | T16                                    |
+| --------------- | -------------------------------------- |
+| Test Module     | Administrative Analytics               |
+| F/S(WBS) number | 7.2                                    |
+| Software Setup  | OS: Windows 11 24H2; Microsoft Edge    |
+| Hardware Setup  | CPU 2.3GHz Intel Core i7; Memory 16 GB |
 
 **Purpose of module:** This module ensure the admin be able to monitor and create report about user metrics and system metrics in income and health.
 
 **Setup:** Navigate to the admin page at “localhost:8000/admin” and login with the admin account. navigate to “Reports” tab on the navigation bar.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Admin role | No |
-| User metrics available | No/Yes |
-| System Metrics available | No/Yes |
+| **Input Label**          | **Data** |
+| ------------------------ | -------- |
+| Admin role               | No       |
+| User metrics available   | No/Yes   |
+| System Metrics available | No/Yes   |
 
 **Output:** User will be redirected to the admin login page to login with an admin credential.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Admin role | Yes |
-| User metrics available | No |
-| System Metrics available | No |
+| **Input Label**          | **Data** |
+| ------------------------ | -------- |
+| Admin role               | Yes      |
+| User metrics available   | No       |
+| System Metrics available | No       |
 
 **Output:** Show error message “Data is not available” for the missing metrics
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Admin role | Yes |
-| User metrics available | Yes |
-| System Metrics available | No |
+| **Input Label**          | **Data** |
+| ------------------------ | -------- |
+| Admin role               | Yes      |
+| User metrics available   | Yes      |
+| System Metrics available | No       |
 
 **Output:** Show the User metrics analytics and report. Show error “Data is not available” for system metrics sections.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Admin role | Yes |
-| User metrics available | No |
-| System Metrics available | Yes |
+| **Input Label**          | **Data** |
+| ------------------------ | -------- |
+| Admin role               | Yes      |
+| User metrics available   | No       |
+| System Metrics available | Yes      |
 
 **Output:** Show error “Data is not available” for the user metrics analytics and report. Show report and analysis for system metrics sections.
 
-| **Input Label** | **Data** |
-| --- | --- |
-| Admin role | Yes |
-| User metrics available | Yes |
-| System Metrics available | Yes |
+| **Input Label**          | **Data** |
+| ------------------------ | -------- |
+| Admin role               | Yes      |
+| User metrics available   | Yes      |
+| System Metrics available | Yes      |
 
 **Output:** Show report and analysis for the both sections.
 
@@ -1201,14 +1201,14 @@ Signature:
 
 ## T17. Loan Calculator (FWBS 2.1)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Loan Calculator |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
-- **Browser**: Microsoft Edge 134.0.3124.72  |
-| Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
-- **Memory**: 32 GB |
+| Test Number                                 | T1                                                            |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| Test Module                                 | Loan Calculator                                               |
+| F/S(WBS) number                             |                                                               |
+| Software Setup                              | - **Operating System**: Windows 11 Education 24H2;            |
+| - **Browser**: Microsoft Edge 134.0.3124.72 |
+| Hardware Setup                              | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz |
+| - **Memory**: 32 GB                         |
 
 **Purpose:** Validates correct calculation of monthly payment, total interest, and total cost for loan scenarios.
 
@@ -1220,11 +1220,11 @@ Signature:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Loan Amount | $10,000 |
-| Interest Rate | 5% |
-| Loan Term | 5 years |
+| Input Label   | Data    |
+| ------------- | ------- |
+| Loan Amount   | $10,000 |
+| Interest Rate | 5%      |
+| Loan Term     | 5 years |
 
 **Output:**
 
@@ -1235,11 +1235,11 @@ Signature:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Loan Amount | $10,000 |
-| Interest Rate | 0% |
-| Loan Term | 5 years |
+| Input Label   | Data    |
+| ------------- | ------- |
+| Loan Amount   | $10,000 |
+| Interest Rate | 0%      |
+| Loan Term     | 5 years |
 
 **Output:**
 
@@ -1250,11 +1250,11 @@ Signature:
 
 **Test Case 3**
 
-| Input Label | Data |
-| --- | --- |
-| Loan Amount | $0 |
-| Interest Rate | 5% |
-| Loan Term | 5 years |
+| Input Label   | Data    |
+| ------------- | ------- |
+| Loan Amount   | $0      |
+| Interest Rate | 5%      |
+| Loan Term     | 5 years |
 
 **Output: show user warning “please type the correct loan amount”**
 
@@ -1278,13 +1278,13 @@ Signature:
 
 ## T18. Mortgage Calculator (FWBS 2.2)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module |  |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
-- **Browser**: Microsoft Edge 134.0.3124.72  |
-| Hardware Setup |  |
+| Test Number                                 | T1                                                 |
+| ------------------------------------------- | -------------------------------------------------- |
+| Test Module                                 |                                                    |
+| F/S(WBS) number                             |                                                    |
+| Software Setup                              | - **Operating System**: Windows 11 Education 24H2; |
+| - **Browser**: Microsoft Edge 134.0.3124.72 |
+| Hardware Setup                              |                                                    |
 
 **Purpose of Module:** This module allows users to calculate mortgage payments, total interest, and visualize payment breakdowns for home loans.
 
@@ -1294,12 +1294,12 @@ Signature:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Home Price | $300,000 |
-| Down Payment | $60,000 |
-| Loan Term | 30 years |
-| Interest Rate | 4.5% |
+| Input Label   | Data     |
+| ------------- | -------- |
+| Home Price    | $300,000 |
+| Down Payment  | $60,000  |
+| Loan Term     | 30 years |
+| Interest Rate | 4.5%     |
 
 **Output:**
 
@@ -1311,12 +1311,12 @@ Signature:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Home Price | $300,000 |
-| Down Payment | $30,000 |
-| Loan Term | 15 years |
-| Interest Rate | 4.5% |
+| Input Label   | Data     |
+| ------------- | -------- |
+| Home Price    | $300,000 |
+| Down Payment  | $30,000  |
+| Loan Term     | 15 years |
+| Interest Rate | 4.5%     |
 
 **Output:**
 
@@ -1346,11 +1346,11 @@ Name:
 
 ## T19. Retirement Calculator (FWBS 2.4)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Retirement Calculator |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Retirement Calculator                              |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1364,14 +1364,14 @@ Name:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Current Age | 30 |
-| Retirement Age | 65 |
-| Present Savings | $50,000 |
-| Monthly Contributions | $500 |
-| Rate of Return | 7% |
-| Retirement Goal | $1,500,000 |
+| Input Label           | Data       |
+| --------------------- | ---------- |
+| Current Age           | 30         |
+| Retirement Age        | 65         |
+| Present Savings       | $50,000    |
+| Monthly Contributions | $500       |
+| Rate of Return        | 7%         |
+| Retirement Goal       | $1,500,000 |
 
 **Output:**
 
@@ -1382,14 +1382,14 @@ Name:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Current Age | 30 |
-| Retirement Age | 65 |
-| Present Savings | $100,000 |
-| Monthly Contributions | $1,000 |
-| Rate of Return | 7% |
-| Retirement Goal | $1,500,000 |
+| Input Label           | Data       |
+| --------------------- | ---------- |
+| Current Age           | 30         |
+| Retirement Age        | 65         |
+| Present Savings       | $100,000   |
+| Monthly Contributions | $1,000     |
+| Rate of Return        | 7%         |
+| Retirement Goal       | $1,500,000 |
 
 **Output:**
 
@@ -1402,14 +1402,14 @@ Name:
 
 **Test Case 3**
 
-| Input Label | Data |
-| --- | --- |
-| Current Age | 50 |
-| Retirement Age | 65 |
-| Present Savings | $200,000 |
-| Monthly Contributions | $1,000 |
-| Rate of Return | 5% |
-| Retirement Goal | $1,000,000 |
+| Input Label           | Data       |
+| --------------------- | ---------- |
+| Current Age           | 50         |
+| Retirement Age        | 65         |
+| Present Savings       | $200,000   |
+| Monthly Contributions | $1,000     |
+| Rate of Return        | 5%         |
+| Retirement Goal       | $1,000,000 |
 
 **Output:**
 
@@ -1438,11 +1438,11 @@ Name:
 
 ## T20. Budgeting Tool (FWBS 2.3)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Budgeting Tool |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Budgeting Tool                                     |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1456,23 +1456,23 @@ Name:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Fixed Income | $5,000 |
-| Variable Income | $500 |
+| Input Label           | Data    |
+| --------------------- | ------- |
+| Fixed Income          | $5,000  |
+| Variable Income       | $500    |
 | One Year Savings Goal | $12,000 |
-| Housing | $1,500 |
-| Taxes | $1,000 |
-| Car Payment | $400 |
-| Internet and Phone | $150 |
-| Subscriptions | $50 |
-| Food | $600 |
-| Entertainment | $200 |
-| Personal Items | $150 |
-| Utilities | $200 |
-| Transportation | $100 |
-| Medical | $200 |
-| Miscellaneous | $100 |
+| Housing               | $1,500  |
+| Taxes                 | $1,000  |
+| Car Payment           | $400    |
+| Internet and Phone    | $150    |
+| Subscriptions         | $50     |
+| Food                  | $600    |
+| Entertainment         | $200    |
+| Personal Items        | $150    |
+| Utilities             | $200    |
+| Transportation        | $100    |
+| Medical               | $200    |
+| Miscellaneous         | $100    |
 
 **Output:**
 
@@ -1488,23 +1488,23 @@ Name:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Fixed Income | $4,000 |
-| Variable Income | $0 |
+| Input Label           | Data   |
+| --------------------- | ------ |
+| Fixed Income          | $4,000 |
+| Variable Income       | $0     |
 | One Year Savings Goal | $6,000 |
-| Housing | $1,500 |
-| Taxes | $800 |
-| Car Payment | $400 |
-| Internet and Phone | $150 |
-| Subscriptions | $50 |
-| Food | $600 |
-| Entertainment | $300 |
-| Personal Items | $200 |
-| Utilities | $200 |
-| Transportation | $100 |
-| Medical | $100 |
-| Miscellaneous | $100 |
+| Housing               | $1,500 |
+| Taxes                 | $800   |
+| Car Payment           | $400   |
+| Internet and Phone    | $150   |
+| Subscriptions         | $50    |
+| Food                  | $600   |
+| Entertainment         | $300   |
+| Personal Items        | $200   |
+| Utilities             | $200   |
+| Transportation        | $100   |
+| Medical               | $100   |
+| Miscellaneous         | $100   |
 
 **Output:**
 
@@ -1534,11 +1534,11 @@ Name:
 
 ## T21. Insurance Calculator (FWBS 2.5)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Insurance Calculator  |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Insurance Calculator                               |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1552,14 +1552,14 @@ Name:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Annual Income | $80,000 |
-| Years to Replace | 10 |
-| Outstanding Mortgage | $250,000 |
-| Other Debts | $20,000 |
-| Children's Education | $100,000 |
-| Final Expenses | $15,000 |
+| Input Label             | Data     |
+| ----------------------- | -------- |
+| Annual Income           | $80,000  |
+| Years to Replace        | 10       |
+| Outstanding Mortgage    | $250,000 |
+| Other Debts             | $20,000  |
+| Children's Education    | $100,000 |
+| Final Expenses          | $15,000  |
 | Existing Life Insurance | $100,000 |
 
 **Output:**
@@ -1574,14 +1574,14 @@ Name:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Annual Income | $80,000 |
-| Years to Replace | 10 |
-| Outstanding Mortgage | $250,000 |
-| Other Debts | $20,000 |
-| Children's Education | $100,000 |
-| Final Expenses | $15,000 |
+| Input Label             | Data       |
+| ----------------------- | ---------- |
+| Annual Income           | $80,000    |
+| Years to Replace        | 10         |
+| Outstanding Mortgage    | $250,000   |
+| Other Debts             | $20,000    |
+| Children's Education    | $100,000   |
+| Final Expenses          | $15,000    |
 | Existing Life Insurance | $1,200,000 |
 
 **Output:**
@@ -1614,11 +1614,11 @@ Name:
 
 ## T22. Student Loan Calculator (FWBS 2.6)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Student Loan Calculator |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Student Loan Calculator                            |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1632,12 +1632,12 @@ Name:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Loan Amount | $30,000 |
-| Interest Rate | 5.8% |
-| Loan Term | 10 years |
-| Extra Payment | $0 |
+| Input Label   | Data     |
+| ------------- | -------- |
+| Loan Amount   | $30,000  |
+| Interest Rate | 5.8%     |
+| Loan Term     | 10 years |
+| Extra Payment | $0       |
 
 **Output:**
 
@@ -1649,12 +1649,12 @@ Name:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Loan Amount | $30,000 |
-| Interest Rate | 5.8% |
-| Loan Term | 10 years |
-| Extra Payment | $100 |
+| Input Label   | Data     |
+| ------------- | -------- |
+| Loan Amount   | $30,000  |
+| Interest Rate | 5.8%     |
+| Loan Term     | 10 years |
+| Extra Payment | $100     |
 
 **Output:**
 
@@ -1685,15 +1685,14 @@ Name:
 
 ## T23. Car Payment Calculator (FWBS 2.7)
 
-| Test Number | T23 |
-| --- | --- |
-| Test Module | Car Payment Calculator |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
-- **Browser**: Microsoft Edge 134.0.3124.72 
-- **Network**: Xtream 5GHz Wifi at 1201mb/s |
-| Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
-- **Memory**: 32 GB |
+| Test Number     | T23                                                                               |
+| --------------- | --------------------------------------------------------------------------------- |
+| Test Module     | Car Payment Calculator                                                            |
+| F/S(WBS) number |                                                                                   |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2;                                |
+|                 | **Browser**: Microsoft Edge 134.0.3124.72                                         |
+|                 | - **Network**: Xtream 5GHz Wifi at 1201mb/s                                       |
+| Hardware Setup  | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz - **Memory**: 32 GB |
 
 **Purpose of Module:** This module helps users calculate car loan payments and analyze the total cost of vehicle ownership.
 
@@ -1703,15 +1702,15 @@ Name:
 
 **Test Case 1**
 
-| Input Label | Data |
-| --- | --- |
-| Vehicle Price | $25,000 |
-| Down Payment | $5,000 |
-| Trade-in Value | $0 |
-| Loan Term | 60 months |
-| Interest Rate | 4.5% |
-| Sales Tax | 6% |
-| Title & Registration | $300 |
+| Input Label          | Data      |
+| -------------------- | --------- |
+| Vehicle Price        | $25,000   |
+| Down Payment         | $5,000    |
+| Trade-in Value       | $0        |
+| Loan Term            | 60 months |
+| Interest Rate        | 4.5%      |
+| Sales Tax            | 6%        |
+| Title & Registration | $300      |
 
 **Output:**
 
@@ -1723,15 +1722,15 @@ Name:
 
 **Test Case 2**
 
-| Input Label | Data |
-| --- | --- |
-| Vehicle Price | $25,000 |
-| Down Payment | $5,000 |
-| Trade-in Value | $8,000 |
-| Loan Term | 48 months |
-| Interest Rate | 4.5% |
-| Sales Tax | 6% |
-| Title & Registration | $300 |
+| Input Label          | Data      |
+| -------------------- | --------- |
+| Vehicle Price        | $25,000   |
+| Down Payment         | $5,000    |
+| Trade-in Value       | $8,000    |
+| Loan Term            | 48 months |
+| Interest Rate        | 4.5%      |
+| Sales Tax            | 6%        |
+| Title & Registration | $300      |
 
 **Output:**
 
@@ -1761,11 +1760,11 @@ Name:
 
 ## T24. Calculators (FWBS 4.1)
 
-| Test Number | T24 |
-| --- | --- |
-| Test Module | Calculator Navigation & Integration |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T24                                                |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Calculator Navigation & Integration                |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1777,18 +1776,18 @@ Name:
 
 ### **Validation Points:**
 
-| Test Case | Expected Result |
-| --- | --- |
-| Calculator Hub Display | All 7 calculators are displayed with appropriate icons and descriptions: Loan, Mortgage, Retirement, Budgeting Tool, Insurance, Student Loan, and Car Payment Calculator |
-| Navigation to Loan Calculator | Clicking on "Loan Calculator" navigates to the loan calculator page |
-| Navigation to Mortgage Calculator | Clicking on "Mortgage Calculator" navigates to the mortgage calculator page |
-| Navigation to Retirement Calculator | Clicking on "Retirement Calculator" navigates to the retirement calculator page |
-| Navigation to Budgeting Tool | Clicking on "Budgeting Tool" navigates to the budgeting tool page |
-| Navigation to Insurance Calculator | Clicking on "Insurance Calculator" navigates to the insurance calculator page |
-| Navigation to Student Loan Calculator | Clicking on "Student Loan Calculator" navigates to the student loan calculator page |
-| Navigation to Car Payment Calculator | Clicking on "Car Payment Calculator" navigates to the car payment calculator page |
-| Return to Calculator Hub | Clicking "Back to Calculators" from any calculator page returns to the calculator hub |
-| Consistent Design | All calculator pages maintain consistent design elements, including header styling, form layouts, and results presentation |
+| Test Case                             | Expected Result                                                                                                                                                          |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Calculator Hub Display                | All 7 calculators are displayed with appropriate icons and descriptions: Loan, Mortgage, Retirement, Budgeting Tool, Insurance, Student Loan, and Car Payment Calculator |
+| Navigation to Loan Calculator         | Clicking on "Loan Calculator" navigates to the loan calculator page                                                                                                      |
+| Navigation to Mortgage Calculator     | Clicking on "Mortgage Calculator" navigates to the mortgage calculator page                                                                                              |
+| Navigation to Retirement Calculator   | Clicking on "Retirement Calculator" navigates to the retirement calculator page                                                                                          |
+| Navigation to Budgeting Tool          | Clicking on "Budgeting Tool" navigates to the budgeting tool page                                                                                                        |
+| Navigation to Insurance Calculator    | Clicking on "Insurance Calculator" navigates to the insurance calculator page                                                                                            |
+| Navigation to Student Loan Calculator | Clicking on "Student Loan Calculator" navigates to the student loan calculator page                                                                                      |
+| Navigation to Car Payment Calculator  | Clicking on "Car Payment Calculator" navigates to the car payment calculator page                                                                                        |
+| Return to Calculator Hub              | Clicking "Back to Calculators" from any calculator page returns to the calculator hub                                                                                    |
+| Consistent Design                     | All calculator pages maintain consistent design elements, including header styling, form layouts, and results presentation                                               |
 
 ### **Acceptance of Test**
 
@@ -1808,11 +1807,11 @@ Name:
 
 ## T25. Financial News
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Financial News |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Financial News                                     |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1824,13 +1823,13 @@ Name:
 
 ### Test Scenarios:
 
-| **ID** | **Test Case** | **Expected Result** |
-| --- | --- | --- |
-| FN-01 | Load the homepage and verify the Financial News component is visible | Component displays with "Latest Financial News" heading |
-| FN-02 | Verify news articles are displayed (when API key is valid) | Up to 5 financial news articles are displayed with clickable links |
-| FN-03 | Click on a news article link | Link opens the original article in a new browser tab |
-| FN-04 | Test with invalid/missing API key | Error message "Could not load news. Please try again later." is displayed |
-| FN-05 | Test component responsiveness on mobile device | Component maintains proper layout and readability on small screens |
+| **ID** | **Test Case**                                                        | **Expected Result**                                                       |
+| ------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| FN-01  | Load the homepage and verify the Financial News component is visible | Component displays with "Latest Financial News" heading                   |
+| FN-02  | Verify news articles are displayed (when API key is valid)           | Up to 5 financial news articles are displayed with clickable links        |
+| FN-03  | Click on a news article link                                         | Link opens the original article in a new browser tab                      |
+| FN-04  | Test with invalid/missing API key                                    | Error message "Could not load news. Please try again later." is displayed |
+| FN-05  | Test component responsiveness on mobile device                       | Component maintains proper layout and readability on small screens        |
 
 ### **Acceptance of Test**
 
@@ -1852,11 +1851,11 @@ Name:
 
 ## T25. Learning Module(FWBS 4.2)
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module | Learning Module |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     | Learning Module                                    |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1868,13 +1867,13 @@ Name:
 
 ### Test Scenarios:
 
-| **ID** | **Test Case** | **Expected Result** |
-| --- | --- | --- |
-| LM-01 | Verify "Return to WealthWise" link exists in header | Link is visible in the header navigation area |
-| LM-02 | Click on "Return to WealthWise" link | User is redirected to [https://wealthwise.onrender.com](https://wealthwise.onrender.com/) |
-| LM-03 | Test header responsiveness on mobile device | "Return to WealthWise" link is accessible in mobile menu |
-| LM-04 | Navigate to a blog post and verify header persistence | "Return to WealthWise" link remains accessible |
-| LM-05 | Test navigation after filtering by tags | "Return to WealthWise" link remains accessible |
+| **ID** | **Test Case**                                         | **Expected Result**                                                                       |
+| ------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| LM-01  | Verify "Return to WealthWise" link exists in header   | Link is visible in the header navigation area                                             |
+| LM-02  | Click on "Return to WealthWise" link                  | User is redirected to [https://wealthwise.onrender.com](https://wealthwise.onrender.com/) |
+| LM-03  | Test header responsiveness on mobile device           | "Return to WealthWise" link is accessible in mobile menu                                  |
+| LM-04  | Navigate to a blog post and verify header persistence | "Return to WealthWise" link remains accessible                                            |
+| LM-05  | Test navigation after filtering by tags               | "Return to WealthWise" link remains accessible                                            |
 
 ### **Acceptance of Test**
 
@@ -1896,11 +1895,11 @@ Name:
 
 ## T#. # Calculator (FWBS )
 
-| Test Number | T1 |
-| --- | --- |
-| Test Module |  |
-| F/S(WBS) number |  |
-| Software Setup | - **Operating System**: Windows 11 Education 24H2;
+| Test Number     | T1                                                 |
+| --------------- | -------------------------------------------------- |
+| Test Module     |                                                    |
+| F/S(WBS) number |                                                    |
+| Software Setup  | - **Operating System**: Windows 11 Education 24H2; |
 - **Browser**: Microsoft Edge 134.0.3124.72 
 - **Network**: Xtream 5GHz Wifi at 1201mb/s |
 | Hardware Setup | - **Processor**; 13th Gen Intel(R) Core(TM) i7-1355U 1.70 GHz
@@ -1981,38 +1980,38 @@ By signing this document, you are confirming that the project has been completed
 
 ## **Appendix A: Glossary of Terms**
 
-| **Term / Acronym** | **Definition** |
-| --- | --- |
-| **Acceptance Testing** | A phase of software testing where the system is tested for acceptability. It ensures the software meets business requirements and is ready for delivery. |
-| **ATP** | Stands for Acceptance Test Plan. A document outlining the scope, test cases, environment, and acceptance criteria for validating a product. |
-| **FWBS** | Functional Work Breakdown Structure. A numbering system used to categorize software functions/modules being tested. |
-| **Test Case (T#)** | A specific scenario or procedure designed to verify a particular functionality or feature. Identified by a test number (e.g., T1, T2). |
-| **P/F** | Pass/Fail. Indicates whether a test case passed or failed based on expected outcomes. |
-| **UI** | User Interface. The visual elements through which a user interacts with the application. |
-| **API** | Application Programming Interface. A set of protocols for building and integrating software applications. |
-| **Advisor** | A user type in the system with specialized privileges to offer financial guidance, book consultations, and appear in the advisor directory. |
-| **Admin** | A user with elevated permissions who can manage users, advisors, events, analytics, and platform configurations. |
-| **User** | A general platform user with access to standard functionalities like registration, login, subscriptions, and consultations. |
-| **Consultation** | A virtual or scheduled session between a user and an advisor, typically involving financial or investment advice. |
-| **Subscription** | A recurring payment plan granting users access to premium services or advisor consultations. |
-| **Transaction** | A record of a user’s payment activity, including subscriptions, refunds, and payment history. |
-| **Interaction History** | A log or page showing a user's past events and consultations with advisors. |
-| **Error Guessing** | A test design technique where testers apply experience to guess where defects might be found. |
-| **Checksum (SHA256)** | A cryptographic hash used to verify the integrity of transaction data, ensuring it hasn't been tampered with. |
-| **Manual Testing** | Testing performed by humans, executing test cases without automation tools. |
-| **DevTools** | Browser-based tools (e.g., Chrome DevTools) used by developers and testers to inspect HTML, monitor network traffic, and debug JavaScript. |
-| **Localhost** | The local testing environment (usually at `localhost:8000`) where the application is run and tested before deployment. |
-| **In-App Messaging** | Messaging system within the platform allowing users or the system to send messages directly to user accounts. |
-| **Notification System** | System component that alerts users via email or in-app messages about relevant events, updates, or actions. |
-| **Invoice** | A bill generated for a completed payment, usually including itemized charges. |
-| **Receipt** | A confirmation document issued after successful payment, confirming transaction details. |
-| **Refund** | A return of funds to the user due to a cancelled or erroneous transaction. |
-| **Consultation Rate** | A system metric showing the frequency or volume of consultations between users and advisors. |
-| **Platform Health** | General system status including uptime, error rates, and system performance indicators. |
-| **PDF Report** | A downloadable, printable report generated by the system based on user data or analytics, typically in PDF format. |
-| **Latency Simulation** | The act of artificially slowing down a network connection to test how the system responds under less-than-ideal conditions. |
-| **Custom Report** | A user-generated report where specific fields and metrics are selected for inclusion. |
-| **System Metrics** | Quantitative measurements that reflect the performance, usage, and technical status of the platform. |
+| **Term / Acronym**      | **Definition**                                                                                                                                           |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Acceptance Testing**  | A phase of software testing where the system is tested for acceptability. It ensures the software meets business requirements and is ready for delivery. |
+| **ATP**                 | Stands for Acceptance Test Plan. A document outlining the scope, test cases, environment, and acceptance criteria for validating a product.              |
+| **FWBS**                | Functional Work Breakdown Structure. A numbering system used to categorize software functions/modules being tested.                                      |
+| **Test Case (T#)**      | A specific scenario or procedure designed to verify a particular functionality or feature. Identified by a test number (e.g., T1, T2).                   |
+| **P/F**                 | Pass/Fail. Indicates whether a test case passed or failed based on expected outcomes.                                                                    |
+| **UI**                  | User Interface. The visual elements through which a user interacts with the application.                                                                 |
+| **API**                 | Application Programming Interface. A set of protocols for building and integrating software applications.                                                |
+| **Advisor**             | A user type in the system with specialized privileges to offer financial guidance, book consultations, and appear in the advisor directory.              |
+| **Admin**               | A user with elevated permissions who can manage users, advisors, events, analytics, and platform configurations.                                         |
+| **User**                | A general platform user with access to standard functionalities like registration, login, subscriptions, and consultations.                              |
+| **Consultation**        | A virtual or scheduled session between a user and an advisor, typically involving financial or investment advice.                                        |
+| **Subscription**        | A recurring payment plan granting users access to premium services or advisor consultations.                                                             |
+| **Transaction**         | A record of a user’s payment activity, including subscriptions, refunds, and payment history.                                                            |
+| **Interaction History** | A log or page showing a user's past events and consultations with advisors.                                                                              |
+| **Error Guessing**      | A test design technique where testers apply experience to guess where defects might be found.                                                            |
+| **Checksum (SHA256)**   | A cryptographic hash used to verify the integrity of transaction data, ensuring it hasn't been tampered with.                                            |
+| **Manual Testing**      | Testing performed by humans, executing test cases without automation tools.                                                                              |
+| **DevTools**            | Browser-based tools (e.g., Chrome DevTools) used by developers and testers to inspect HTML, monitor network traffic, and debug JavaScript.               |
+| **Localhost**           | The local testing environment (usually at `localhost:8000`) where the application is run and tested before deployment.                                   |
+| **In-App Messaging**    | Messaging system within the platform allowing users or the system to send messages directly to user accounts.                                            |
+| **Notification System** | System component that alerts users via email or in-app messages about relevant events, updates, or actions.                                              |
+| **Invoice**             | A bill generated for a completed payment, usually including itemized charges.                                                                            |
+| **Receipt**             | A confirmation document issued after successful payment, confirming transaction details.                                                                 |
+| **Refund**              | A return of funds to the user due to a cancelled or erroneous transaction.                                                                               |
+| **Consultation Rate**   | A system metric showing the frequency or volume of consultations between users and advisors.                                                             |
+| **Platform Health**     | General system status including uptime, error rates, and system performance indicators.                                                                  |
+| **PDF Report**          | A downloadable, printable report generated by the system based on user data or analytics, typically in PDF format.                                       |
+| **Latency Simulation**  | The act of artificially slowing down a network connection to test how the system responds under less-than-ideal conditions.                              |
+| **Custom Report**       | A user-generated report where specific fields and metrics are selected for inclusion.                                                                    |
+| **System Metrics**      | Quantitative measurements that reflect the performance, usage, and technical status of the platform.                                                     |
 
 ---
 
