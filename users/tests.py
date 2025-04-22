@@ -54,6 +54,7 @@ class UserRegistrationLoginTests(TestCase):
         self.assertEqual(response.status_code, 200)
         form = response.context['form']
         self.assertTrue(form.errors)
+        # Only check for username error, not password2
         self.assertIn('A user with that username already exists.', form.errors['username'])
 
     def test_register_post_passwords_do_not_match(self):
@@ -66,7 +67,9 @@ class UserRegistrationLoginTests(TestCase):
         response = self.client.post(self.register_url, data)
         form = response.context['form']
         self.assertTrue(form.errors)
-        self.assertIn("The two password fields didn't match.", form.errors['password2'])
+        # Normalize apostrophes for robust comparison
+        error_msgs = [msg.replace("’", "'") for msg in form.errors['password2']]
+        self.assertIn("The two password fields didn't match.", error_msgs)
 
     def test_register_post_invalid_email(self):
         data = {
