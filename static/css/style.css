@@ -374,6 +374,17 @@ body {
   height: 100%;
 }
 
+.payment-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .form-floating > .form-control,
 .form-floating > .form-select {
   height: 60px;
