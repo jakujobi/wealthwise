@@ -1,8 +1,11 @@
 # calculators/views.py
+from django.contrib import messages
 from django.shortcuts import render
 from .models import FinancialToolUsage
+from users.models import Subscription
 from datetime import date, datetime
 import json
+from django.utils.timezone import now
 
 # Add new calculators homepage view
 def calculators_home(request):
@@ -155,80 +158,84 @@ def budgeting_tool(request):
     previous_entries = None
     form_data = {}
 
-    if request.method == 'POST':
-        if 'action' in request.POST:
-            if request.POST['action'] == 'load':
-                profile = request.user.profile
-                previous_entries = FinancialToolUsage.objects.filter(user_id=profile).order_by('-usage_date')
-
-                return render(request, 'budgeting_tool.html', {
-                    'overspend_areas': overspend_areas,
-                    'savings_goal_message': savings_goal_message,
-                    'previous_entries': previous_entries,
-                    'form_data': form_data
-                })
-            
-        if 'action' in request.POST:
-            if request.POST['action'] == 'modify':
-                entry_id = request.POST.get('entry_id')
-                profile = request.user.profile
-                entry = FinancialToolUsage.objects.get(user_id=profile, usage_id=entry_id)
-
-                # Prefill the form with the selected entry's data
-                form_data = json.loads(entry.input_data)
-                
-                # Ensure default values for income fields
-                form_data['fixed_income'] = form_data.get('fixed_income')
-                form_data['variable_income'] = form_data.get('variable_income')
-                form_data['one_year_savings_goal'] = form_data.get('one_year_savings_goal')
-                
-                # Extract and flatten expenses into form_data
-                expenses = form_data.get('expenses')
-                for key in ['housing', 'taxes', 'car_payment', 'internet_phone', 'subscriptions', 
-                            'food', 'entertainment', 'personal_items', 'utilities', 
-                            'transportation', 'medical', 'misc']:
-                    form_data[key] = expenses.get(key)
-                
-                # Add budget month and year
-                form_data['budget_month'] = entry.budget_for_date.month
-                form_data['budget_year'] = entry.budget_for_date.year
-
-                # Retrieve previous entries
-                previous_entries = FinancialToolUsage.objects.filter(user_id=profile).order_by('-usage_date')
-                
-                return render(request, 'budgeting_tool.html', {
-                    'overspend_areas': overspend_areas,
-                    'savings_goal_message': savings_goal_message,
-                    'previous_entries': previous_entries,
-                    'form_data': form_data
-                })
-            
-        if request.method == 'POST':
-            if request.POST['action'] == 'delete':
-                entry_id = request.POST.get('entry_id')
-                profile = request.user.profile
-
-                try:
-                    # Retrieve the entry by ID and ensure it belongs to the current user
-                    entry = FinancialToolUsage.objects.get(user_id=profile, usage_id=entry_id)
-                    entry.delete()  # Delete the entry from the database
-                except FinancialToolUsage.DoesNotExist:
-                    # Handle the case where the entry does not exist (e.g., invalid ID)
-                    pass
-
-                # Optionally, retrieve updated entries for the response
-                previous_entries = FinancialToolUsage.objects.filter(user_id=profile).order_by('-usage_date')
-
-                return render(request, 'budgeting_tool.html', {
-                    'overspend_areas': overspend_areas,
-                    'savings_goal_message': savings_goal_message,
-                    'previous_entries': previous_entries,
-                    'form_data': form_data
-                })
+    # Ensuser User is logged in
+    if request.user.is_anonymous or not hasattr(request.user, 'profile'):
+        messages.error(request, "Warning: You must be logged in to use this calculator.")
+        return render(request, 'budgeting_tool.html', {
+                'overspend_areas': overspend_areas,
+                'savings_goal_message': savings_goal_message,
+                'previous_entries': previous_entries,
+                'form_data': form_data
+            })
     
-        budget_month = int(request.POST.get('budget_month'))
-        budget_year = int(request.POST.get('budget_year'))
+    # Get user profile for various later operations
+    profile = request.user.profile
+    
+    # Ensuser User is subscribed
+    if not Subscription.objects.filter(user_id=profile, start_date__lte=now(), end_date__gte=now()).exists():
+        messages.error(request, "Warning: You must have an active subscription to use this calculator.")
+        return render(request, 'budgeting_tool.html', {
+                'overspend_areas': overspend_areas,
+                'savings_goal_message': savings_goal_message,
+                'previous_entries': previous_entries,
+                'form_data': form_data
+            })
 
+    # Retrieve entries to load into Previous Results after unpacking
+    raw_entries = FinancialToolUsage.objects.filter(user_id = profile).order_by('-budget_for_date')
+    previous_entries = loadEntriesFromDB(request, raw_entries)
+
+    # Method specific code
+    if request.method == 'POST':
+        if request.POST['action'] == 'load':
+            entry_id = request.POST.get('entry_id')
+            entry = raw_entries.get(usage_id=entry_id)
+
+            # Set up json input as dictionary and input non-comple fields (not expenses in list or date fields)
+            form_data = json.loads(entry.input_data)
+
+            # Extract and flatten expenses into form_data
+            expenses = form_data.get('expenses')
+            for key in ['housing', 'taxes', 'car_payment', 'internet_phone', 'subscriptions', 
+                        'food', 'entertainment', 'personal_items', 'utilities', 
+                        'transportation', 'medical', 'misc']:
+                form_data[key] = expenses.get(key)
+
+            # Add budget month and year
+            form_data['budget_month'] = entry.budget_for_date.month
+            form_data['budget_year'] = entry.budget_for_date.year
+
+            return render(request, 'budgeting_tool.html', {
+                'overspend_areas': overspend_areas,
+                'savings_goal_message': savings_goal_message,
+                'previous_entries': previous_entries,
+                'form_data': form_data
+            })
+        elif request.POST['action'] == 'delete':
+            entry_id = request.POST.get('entry_id')
+            profile = request.user.profile
+
+            try:
+                # Retrieve the entry by ID and ensure it belongs to the current user
+                entry = FinancialToolUsage.objects.get(user_id=profile, usage_id=entry_id)
+                entry.delete()  # Delete the entry from the database
+            except FinancialToolUsage.DoesNotExist:
+                # Handle the case where the entry does not exist (e.g., invalid ID)
+                pass
+
+            profile = request.user.profile
+            raw_entries = FinancialToolUsage.objects.filter(user_id=profile).order_by('-budget_for_date')
+
+            previous_entries = loadEntriesFromDB(request, raw_entries)
+
+            return render(request, 'budgeting_tool.html', {
+                'overspend_areas': overspend_areas,
+                'savings_goal_message': savings_goal_message,
+                'previous_entries': previous_entries,
+                'form_data': form_data
+            })
+        
+        # Save data in fields for use and re-population upon return from request
         fixed_income = float(request.POST.get('fixed_income'))
         variable_income = float(request.POST.get('variable_income'))
 
@@ -249,12 +256,26 @@ def budgeting_tool(request):
             'misc': float(request.POST.get('misc'))
         }
 
+        budget_month = int(request.POST.get('budget_month'))
+        budget_year = int(request.POST.get('budget_year'))
+
         input_data = {
             'fixed_income': fixed_income,
             'variable_income': variable_income,
             'one_year_savings_goal': one_year_savings_goal,
             'expenses': expenses
         }
+        form_data['fixed_income'] = fixed_income
+        form_data['variable_income'] = variable_income
+        form_data['one_year_savings_goal'] = one_year_savings_goal
+
+        for key in ['housing', 'taxes', 'car_payment', 'internet_phone', 'subscriptions', 
+                    'food', 'entertainment', 'personal_items', 'utilities', 
+                    'transportation', 'medical', 'misc']:
+            form_data[key] = expenses.get(key)
+
+        form_data['budget_month'] = budget_month
+        form_data['budget_year'] = budget_year
 
         spending_thresholds = {
             'housing': .30,
@@ -276,41 +297,44 @@ def budgeting_tool(request):
 
         for category, amount in expenses.items():
             if amount > spending_thresholds.get(category) * total_income:
-                overspend_areas += ("Spending in {} exceeds recomended value of {}%.\n").format(category, round(spending_thresholds.get(category) * 100, 2))
+                overspend_areas += ("Spending in {} exceeds recommended value of {}%.\n").format(category, round(spending_thresholds.get(category) * 100, 2))
 
         if (total_income - total_expenses) * 12 < one_year_savings_goal:
-            savings_goal_message = "Your current spending exceeds your savings goal. You will have ${} by the end of a year. Consider reducing expenses, especially in any highlighted areas.".format(round((total_income - total_expenses) * 12, 2))
+            savings_goal_message = "Your current spending exceeds your savings goal. You will have ${} in a year. Consider reducing expenses, especially in any highlighted areas.".format(round((total_income - total_expenses) * 12, 2))
         else:
-            savings_goal_message = "You are on track to meet your savings goal! You will have ${} by the end of a year!".format(round((total_income - total_expenses) * 12, 2))
+            savings_goal_message = "You are on track to meet your savings goal! You will have ${} in a year!".format(round((total_income - total_expenses) * 12, 2))
 
-        if 'action' in request.POST:
-            if request.POST['action'] == 'save':
-                profile = request.user.profile
-                budget_date = date(budget_year, budget_month, 1)
+        if request.POST['action'] == 'save':
+            profile = request.user.profile
+            budget_date = date(budget_year, budget_month, 1)
 
-                # Check if an entry with the same budget_for_date exists
-                existing_entry = FinancialToolUsage.objects.filter(
+            # Check if an entry with the same budget_for_date exists
+            existing_entry = FinancialToolUsage.objects.filter(
+                user_id=profile,
+                tool_type='budget_tool',
+                budget_for_date=budget_date
+            ).first()
+
+            if existing_entry:
+                # If an entry exists, update it
+                existing_entry.input_data = json.dumps(input_data)
+                existing_entry.usage_date = datetime.now()  # Update the timestamp
+                existing_entry.save()
+            else:
+                # If no entry exists, create a new one
+                financial_tool_usage = FinancialToolUsage(
                     user_id=profile,
                     tool_type='budget_tool',
+                    input_data=json.dumps(input_data),
+                    usage_date=datetime.now(),
                     budget_for_date=budget_date
-                ).first()
+                )
+                financial_tool_usage.save()
 
-                if existing_entry:
-                    # If an entry exists, update it
-                    existing_entry.input_data = json.dumps(input_data)
-                    existing_entry.usage_date = datetime.now()  # Update the timestamp
-                    existing_entry.save()
-                else:
-                    # If no entry exists, create a new one
-                    financial_tool_usage = FinancialToolUsage(
-                        user_id=profile,
-                        tool_type='budget_tool',
-                        input_data=json.dumps(input_data),
-                        usage_date=datetime.now(),
-                        budget_for_date=budget_date
-                    )
-                    financial_tool_usage.save()
+            profile = request.user.profile
+            raw_entries = FinancialToolUsage.objects.filter(user_id=profile).order_by('-budget_for_date')
 
+            previous_entries = loadEntriesFromDB(request, raw_entries)
 
     return render(request, 'budgeting_tool.html', {
         'overspend_areas': overspend_areas,
@@ -512,3 +536,35 @@ def car_payment_calcualtor(request):
         'total_interest_adj_pay': total_interest_adj_pay,
         'total_cost_adj_pay': total_cost_adj_pay
     })
+
+def loadEntriesFromDB(request, raw_entries):
+    previous_entries = []
+    for entry in raw_entries:
+        input_data = entry.input_data  # Extract JSON data from input_data
+
+        input_data = json.loads(entry.input_data)
+
+        flattened_entry = {
+            'usage_date': entry.usage_date,
+            'budget_for_date': entry.budget_for_date,
+            'fixed_income': input_data.get('fixed_income'),
+            'variable_income': input_data.get('variable_income'),
+            'one_year_savings_goal': input_data.get('one_year_savings_goal'),
+            # Flatten the expenses dictionary
+            'housing': input_data.get('expenses', {}).get('housing'),
+            'taxes': input_data.get('expenses', {}).get('taxes'),
+            'car_payment': input_data.get('expenses', {}).get('car_payment'),
+            'internet_phone': input_data.get('expenses', {}).get('internet_phone'),
+            'subscriptions': input_data.get('expenses', {}).get('subscriptions'),
+            'food': input_data.get('expenses', {}).get('food'),
+            'entertainment': input_data.get('expenses', {}).get('entertainment'),
+            'personal_items': input_data.get('expenses', {}).get('personal_items'),
+            'utilities': input_data.get('expenses', {}).get('utilities'),
+            'transportation': input_data.get('expenses', {}).get('transportation'),
+            'medical': input_data.get('expenses', {}).get('medical'),
+            'misc': input_data.get('expenses', {}).get('misc'),
+            # Other data needed for later use
+            'usage_id': entry.usage_id
+        }
+        previous_entries.append(flattened_entry)
+    return previous_entries
