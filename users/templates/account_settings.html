@@ -25,7 +25,10 @@
             <a href="#" class="list-group-item list-group-item-action">
               <i class="bi bi-bell me-2"></i>Notifications
             </a>
-            <a href="#" class="list-group-item list-group-item-action">
+            <a
+              href="{% url 'payment' %}"
+              class="list-group-item list-group-item-action"
+            >
               <i class="bi bi-credit-card me-2"></i>Payment Methods
             </a>
             <a
@@ -55,12 +58,9 @@
             <p class="text-danger">
               Deleting your account is permanent and cannot be undone.
             </p>
-            <form action="{% url 'delete_account' %}" method="post">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger">
-                Delete Account
-              </button>
-            </form>
+            <a href="{% url 'delete_account' %}" class="btn btn-danger">
+              Delete Account
+            </a>
           </div>
         </div>
       </div>
