@@ -37,8 +37,8 @@ class Profile(models.Model):
 class Advisor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='advisor')
     bio = models.TextField(blank=True, null=True)
-    certifications = models.JSONField(blank=True, null=True)
-    specialties = models.JSONField(blank=True, null=True)
+    certifications = models.TextField(blank=True, null=True)
+    specialties = models.TextField(blank=True, null=True)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
     
     def __str__(self):

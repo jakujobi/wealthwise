@@ -43,8 +43,8 @@
             <a href="#" class="list-group-item list-group-item-action active">
               <i class="bi bi-person me-2"></i>Profile Information
             </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <i class="bi bi-shield-lock me-2"></i>Security Settings
+            <a href="{% url 'account_settings' %}" class="list-group-item list-group-item-action">
+              <i class="bi bi-shield-lock me-2"></i>Account Settings
             </a>
             <a href="#" class="list-group-item list-group-item-action">
               <i class="bi bi-bell me-2"></i>Notifications
@@ -127,6 +127,58 @@
             </div>
           </div>
         </div>
+
+        {% if user.advisor %}
+        <div class="profile-section mb-4">
+          <div
+            class="profile-section-header d-flex justify-content-between align-items-center mb-3"
+          >
+            <h2 class="h4 mb-0">
+              <i class="bi bi-briefcase me-2"></i>Advisor Information
+            </h2>
+          </div>
+          <div class="profile-section-body p-4">
+            <div class="row g-3">
+              {% if user.advisor.bio %}
+              <div class="col-md-12">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">Bio:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.advisor.bio }}</span
+                  >
+                </div>
+              </div>
+              {% endif %} {% if user.advisor.certifications %}
+              <div class="col-md-12">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">Certifications:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.advisor.certifications }}</span
+                  >
+                </div>
+              </div>
+              {% endif %} {% if user.advisor.specialties %}
+              <div class="col-md-12">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">Specialties:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.advisor.specialties }}</span
+                  >
+                </div>
+              </div>
+              {% endif %}
+              <div class="col-md-12">
+                <div class="profile-info-item">
+                  <span class="profile-info-label fw-bold">Rating:</span>
+                  <span class="profile-info-value ms-2"
+                    >{{ user.advisor.rating }}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
 
         <div class="profile-section mb-4">
           <div
