@@ -12,7 +12,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ['id', 'conversation', 'sender', 'body', 'attachments', 'timestamp']
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
+    participants = serializers.StringRelatedField(many=True)
     messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:

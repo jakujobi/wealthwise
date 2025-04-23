@@ -3,7 +3,82 @@
 {% block content %}
 <div class="container mt-4">
   <h1>Messaging Center</h1>
-  <p>Select a conversation from the list or start a new one.</p>
-  <!-- Chat UI will be implemented here -->
+  <div class="row">
+    <div class="col-md-4">
+      <button id="new-convo" class="btn btn-primary mb-3">New Conversation</button>
+      <div class="list-group">
+        {% for conv in conversations %}
+          <a href="#" class="list-group-item list-group-item-action conversation-item" data-id="{{ conv.id }}">
+            {{ conv.participants|join:", " }}<br><small class="text-muted">{{ conv.created_at }}</small>
+          </a>
+        {% empty %}
+          <p>No conversations yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div id="chat-window" class="border rounded p-3" style="height: 500px; overflow-y: auto;">
+        <p>Select a conversation to view messages.</p>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const items = document.querySelectorAll('.conversation-item');
+  const chatWindow = document.getElementById('chat-window');
+  const newConvoButton = document.getElementById('new-convo');
+
+  newConvoButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    // Create a new conversation via API
+    fetch('/api/conversations/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Add new conversation to the list
+      const convoList = document.querySelector('.list-group');
+      const newConvoItem = document.createElement('a');
+      newConvoItem.href = '#';
+      newConvoItem.className = 'list-group-item list-group-item-action conversation-item';
+      newConvoItem.dataset.id = data.id;
+      newConvoItem.innerHTML = `New Conversation<br><small class="text-muted">${data.created_at}</small>`;
+      convoList.appendChild(newConvoItem);
+      // Add event listener to the new conversation item
+      newConvoItem.addEventListener('click', function(e) {
+        e.preventDefault();
+        const convoId = this.dataset.id;
+        chatWindow.innerHTML = '<p>Loading conversation ' + convoId + '...</p>';
+        // Fetch messages via AJAX
+        fetch(`/api/conversations/${convoId}/messages/`)
+          .then(response => response.json())
+          .then(data => {
+            const messagesHtml = data.map(message => `<p>${message.text}</p>`).join('');
+            chatWindow.innerHTML = messagesHtml;
+          });
+      });
+    });
+  });
+
+  items.forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      const convoId = this.dataset.id;
+      chatWindow.innerHTML = '<p>Loading conversation ' + convoId + '...</p>';
+      // Fetch messages via AJAX
+      fetch(`/api/conversations/${convoId}/messages/`)
+        .then(response => response.json())
+        .then(data => {
+          const messagesHtml = data.map(message => `<p>${message.text}</p>`).join('');
+          chatWindow.innerHTML = messagesHtml;
+        });
+    });
+  });
+});
+</script>
 {% endblock %}

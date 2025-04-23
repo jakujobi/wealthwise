@@ -8,7 +8,8 @@ from .serializers import ConversationSerializer, MessageSerializer, Notification
 
 @login_required
 def index(request):
-    return render(request, 'messaging/index.html')
+    conversations = request.user.conversations.all()
+    return render(request, 'messaging/index.html', {'conversations': conversations})
 
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
