@@ -1,6 +1,9 @@
 # ignore workspace files
 *.code-workspace
 
+# TODO file
+TODO.txt
+
 # Media files
 media/
 # Byte-compiled / optimized / DLL files
