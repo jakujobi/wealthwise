@@ -285,12 +285,12 @@ def eventRegister_List(request):
     try:
         user = request.user
         profile = Profile.objects.get(user=user)
-        events = Event.objects.order_by('event_start_timestamp').filter(scheduled_date__gte=now())
+        events = Event.objects.order_by('event_start_timestamp').filter(event_start_timestamp__gte=now())
         registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
     
         event_status = {}
         for event in events:
-            event_status[event.event_id] = "None"
+            event_status[event.event_id] = ""
 
         for reg_event in registered_events:
             if reg_event.event_id.event_id in event_status:
@@ -299,7 +299,7 @@ def eventRegister_List(request):
         for event in events:
             event.status = event_status.get(event.event_id, "None")
 
-        return render(request, 'User/eventRegistration_list.html', {'events': events})
+        return render(request, 'User/eventRegister_list.html', {'events': events})
     except Exception as e:  
         logger.error(f"Error loading event registrations for user: {user.username}.")
         logger.error(f"Error: {str(e)}")

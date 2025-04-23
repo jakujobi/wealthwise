@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Event Registration{% endblock %}
+{% block content %}
+
+<div class="container">
+    <button class="btn btn-primary" onclick="window.location.href='{% url 'view' %}'">Return</button>
+</div>
+
+<div class="container">
+    <h2>Available Events</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.event_start_timestamp }}</td>
+                <td>{{ event.event_end_timestamp }}</td>
+                <td>{{ event.status }}</td>
+                <td>
+                    {% if event.status == "Registered" %}
+                    <button class="btn btn-secondary" disabled>Registered</button>
+                    {% else %}
+                    {% comment %} <form method="post" action="{% url 'register_event' event.event_id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-primary">Register</button>
+                    </form> {% endcomment %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
