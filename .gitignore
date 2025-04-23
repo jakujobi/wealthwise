@@ -8,6 +8,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+TODO.txt
+
 # C extensions
 *.so
 
