@@ -9,6 +9,7 @@
 
 <div class="container">
     <h2>Available Events</h2>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -29,15 +30,22 @@
                 <td>{{ event.location }}</td>
                 <td>{{ event.event_start_timestamp }}</td>
                 <td>{{ event.event_end_timestamp }}</td>
-                <td>{{ event.status }}</td>
                 <td>
                     {% if event.status == "Registered" %}
-                    <button class="btn btn-secondary" disabled>Registered</button>
+                        <span class="text-success">Registered</span>
+                    {% elif event.status == "Deleted" %}
+                        <span class="text-danger">Deleted</span>
                     {% else %}
-                    {% comment %} <form method="post" action="{% url 'register_event' event.event_id %}">
-                        {% csrf_token %}
-                        <button class="btn btn-primary">Register</button>
-                    </form> {% endcomment %}
+                        <span class="text-secondary">Available</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if event.status == "Registered" %}
+                        <button class="btn btn-secondary" disabled>Registered</button>
+                    {% elif event.status == "Deleted" %}
+                        <button class="btn btn-danger" disabled>Deleted</button>
+                    {% else %}
+                        <button class="btn btn-primary register-btn" data-event-id="{{ event.event_id }}">Register</button>
                     {% endif %}
                 </td>
             </tr>
@@ -45,5 +53,8 @@
         </tbody>
     </table>
 </div>
+
+<script src="{% static 'js/eventRegister.js' %}"></script>
+
 {% endblock %}
 

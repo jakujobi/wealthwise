@@ -6,6 +6,10 @@ from users.models import Profile, Advisor
 from .forms import *
 from logging import getLogger
 from django.utils.timezone import now
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.views.decorators.cache import never_cache
 
 logger = getLogger(__name__)
 
@@ -45,7 +49,7 @@ def scheduleView(request,message=None):
     userTypeRequested = authorizeUser(request)
 
     try:
-        eventListRequest = request.POST.get('eventListRequest') if request.method == 'POST' else None
+        eventListRequest = request.POST.get('eventListRequest') if request.method == 'POST' else "UPCOMING"
         if userTypeRequested == userType['advisor']:
             profile = Profile.objects.get(user=user)
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
@@ -69,7 +73,7 @@ def scheduleView(request,message=None):
         
         elif userTypeRequested == userType['user']:
             profile = Profile.objects.get(user=user)
-            Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
+            Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest )
             return render(request, 'scheduleView_user.html', 
                           {'profile': profile,
                            'events': Events,
@@ -88,7 +92,7 @@ def errorPage(request, message=None):
     return render(request, 'scheduleView_Error.html', {'message': message})
 
 # myEvents
-def listMyEvents(user, userTypeRequested, eventListRequest=None):
+def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
     # event list request is used to filter the events list
     # if eventListRequest is None, return all events
     # if eventListRequest is not None, return events that match the request
@@ -287,15 +291,20 @@ def eventRegister_List(request):
         profile = Profile.objects.get(user=user)
         events = Event.objects.order_by('event_start_timestamp').filter(event_start_timestamp__gte=now())
         registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
-    
+
+        # Create a dictionary to store the status of each event
         event_status = {}
         for event in events:
             event_status[event.event_id] = ""
 
+        # Check the status of each registered event and update the dictionary
         for reg_event in registered_events:
             if reg_event.event_id.event_id in event_status:
                 event_status[reg_event.event_id.event_id] = "Registered"
-
+            else:
+                event_status[reg_event.event_id.event_id] = "Deleted"
+        
+        # Update the status of each event in the events list
         for event in events:
             event.status = event_status.get(event.event_id, "None")
 
@@ -304,3 +313,32 @@ def eventRegister_List(request):
         logger.error(f"Error loading event registrations for user: {user.username}.")
         logger.error(f"Error: {str(e)}")
         return redirect('errorPage', message="Something went wrong when loading event data.")
+
+@csrf_exempt
+@require_POST
+@never_cache
+@login_required
+def registerEvent(request, eventId=None):
+    user = request.user
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['user']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to perform this action."}, status=403)
+    
+    try:
+        profile = Profile.objects.get(user=user)
+        event = Event.objects.get(event_id=eventId)
+
+        # Check if the user is already registered for the event
+        if eventRegistration.objects.filter(user_id=profile, event_id=event).exists():
+            return JsonResponse({'success': False, 'message': "You are already registered for this event."}, status=400)
+
+        # Use the correct field name for registration
+        eventRegistration.objects.create(user_id=profile, event_id=event)
+        return JsonResponse({'success': True, 'message': "Event registered successfully."}, status=200)
+    except Event.DoesNotExist:
+        return JsonResponse({'success': False, 'message': "Event does not exist."}, status=404)
+    except Exception as e:
+        logger.error(f"Error registering for event: {eventId}. User: {user.username}.")
+        logger.error(f"Error: {str(e)}")
+        return JsonResponse({'success': False, 'message': "An error occurred while registering for the event."}, status=500)
