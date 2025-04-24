@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         alert(data.message);
+                        console.log(`Registration ID: ${data.registration_id}`); // Log the registration ID
                         location.reload();
                     } else {
                         alert(data.message);

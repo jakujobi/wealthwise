@@ -335,8 +335,8 @@ def registerEvent(request, eventId=None):
             return JsonResponse({'success': False, 'message': "You are already registered for this event."}, status=400)
 
         # Register the user for the event
-        eventRegistration.objects.create(user_id=profile, event_id=event)
-        return JsonResponse({'success': True, 'message': "Event registered successfully."}, status=200)
+        registration = eventRegistration.objects.create(user_id=profile, event_id=event)
+        return JsonResponse({'success': True, 'message': "Event registered successfully.", 'registration_id': registration.registration_id}, status=200)
     except Event.DoesNotExist:
         return JsonResponse({'success': False, 'message': "Event does not exist."}, status=404)
     except Exception as e:

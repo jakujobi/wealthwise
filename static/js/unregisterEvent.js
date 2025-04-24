@@ -19,7 +19,7 @@ function unregisterEvent(eventId, button) {
     // Disable the button to prevent duplicate calls
     button.disabled = true;
 
-    fetch(`/unregister/${eventId}/`, {
+    fetch(`/schedule/unregister/${eventId}/`, { // Fixed the URL to include the correct path
         method: 'POST',
         headers: {
             'X-CSRFToken': getCSRFToken(),
