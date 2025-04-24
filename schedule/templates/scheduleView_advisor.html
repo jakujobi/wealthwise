@@ -4,7 +4,7 @@
 
 <h1 class="text-primary text-center" style="margin: 1rem">This is advisor</h1>
 {% if profile %}
-<h3 class="text-center">Name: {{profile.first_name}}</h3>
+<h3 class="text-center">Name: {{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
 {% endif %}
 
 <br>
@@ -29,7 +29,7 @@
         {% for consultation in consultations %}
         <tr>
             <td>{{ consultation.consultation_id }}</td>
-            <td>{{ consultation.client_id.first_name }} {{ consultation.client_id.last_name }}</td>
+            <td>{{ consultation.client_id.user.first_name }} {{ consultation.client_id.user.last_name }}</td>
             <td>{{ consultation.scheduled_date }}</td>
             <td>{{ consultation.session_notes }}</td>
         </tr>
@@ -43,7 +43,6 @@
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
     <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">New Event</button>
-    
 </div>
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
@@ -76,7 +75,7 @@
             <td>{{ event.location }}</td>
             <td>{{ event.description }}</td>
             <td class="text-right">
-                <a href="{% url "eventDetail" event %}">
+                <a href="{% url "eventDetail" event.event_id %}">
                     <img src="{% static 'images/edit_icon.svg' %}" alt="Edit" style="width:20px;height:20px;">
                 </a>
             </td>
