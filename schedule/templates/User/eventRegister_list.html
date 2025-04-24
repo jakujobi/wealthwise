@@ -41,7 +41,7 @@
                 </td>
                 <td>
                     {% if event.status == "Registered" %}
-                        <button class="btn btn-secondary" disabled>Registered</button>
+                        <button class="btn btn-secondary unregister-btn" data-event-id="{{ event.event_id }}">Unregister</button>
                     {% elif event.status == "Deleted" %}
                         <button class="btn btn-danger" disabled>Deleted</button>
                     {% else %}
@@ -54,7 +54,8 @@
     </table>
 </div>
 
-<script src="{% static 'js/eventRegister.js' %}"></script>
+<script src="{% static 'js/registerEvent.js' %}"></script>
+<script src="{% static 'js/unregisterEvent.js' %}"></script>
 
 {% endblock %}
 

@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<h1 class="text-primary text-center" style="margin: 1rem">This is advisor</h1>
+<h1 class="text-primary text-center" style="margin: 1rem">This is user</h1>
 {% if profile %}
 <h3 class="text-center">Name: {{profile.first_name}}</h3>
 {% endif %}
@@ -65,7 +65,7 @@
             <th>Time</th>
             <th>Location</th>
             <th>Description</th>
-            <th>Edit</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -75,14 +75,15 @@
             <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
             <td>{{ event.location }}</td>
             <td>{{ event.description }}</td>
-            <td class="text-right">
-                <a href="{% url "eventDetail" event %}">
-                    <img src="{% static 'images/edit_icon.svg' %}" alt="Edit" style="width:20px;height:20px;">
-                </a>
+            <td class="text-center">
+                <button class="btn btn-danger unregister-btn" data-event-id="{{ event.event_id }}">Unregister</button>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script src="{% static 'js/registerEvent.js' %}"></script>
+<script src="{% static 'js/unregisterEvent.js' %}"></script>
 
 {% endblock %}

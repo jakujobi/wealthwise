@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
+from django.db import transaction
 
 logger = getLogger(__name__)
 
@@ -333,7 +334,7 @@ def registerEvent(request, eventId=None):
         if eventRegistration.objects.filter(user_id=profile, event_id=event).exists():
             return JsonResponse({'success': False, 'message': "You are already registered for this event."}, status=400)
 
-        # Use the correct field name for registration
+        # Register the user for the event
         eventRegistration.objects.create(user_id=profile, event_id=event)
         return JsonResponse({'success': True, 'message': "Event registered successfully."}, status=200)
     except Event.DoesNotExist:
@@ -342,3 +343,32 @@ def registerEvent(request, eventId=None):
         logger.error(f"Error registering for event: {eventId}. User: {user.username}.")
         logger.error(f"Error: {str(e)}")
         return JsonResponse({'success': False, 'message': "An error occurred while registering for the event."}, status=500)
+
+@csrf_exempt
+@require_POST
+@never_cache
+@login_required
+def unregisterEvent(request, eventId=None):
+    user = request.user
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['user']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to perform this action."}, status=403)
+    
+    try:
+        profile = Profile.objects.get(user=user)
+        event = Event.objects.get(event_id=eventId)
+
+        with transaction.atomic():
+            registration = eventRegistration.objects.filter(user_id=profile, event_id=event)
+            if not registration.exists():
+                return JsonResponse({'success': False, 'message': "You are not registered for this event."}, status=400)
+
+            registration.delete()
+
+        return JsonResponse({'success': True, 'message': "Event unregistered successfully."}, status=200)
+    except Event.DoesNotExist:
+        return JsonResponse({'success': False, 'message': "Event does not exist."}, status=404)
+    except Exception as e:
+        logger.error(f"Error unregistering from event: {eventId}. User: {user.username}. Exception: {str(e)}")
+        return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
