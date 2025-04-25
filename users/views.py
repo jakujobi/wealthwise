@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.utils.timezone import now
 
 from users.models import Payment, Subscription
@@ -26,18 +27,26 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def login_view(request):
+    error_message = None
+    username = None
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
+        username = request.POST.get('username', '')  # Preserve the username
         if form.is_valid():
-            username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('home') 
+        
+        # Create a custom error message based on the form's validity        
+        if not User.objects.filter(username=username).exists():
+            error_message = "Username does not exist."
+        else:
+            error_message = "Incorrect password."
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'error_message': error_message, 'username': username})
 
 @login_required
 def logout_view(request):
