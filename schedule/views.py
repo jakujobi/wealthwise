@@ -106,9 +106,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             
             profile = Profile.objects.get(user=user)
             advisor = Advisor.objects.get(user=user)
-            if eventListRequest == "PAST":
+            if eventListRequest.upper == "PAST":
                 events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
-            elif eventListRequest == "UPCOMING":
+            elif eventListRequest.upper == "UPCOMING":
                 events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now()).order_by('event_start_timestamp')
             else:
                 events = Event.objects.filter(user_id=profile).order_by('event_start_timestamp')
@@ -125,9 +125,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
         
         elif userTypeRequested == userType['admin']:
             
-            if eventListRequest == "past":
+            if eventListRequest.upper == "PAST":
                 events = Event.objects.filter(event_start_timestamp__lt=now()).order_by('event_start_timestamp')
-            elif eventListRequest == "upcoming":
+            elif eventListRequest.upper == "UPCOMING":
                 events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
             else:
                 events = Event.objects.all().order_by('event_start_timestamp')
@@ -140,9 +140,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             # Fetch registered events for the user
             registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
 
-            if eventListRequest == "past":
+            if eventListRequest.upper == "PAST":
                 events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp < now()]
-            elif eventListRequest == "upcoming":
+            elif eventListRequest.upper == "UPCOMING":
                 events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp >= now()]
             else:
                 events = [reg.event_id for reg in registered_events]
