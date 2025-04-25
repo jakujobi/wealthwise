@@ -8,4 +8,7 @@ urlpatterns = [
     path('eventDetail/<str:eventId>/', eventDetail, name='eventDetail'),
     path('deleteEvent/<str:eventId>/', deleteEvent, name='deleteEvent'),
     path('error/<str:message>', errorPage, name='errorPage'),
+    path('eventRegister', eventRegister_List, name='eventRegister'),
+    path('registerEvent/<int:eventId>/', registerEvent, name='registerEvent'),
+    path('unregister/<int:eventId>/', unregisterEvent, name='unregisterEvent'),
 ]
