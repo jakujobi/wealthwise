@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.db import transaction
+from django.contrib.auth.models import User
 
 logger = getLogger(__name__)
 
@@ -27,7 +28,7 @@ def authorizeUser(request):
         # Check if user is an advisor
         try:
             profile = Profile.objects.get(user=user)
-            advisor = Advisor.objects.get(user_id=profile)
+            advisor = Advisor.objects.get(user=user)
             return userType['advisor']
         except Exception:
             # Is user an admin?
@@ -46,41 +47,44 @@ def authorizeUser(request):
 
 @login_required
 def scheduleView(request,message=None):
-    user = request.user
+    user = request.user 
     userTypeRequested = authorizeUser(request)
 
     try:
         eventListRequest = request.POST.get('eventListRequest') if request.method == 'POST' else "UPCOMING"
         if userTypeRequested == userType['advisor']:
-            profile = Profile.objects.get(user=user)
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
             return render(request, 'scheduleView_advisor.html', 
-                          {'profile': profile,
+                          {
+                           'user_first_name': user.first_name,
+                           'user_last_name': user.last_name,
                            'events': Events,
                            'consultations': Consultation,
                            'message': message,
-                            'eventListRequest': eventListRequest
+                           'eventListRequest': eventListRequest
                         })                           
         
         elif userTypeRequested == userType['admin']:
-            profile = None
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
             return render(request, 'scheduleView_advisor.html', 
-                          {'profile': profile,
+                          {
+                           'user_first_name': user.first_name,
+                           'user_last_name': user.last_name,
                            'events': Events,
                            'consultations': Consultation,
                            'message': message,
                            'eventListRequest': eventListRequest})
         
         elif userTypeRequested == userType['user']:
-            profile = Profile.objects.get(user=user)
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest )
             return render(request, 'scheduleView_user.html', 
-                          {'profile': profile,
+                          {
+                           'user_first_name': user.first_name,
+                           'user_last_name': user.last_name,
                            'events': Events,
                            'consultations': Consultation,
                            'message': message,
-                            'eventListRequest': eventListRequest
+                           'eventListRequest': eventListRequest
                            })
         
     except Exception as e:
@@ -101,7 +105,7 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
         if userTypeRequested == userType['advisor']:
             
             profile = Profile.objects.get(user=user)
-            advisor = Advisor.objects.get(user_id=profile)
+            advisor = Advisor.objects.get(user=user)
             if eventListRequest == "PAST":
                 events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
             elif eventListRequest == "UPCOMING":
