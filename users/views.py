@@ -40,10 +40,7 @@ def login_view(request):
                 return redirect('home') 
         
         # Create a custom error message based username and password validity     
-        if not User.objects.filter(username=username).exists():
-            error_message = "Username does not exist."
-        else:
-            error_message = "Incorrect password."
+        error_message = "Invalid login credentials."
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form, 'error_message': error_message, 'username': username})
