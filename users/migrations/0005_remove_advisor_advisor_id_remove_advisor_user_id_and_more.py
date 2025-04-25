@@ -38,7 +38,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='advisor',
             name='user',
-            field=models.OneToOneField(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='advisor', to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(
+                default=1,  # Replace 1 with the ID of an existing user to assign as default
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='advisor',
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

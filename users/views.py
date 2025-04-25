@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, CustomUserCreationForm  # Import the ProfileForm and CustomUserCreationForm
-from users.models import Subscription, Payment
 from django.utils.timezone import now
-from datetime import date, timedelta
+
+from users.models import Payment, Subscription
+from .forms import AdvisorForm, ProfileForm, CustomUserCreationForm  # Import the ProfileForm and CustomUserCreationForm
+from datetime import timedelta, date  # Add this import
 
 def register(request):
     if request.method == 'POST':
@@ -46,22 +47,78 @@ def logout_view(request):
 # Profile; Also has subscription status and payment form
 @login_required
 def profile(request):
+    subscription_string = ""
+
+    # Retrieve the logged-in user's profile
+    user_profile = request.user.profile
+
+    if not Subscription.objects.filter(user_id=user_profile, start_date__lte=now(), end_date__gte=now()).exists():
+        entry = None
+        subscription_string = "Not currently subscribed"
+    else:
+        entry = Subscription.objects.filter(user_id=user_profile, start_date__lte=now(), end_date__gte=now()).get()
+        subscription_string = "Subscribed until " + entry.end_date.strftime("%Y-%m-%d")
+    
+    return render(request, 'profile.html', {
+            'subscription_string': subscription_string,
+        })
+    
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        advisor_form = AdvisorForm(request.POST, instance=request.user.advisor) if hasattr(request.user, 'advisor') else None
+        if form.is_valid() and (not advisor_form or advisor_form.is_valid()):
+            profile = form.save(commit=False)
+            profile.user.first_name = form.cleaned_data['first_name']
+            profile.user.last_name = form.cleaned_data['last_name']
+            profile.user.save()
+            profile.save()
+            if advisor_form:
+                advisor_form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=request.user.profile, initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name
+        })
+        advisor_form = AdvisorForm(instance=request.user.advisor) if hasattr(request.user, 'advisor') else None
+    return render(request, 'edit_profile.html', {
+        'form': form,
+        'advisor_form': advisor_form
+    })
+
+@login_required
+def account_settings(request):
+
+    # gives options to change password and delete account
+    return render(request, 'account_settings.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST' and 'confirm' in request.POST:
+        user = request.user
+        user.delete()
+        return redirect('home')
+    return render(request, 'delete_account.html')
+
+@login_required
+def payment(request):
     PRICE_PER_DAY = 1.00
 
     subscription_string = ""
     form_data = {}
     total_price = 0.0
 
-    # Ensuser is already logged in per @login required
-    # Get user profile for various later operations
-    profile = request.user.profile
+    # Retrieve the logged-in user's profile
+    user_profile = request.user.profile
     
-    # check if User is subscribed
-    if not Subscription.objects.filter(user_id=profile, start_date__lte=now(), end_date__gte=now()).exists():
+    # Check if User is subscribed
+    if not Subscription.objects.filter(user_id=user_profile, start_date__lte=now(), end_date__gte=now()).exists():
         entry = None
         subscription_string = "You are currently not subscribed"
     else:
-        entry = Subscription.objects.filter(user_id=profile, start_date__lte=now(), end_date__gte=now()).get()
+        entry = Subscription.objects.filter(user_id=user_profile, start_date__lte=now(), end_date__gte=now()).get()
         subscription_string = "You are subscribed until: " + entry.end_date.strftime("%Y-%m-%d")
 
     if request.method == 'POST':
@@ -87,7 +144,7 @@ def profile(request):
                 entry.save()
             else:
                 new_subscription = Subscription(
-                    user_id = profile,
+                    user_id = user_profile,
                     plan_type = "Standard",
                     start_date = date.today(),
                     end_date = date.today() + timedelta(days=subscription_days),
@@ -99,39 +156,21 @@ def profile(request):
             total_price = PRICE_PER_DAY * subscription_days
 
             new_payment = Payment(
-                user_id = profile,
+                user_id = user_profile,
                 amount = total_price,
                 payment_method = "Credit Card",
                 payment_date = date.today(),
-                transaction_id = entry.subscription_id,
+                transaction_id = entry.pk,
                 payment_status = "PID"
             )
             new_payment.save()
 
-            #Redirect to prevent duplicate POST requests from making multiple db entries
-            return redirect('profile')
+            # Redirect to prevent duplicate POST requests from making multiple db entries
+            return redirect('payment')
 
-    return render(request, 'profile.html', {
-            'subscription_string': subscription_string,
-            'form_data': form_data
-        })
-
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user.first_name = form.cleaned_data['first_name']
-            profile.user.last_name = form.cleaned_data['last_name']
-            profile.user.save()
-            profile.save()
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=request.user.profile, initial={
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name
-        })
-    return render(request, 'edit_profile.html', {'form': form})
-
-# Settings (was this what edit profile became? Is this necessary anymore?)
+    # Shows payment methods and allows to add new ones
+    return render(request, 'payment.html', {
+        'subscription_string': subscription_string,
+        'form_data': form_data,
+        'total_price': total_price
+    })
