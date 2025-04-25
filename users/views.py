@@ -39,7 +39,7 @@ def login_view(request):
                 login(request, user)
                 return redirect('home') 
         
-        # Create a custom error message based on the form's validity        
+        # Create a custom error message based username and password validity     
         if not User.objects.filter(username=username).exists():
             error_message = "Username does not exist."
         else:
