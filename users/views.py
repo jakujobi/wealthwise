@@ -88,9 +88,10 @@ def edit_profile(request):
         advisor_form = AdvisorForm(request.POST, instance=request.user.advisor) if hasattr(request.user, 'advisor') else None
         if form.is_valid() and (not advisor_form or advisor_form.is_valid()):
             profile = form.save(commit=False)
-            profile.user.first_name = form.cleaned_data['first_name']
-            profile.user.last_name = form.cleaned_data['last_name']
-            profile.user.save()
+            # Update first_name, last_name, and email in the User model
+            request.user.first_name = form.cleaned_data['first_name']
+            request.user.last_name = form.cleaned_data['last_name']
+            request.user.save()
             profile.save()
             if advisor_form:
                 advisor_form.save()
@@ -98,7 +99,8 @@ def edit_profile(request):
     else:
         form = ProfileForm(instance=request.user.profile, initial={
             'first_name': request.user.first_name,
-            'last_name': request.user.last_name
+            'last_name': request.user.last_name,
+            'email': request.user.email,
         })
         advisor_form = AdvisorForm(instance=request.user.advisor) if hasattr(request.user, 'advisor') else None
     return render(request, 'edit_profile.html', {

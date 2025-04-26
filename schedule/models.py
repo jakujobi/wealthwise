@@ -39,3 +39,27 @@ class eventRegistration(models.Model):
     
     def __str__(self):
         return str(self.event_id)
+
+class AdvisorAvailability(models.Model):
+    advisor = models.ForeignKey('users.Advisor', on_delete=models.CASCADE)
+    blockedDateTime = models.JSONField(default=list, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.advisor.user.username} - {self.time_slots.count()} time slots, {len(self.blockedDateTime or [])} blocked slots"
+
+class TimeSlot(models.Model):
+    availability = models.ForeignKey(AdvisorAvailability, related_name='time_slots', on_delete=models.CASCADE)
+    day_of_week = models.CharField(max_length=10, choices=[
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thursday"),
+        ("Friday", "Friday"),
+        ("Saturday", "Saturday"),
+        ("Sunday", "Sunday"),
+    ])
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return f"{self.day_of_week}: {self.start_time} - {self.end_time}"

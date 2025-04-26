@@ -46,6 +46,10 @@
 </div>
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
+    <a href="{% url 'setAvailability' %}" class="btn btn-secondary">Set Availability</a>
+</div>
+
+<div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
     <form method="POST" action="">
         {% csrf_token %}
         <select name="eventListRequest" class="form-select" style="display: inline-block; width: auto; margin-right: 1rem;">
