@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalDayInput = document.getElementById("modal-day");
     const modalStartTimeInput = document.getElementById("modal-start-time");
     const modalEndTimeInput = document.getElementById("modal-end-time");
-    const timeSlots = {};
+    const timeSlots = { add: {}, remove: {} }; // Initialize add and remove properties
 
     // Open modal to add a time slot
     addTimeSlotButtons.forEach(button => {
@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (!timeSlots[day]) {
-            timeSlots[day] = [];
+        if (!timeSlots.add[day]) {
+            timeSlots.add[day] = [];
         }
-        timeSlots[day].push({ start_time: startTime, end_time: endTime });
+        timeSlots.add[day].push({ start_time: startTime, end_time: endTime });
 
         const timeSlotsCell = document.getElementById(`time-slots-${day}`);
         const slotElement = document.createElement("div");
@@ -44,6 +44,25 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.hide();
     });
 
+    const removeTimeSlotButtons = document.querySelectorAll(".remove-time-slot");
+
+    // Remove time slot from the table and prepare for server update
+    removeTimeSlotButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const day = this.dataset.day;
+            const startTime = this.dataset.startTime;
+            const endTime = this.dataset.endTime;
+
+            if (!timeSlots.remove[day]) {
+                timeSlots.remove[day] = [];
+            }
+            timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
+
+            // Remove the time slot from the UI
+            this.parentElement.remove();
+        });
+    });
+
     // Save all availability to the server
     saveAvailabilityButton.addEventListener("click", function () {
         fetch("/schedule/setAvailability/", {
@@ -52,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/json",
                 "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
             },
-            body: JSON.stringify({ time_slots: timeSlots })
+            body: JSON.stringify({ time_slots: timeSlots.add, remove_time_slots: timeSlots.remove })
         })
             .then(response => {
                 if (response.ok) {

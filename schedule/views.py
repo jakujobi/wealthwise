@@ -392,23 +392,33 @@ def set_availability(request):
 
     if request.method == 'POST':
         try:
-            time_slots = json.loads(request.body).get('time_slots', {})
-            if not time_slots:
-                return JsonResponse({'error_message': "Time slots cannot be empty."}, status=400)
+            data = json.loads(request.body)
+            new_time_slots = data.get('time_slots', {})
+            remove_time_slots = data.get('remove_time_slots', {})
 
-            # Save time slots to the database
+            if not new_time_slots and not remove_time_slots:
+                return JsonResponse({'error_message': "No time slots provided."}, status=400)
+
             availability, created = AdvisorAvailability.objects.get_or_create(advisor=Advisor.objects.get(user=request.user))
-            availability.time_slots.all().delete()  # Clear existing time slots
-            for day, slots in time_slots.items():
+
+            # Remove specified time slots
+            for day, slots in remove_time_slots.items():
                 for slot in slots:
-                    TimeSlot.objects.create(
-                        availability=availability,
+                    availability.time_slots.filter(
+                        day_of_week=day,
+                        start_time=slot.get("start_time"),
+                        end_time=slot.get("end_time")
+                    ).delete()
+
+            # Add new time slots
+            for day, slots in new_time_slots.items():
+                for slot in slots:
+                    availability.time_slots.get_or_create(
                         day_of_week=day,
                         start_time=slot.get("start_time"),
                         end_time=slot.get("end_time")
                     )
 
-            # Return a JSON response with the redirect URL
             return JsonResponse({'redirect_url': '/schedule/view?message=Your%20available%20time%20slots%20saved'})
         except json.JSONDecodeError:
             return JsonResponse({'error_message': "Invalid time slots format."}, status=400)
@@ -419,9 +429,11 @@ def set_availability(request):
         time_slots = {day: [] for day in days_of_week}
         if availability:
             for slot in availability.time_slots.all():
-                time_slots[slot.day_of_week].append(f"{slot.start_time} - {slot.end_time}")
+                time_slots[slot.day_of_week].append({
+                    "start_time": str(slot.start_time),
+                    "end_time": str(slot.end_time)
+                })
 
-        # Render the availability form with parsed time slots
         return render(request, 'Advisor/set_availability.html', {
             'availability': availability,
             'days_of_week': days_of_week,
