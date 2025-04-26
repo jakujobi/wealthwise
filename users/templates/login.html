@@ -11,6 +11,17 @@
             <h2 class="h3 mb-0">Login to Your Account</h2>
           </div>
 
+          <!-- Display Django messages -->
+          {% if messages %}
+          <div>
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
           <!-- Display error message -->
           {% if error_message %}
           <div class="alert alert-danger" role="alert">{{ error_message }}</div>

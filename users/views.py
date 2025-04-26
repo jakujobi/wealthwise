@@ -9,6 +9,8 @@ import string
 from django.contrib import messages
 from django.core.mail import send_mail  # Add this import
 from django.contrib.auth.hashers import check_password  # Add this import
+from django.contrib.auth.password_validation import validate_password  # Add this import
+from django.core.exceptions import ValidationError  # Add this import
 
 from users.models import Payment, Subscription, OTP  # Add this import
 from .forms import AdvisorForm, ProfileForm, CustomUserCreationForm  # Import the ProfileForm and CustomUserCreationForm
@@ -34,6 +36,11 @@ def register(request):
 def login_view(request):
     error_message = None
     username = None
+
+    # Display success or error messages from other views
+    storage = messages.get_messages(request)
+    storage.used = True  # Mark messages as used to clear them # type: ignore
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         username = request.POST.get('username', '')  # Preserve the username
@@ -204,7 +211,7 @@ def forgot_password(request):
             )
 
             # Store user ID in session
-            request.session['reset_user_id'] = user.
+            request.session['reset_user_id'] = user.pk # type: ignore
 
             # Send OTP via email (debugging purposes, uncomment in production)
             print(f"Generated OTP for {email}: {otp_code}")
@@ -247,6 +254,9 @@ def reset_password(request):
 
         if new_password == confirm_password:
             try:
+                # Validate the password
+                validate_password(new_password)
+                
                 user_id = request.session.get('reset_user_id')
                 user = User.objects.get(id=user_id)
                 user.set_password(new_password)
@@ -255,9 +265,38 @@ def reset_password(request):
                 del request.session['reset_user_id']
                 messages.success(request, 'Password reset successfully. You can now log in.')
                 return redirect('login')  # Redirect to login page
+            except ValidationError as e:
+                # Handle password validation errors
+                messages.error(request, ' '.join(e.messages))
             except User.DoesNotExist:
                 messages.error(request, 'An error occurred. Please try again.')
         else:
             messages.error(request, 'Passwords do not match. Please try again.')
     return render(request, 'reset_password.html')
 
+def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        user = request.user
+        if check_password(current_password, user.password):
+            if new_password == confirm_password:
+                try:
+                    # Validate the password
+                    validate_password(new_password)
+                    
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, 'Password changed successfully.')
+                    return redirect('login')  # Redirect to login page after changing password
+                except ValidationError as e:
+                    # Handle password validation errors
+                    messages.error(request, ' '.join(e.messages))
+            else:
+                messages.error(request, 'New passwords do not match. Please try again.')
+        else:
+            messages.error(request, 'Current password is incorrect. Please try again.')
+            
+    return render(request, 'change_password.html')
