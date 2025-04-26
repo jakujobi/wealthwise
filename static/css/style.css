@@ -259,6 +259,21 @@ body {
   }
 }
 
+/* Responsive adjustments for set availability page */
+@media (max-width: 768px) {
+    .w-md-75 {
+        width: 100% !important;
+    }
+
+    .table {
+        font-size: 0.9rem; /* Adjust table font size for smaller screens */
+    }
+
+    .btn {
+        font-size: 0.8rem; /* Adjust button size for smaller screens */
+    }
+}
+
 /* Original styles for calculators and other components */
 .card-header.bg-primary {
   background-color: #004085; /* Dark blue for card header */

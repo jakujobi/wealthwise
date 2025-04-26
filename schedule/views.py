@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.db import transaction
-from django.contrib.auth.models import User
+import json
 
 logger = getLogger(__name__)
 
@@ -54,15 +54,21 @@ def scheduleView(request,message=None):
         eventListRequest = request.POST.get('eventListRequest') if request.method == 'POST' else "UPCOMING"
         if userTypeRequested == userType['advisor']:
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
-            return render(request, 'scheduleView_advisor.html', 
-                          {
-                           'user_first_name': user.first_name,
-                           'user_last_name': user.last_name,
-                           'events': Events,
-                           'consultations': Consultation,
-                           'message': message,
-                           'eventListRequest': eventListRequest
-                        })                           
+            availability = AdvisorAvailability.objects.filter(advisor=Advisor.objects.get(user=user)).first()
+            time_slots = {day: [] for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]}
+            if availability:
+                for slot in availability.time_slots.all():
+                    time_slots[slot.day_of_week].append(f"{slot.start_time} - {slot.end_time}")
+
+            return render(request, 'scheduleView_advisor.html', {
+                'user_first_name': user.first_name,
+                'user_last_name': user.last_name,
+                'events': Events,
+                'consultations': Consultation,
+                'message': message,
+                'eventListRequest': eventListRequest,
+                'time_slots': time_slots
+            })
         
         elif userTypeRequested == userType['admin']:
             Events, Consultation = listMyEvents(user, userTypeRequested, eventListRequest=eventListRequest)
@@ -106,9 +112,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             
             profile = Profile.objects.get(user=user)
             advisor = Advisor.objects.get(user=user)
-            if eventListRequest == "PAST":
+            if eventListRequest.upper == "PAST":
                 events = Event.objects.filter(user_id=profile, event_start_timestamp__lt=now()).order_by('event_start_timestamp')
-            elif eventListRequest == "UPCOMING":
+            elif eventListRequest.upper == "UPCOMING":
                 events = Event.objects.filter(user_id=profile, event_start_timestamp__gte=now()).order_by('event_start_timestamp')
             else:
                 events = Event.objects.filter(user_id=profile).order_by('event_start_timestamp')
@@ -125,9 +131,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
         
         elif userTypeRequested == userType['admin']:
             
-            if eventListRequest == "past":
+            if eventListRequest.upper == "PAST":
                 events = Event.objects.filter(event_start_timestamp__lt=now()).order_by('event_start_timestamp')
-            elif eventListRequest == "upcoming":
+            elif eventListRequest.upper == "UPCOMING":
                 events = Event.objects.filter(event_start_timestamp__gte=now()).order_by('event_start_timestamp')
             else:
                 events = Event.objects.all().order_by('event_start_timestamp')
@@ -140,9 +146,9 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             # Fetch registered events for the user
             registered_events = eventRegistration.objects.filter(user_id=profile).select_related('event_id')
 
-            if eventListRequest == "past":
+            if eventListRequest.upper == "PAST":
                 events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp < now()]
-            elif eventListRequest == "upcoming":
+            elif eventListRequest.upper == "UPCOMING":
                 events = [reg.event_id for reg in registered_events if reg.event_id.event_start_timestamp >= now()]
             else:
                 events = [reg.event_id for reg in registered_events]
@@ -185,7 +191,7 @@ def createNewEvent(request):
                     'location': form.cleaned_data['location'],
                     'event_start_timestamp': form.cleaned_data['event_start_timestamp'],
                     'event_end_timestamp': form.cleaned_data['event_end_timestamp'],
-                    'error_message': error_message
+                      'error_message': error_message
                 })
             
             if start_datetime >= end_datetime:
@@ -376,3 +382,95 @@ def unregisterEvent(request, eventId=None):
     except Exception as e:
         logger.error(f"Error unregistering from event: {eventId}. User: {user.username}. Exception: {str(e)}")
         return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
+
+@login_required
+def set_availability(request):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['advisor']:
+        return JsonResponse({'error_message': "You are not authorized to set availability."}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_time_slots = data.get('time_slots', {})
+            remove_time_slots = data.get('remove_time_slots', {})
+
+            if not new_time_slots and not remove_time_slots:
+                # Redirect to schedule view if no changes are made
+                return JsonResponse({'redirect_url': '/schedule/view/'}, status=200)
+
+            availability, created = AdvisorAvailability.objects.get_or_create(advisor=Advisor.objects.get(user=request.user))
+
+            # Remove specified time slots
+            for day, slots in remove_time_slots.items():
+                for slot in slots:
+                    availability.time_slots.filter(
+                        day_of_week=day,
+                        start_time=slot.get("start_time"),
+                        end_time=slot.get("end_time")
+                    ).delete()
+
+            # Add new time slots
+            for day, slots in new_time_slots.items():
+                for slot in slots:
+                    availability.time_slots.get_or_create(
+                        day_of_week=day,
+                        start_time=slot.get("start_time"),
+                        end_time=slot.get("end_time")
+                    )
+
+            return JsonResponse({'redirect_url': '/schedule/view/Your%20available%20time%20slots%20saved'})
+        except json.JSONDecodeError:
+            return JsonResponse({'error_message': "Invalid time slots format."}, status=400)
+    elif request.method == 'GET':
+        # Retrieve previously saved time slots
+        days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        availability = AdvisorAvailability.objects.filter(advisor=Advisor.objects.get(user=request.user)).first()
+        time_slots = {day: [] for day in days_of_week}
+        if availability:
+            for slot in availability.time_slots.all():
+                time_slots[slot.day_of_week].append({
+                    "start_time": slot.start_time,
+                    "end_time": slot.end_time
+                })
+
+        return render(request, 'Advisor/set_availability.html', {
+            'availability': availability,
+            'days_of_week': days_of_week,
+            'time_slots': time_slots
+        })
+    else:
+        return JsonResponse({'error_message': "Invalid request method."}, status=405)
+
+@login_required
+def get_availability(request, advisor_id):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['user']:
+        return JsonResponse({'error': 'You are not authorized to view availability.'}, status=403)
+
+    try:
+        availability = AdvisorAvailability.objects.filter(advisor_id=advisor_id)
+        return JsonResponse({'availability': list(availability.values())}, status=200)
+    except Exception as e:
+        logger.error(f"Error retrieving availability: {str(e)}")
+        return JsonResponse({'error': 'Could not retrieve availability.'}, status=500)
+
+@login_required
+def book_consultation(request):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['user']:
+        return redirect('errorPage', message="You are not authorized to book a consultation.")
+
+    if request.method == 'POST':
+        form = ConsultationBookingForm(request.POST)
+        if form.is_valid():
+            consultation = form.save(commit=False)
+            consultation.client_id = Profile.objects.get(user=request.user)
+            consultation.save()
+            return redirect('view', message="Consultation booked successfully.")
+    else:
+        form = ConsultationBookingForm()
+    return render(request, 'User/book_consultation.html', {'form': form})
