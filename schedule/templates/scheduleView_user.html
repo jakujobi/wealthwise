@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<h1 class="text-primary text-center" style="margin: 1rem">This is advisor</h1>
+<h1 class="text-primary text-center" style="margin: 1rem">This is user</h1>
 {% if user_first_name %}
 <h3 class="text-center">Name: {{ user_first_name }} {{ user_last_name }}</h3>
 {% endif %}
@@ -42,7 +42,7 @@
 <h2 class="text-center">Events</h2>
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
-    <button class="btn btn-primary" onclick="location.href='{% url 'createEvent' %}'">New Event</button>
+    <button class="btn btn-primary" onclick="location.href='{% url 'eventRegister' %}'">Register for event</button>
 </div>
 
 <div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
@@ -64,7 +64,7 @@
             <th>Time</th>
             <th>Location</th>
             <th>Description</th>
-            <th>Edit</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -74,14 +74,15 @@
             <td>{{ event.event_start_timestamp }} to {{ event.event_end_timestamp }}</td>
             <td>{{ event.location }}</td>
             <td>{{ event.description }}</td>
-            <td class="text-right">
-                <a href="{% url "eventDetail" event.event_id %}">
-                    <img src="{% static 'images/edit_icon.svg' %}" alt="Edit" style="width:20px;height:20px;">
-                </a>
+            <td class="text-center">
+                <button class="btn btn-danger unregister-btn" data-event-id="{{ event.event_id }}">Unregister</button>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script src="{% static 'js/registerEvent.js' %}"></script>
+<script src="{% static 'js/unregisterEvent.js' %}"></script>
 
 {% endblock %}
