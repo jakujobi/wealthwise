@@ -7,49 +7,59 @@
         transition: background-color 1s ease;
     }
     .highlight-remove {
-        background-color: #f8d7da; /* Light red background */
+        background-color:rgb(248, 206, 209); /* Light red background */
         transition: background-color 1s ease;
     }
 </style>
-<h1 class="text-center">Set Availability</h1>
+<h1 class="text-center my-5" style="padding-top: 3rem;">Set Availability</h1>
 
 <!-- Include CSRF token -->
 <form id="availability-form">
     {% csrf_token %}
 </form>
 
-<table class="table table-bordered text-center">
-    <thead class="thead-dark">
-        <tr>
-            <th>Day</th>
-            <th>Time Slots</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for day, slots in time_slots.items %}
-        <tr>
-            <td>{{ day }}</td>
-            <td id="time-slots-{{ day }}" class="time-slots-cell">
-                {% for slot in slots %}
-                    <div>
-                        {{ slot.start_time|time:"h:i A" }} - {{ slot.end_time|time:"h:i A" }}
-                        <button class="btn btn-danger btn-sm remove-time-slot" 
-                                data-day="{{ day }}" 
-                                data-start-time="{{ slot.start_time|time:"H:i" }}" 
-                                data-end-time="{{ slot.end_time|time:"H:i" }}">
-                            Remove
-                        </button>
-                    </div>
+<div class="container d-flex justify-content-center mt-5">
+    <div class="w-100 w-md-75 position-relative" style="padding-top: 2rem;">
+        <a href="{% url 'view' %}" class="btn btn-secondary position-absolute" 
+           style="top: 0; left: 0; transform: translateY(-100%);">
+            Back to Schedule View
+        </a>
+        <table class="table table-bordered text-center mt-2">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Day</th>
+                    <th style="width: 50%;">Time Slots</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day, slots in time_slots.items %}
+                <tr>
+                    <td class="align-middle">{{ day }}</td>
+                    <td id="time-slots-{{ day }}" class="time-slots-cell align-middle" style="width: 50%;">
+                        {% for slot in slots %}
+                            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mb-2">
+                                <span class="text-primary me-md-2 mb-2 mb-md-0">
+                                    {{ slot.start_time|time:"h:i A" }} - {{ slot.end_time|time:"h:i A" }}
+                                </span>
+                                <button class="btn btn-danger btn-sm remove-time-slot" 
+                                        data-day="{{ day }}" 
+                                        data-start-time="{{ slot.start_time|time:"H:i" }}" 
+                                        data-end-time="{{ slot.end_time|time:"H:i" }}">
+                                    Remove
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </td>
+                    <td class="align-middle">
+                        <button class="btn btn-primary btn-sm add-time-slot" data-day="{{ day }}">Add Time Slot</button>
+                    </td>
+                </tr>
                 {% endfor %}
-            </td>
-            <td>
-                <button class="btn btn-primary btn-sm add-time-slot" data-day="{{ day }}">Add Time Slot</button>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <!-- Modal for Adding Time Slot -->
 <div class="modal fade" id="addTimeSlotModal" tabindex="-1" aria-labelledby="addTimeSlotModalLabel" aria-hidden="true">
@@ -63,11 +73,11 @@
                 <form id="add-time-slot-form">
                     <input type="hidden" id="modal-day" name="day">
                     <div class="form-group">
-                        <label for="modal-start-time">Start Time</label>
+                        <label for="modal-start-time" class="form-label">Start Time</label>
                         <input type="time" id="modal-start-time" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="modal-end-time">End Time</label>
+                        <label for="modal-end-time" class="form-label">End Time</label>
                         <input type="time" id="modal-end-time" class="form-control" required>
                     </div>
                 </form>
@@ -80,11 +90,8 @@
     </div>
 </div>
 
-<button id="save-availability" class="btn btn-success mt-4">Save All Availability</button>
-
-<!-- Back to Schedule View Button -->
 <div class="text-center mt-4">
-    <a href="{% url 'view' %}" class="btn btn-secondary">Back to Schedule View</a>
+    <button id="save-availability" class="btn btn-success">Save All Availability</button>
 </div>
 
 <script src="{% static 'js/set_availability_calendar.js' %}"></script>
