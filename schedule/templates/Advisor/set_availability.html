@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="text-center">Set Availability</h1>
+
+<!-- Include CSRF token -->
+<form id="availability-form">
+    {% csrf_token %}
+</form>
+
+<table class="table table-bordered text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th>Day</th>
+            <th>Time Slots</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for day, slots in time_slots.items %}
+        <tr>
+            <td>{{ day }}</td>
+            <td id="time-slots-{{ day }}" class="time-slots-cell">
+                {% for slot in slots %}
+                    <div>{{ slot }}</div>
+                {% endfor %}
+            </td>
+            <td>
+                <button class="btn btn-primary btn-sm add-time-slot" data-day="{{ day }}">Add Time Slot</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal for Adding Time Slot -->
+<div class="modal fade" id="addTimeSlotModal" tabindex="-1" aria-labelledby="addTimeSlotModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTimeSlotModalLabel">Add Time Slot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-time-slot-form">
+                    <input type="hidden" id="modal-day" name="day">
+                    <div class="form-group">
+                        <label for="modal-start-time">Start Time</label>
+                        <input type="time" id="modal-start-time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-end-time">End Time</label>
+                        <input type="time" id="modal-end-time" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="save-time-slot" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="save-availability" class="btn btn-success mt-4">Save All Availability</button>
+
+<!-- Back to Schedule View Button -->
+<div class="text-center mt-4">
+    <a href="{% url 'view' %}" class="btn btn-secondary">Back to Schedule View</a>
+</div>
+
+<script src="{% static 'js/set_availability_calendar.js' %}"></script>
+{% endblock %}

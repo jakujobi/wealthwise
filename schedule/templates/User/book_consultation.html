@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Book Consultation</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="advisor">Search Advisor:</label>
+    <input type="text" id="advisor-search" class="form-control" placeholder="Enter advisor name">
+    <div id="advisor-list"></div>
+    <br>
+    <label for="availability">Select Time Slot:</label>
+    <select id="availability" name="scheduled_date" class="form-select"></select>
+    <br>
+    {{ form.session_notes.label_tag }}
+    {{ form.session_notes }}
+    <button type="submit" class="btn btn-primary">Book Consultation</button>
+</form>
+<script src="{% static 'js/consultation.js' %}"></script>
+{% endblock %}
