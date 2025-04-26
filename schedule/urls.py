@@ -12,4 +12,7 @@ urlpatterns = [
     path('registerEvent/<int:eventId>/', registerEvent, name='registerEvent'),
     path('unregister/<int:eventId>/', unregisterEvent, name='unregisterEvent'),
     path('setAvailability/', set_availability, name='setAvailability'),
+    path('searchAdvisor/', searchAdvisor, name='searchAdvisor'),
+    path('advisorAvailability/<int:advisor_id>/', advisorAvailability, name='advisorAvailability'),
+    path('bookConsultation/<int:advisor_id>/<str:time_slot>/', bookConsultation, name='bookConsultation'),
 ]

@@ -1,16 +1,17 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import *
 from users.models import Profile, Advisor
 from .forms import *
 from logging import getLogger
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.db import transaction
+from datetime import timedelta
 import json
 
 logger = getLogger(__name__)
@@ -458,19 +459,68 @@ def get_availability(request, advisor_id):
         return JsonResponse({'error': 'Could not retrieve availability.'}, status=500)
 
 @login_required
-def book_consultation(request):
-    userTypeRequested = authorizeUser(request)
+def searchAdvisor(request):
+    advisors_with_slots = []
+    next_day = timezone.now() + timedelta(days=1)
+    for advisor in Advisor.objects.all():
+        time_slots = TimeSlot.objects.filter(
+            availability__advisor=advisor,
+            day_of_week=next_day.strftime('%A')
+        )
+        # Fetch advisor rating directly from the Advisor model
+        rating = advisor.rating
+        advisors_with_slots.append({
+            'advisor': advisor,
+            'time_slots': time_slots,
+            'rating': round(rating, 1)  # Round to 1 decimal place
+        })
+    return render(request, 'User/searchAdvisor.html', {'advisors_with_slots': advisors_with_slots})
 
-    if userTypeRequested != userType['user']:
-        return redirect('errorPage', message="You are not authorized to book a consultation.")
+@login_required
+def advisorAvailability(request, advisor_id):
+    advisor = get_object_or_404(Advisor, id=advisor_id)
+    week_offset = int(request.GET.get('week', 0))  # Get the week offset from the query parameter
+    today = timezone.now().date()
+    start_of_week = today + timedelta(weeks=week_offset, days=-today.weekday() - 1)  # Adjust to start from Sunday
+    end_of_week = start_of_week + timedelta(days=6)
 
+    # Prevent navigation to past weeks
+    if start_of_week < today:
+        week_offset = 0
+        start_of_week = today + timedelta(days=-today.weekday() - 1)
+        end_of_week = start_of_week + timedelta(days=6)
+
+    availability = TimeSlot.objects.filter(
+        availability__advisor=advisor,
+        day_of_week__in=[(start_of_week + timedelta(days=i)).strftime('%A') for i in range(7)]
+    )
+
+    weekly_availability = []
+    for i in range(7):
+        date = start_of_week + timedelta(days=i)
+        day = date.strftime('%A')
+        slots = [
+            f"{slot.start_time.strftime('%I:%M %p')} - {slot.end_time.strftime('%I:%M %p')}"
+            for slot in availability.filter(day_of_week=day)
+        ]
+        weekly_availability.append((date, day, slots))
+
+    context = {
+        'advisor': advisor,
+        'weekly_availability': weekly_availability,
+        'time_slots': sorted(set(slot for _, _, slots in weekly_availability for slot in slots)),
+        'today': today,  # Pass the current date to the template
+        'previous_week': week_offset - 1 if week_offset > 0 else None,  # Disable previous week if at current week
+        'current_week': 0,
+        'next_week': week_offset + 1,
+    }
+    return render(request, 'User/advisorAvailability.html', context)
+
+@login_required
+def bookConsultation(request, advisor_id, time_slot):
+    advisor = get_object_or_404(Advisor, id=advisor_id)
     if request.method == 'POST':
-        form = ConsultationBookingForm(request.POST)
-        if form.is_valid():
-            consultation = form.save(commit=False)
-            consultation.client_id = Profile.objects.get(user=request.user)
-            consultation.save()
-            return redirect('view', message="Consultation booked successfully.")
-    else:
-        form = ConsultationBookingForm()
-    return render(request, 'User/book_consultation.html', {'form': form})
+        # Logic to book the consultation
+        return redirect('view', message="Consultation booked successfully.")
+    return render(request, 'User/bookConsultation.html', {'advisor': advisor, 'time_slot': time_slot})
+

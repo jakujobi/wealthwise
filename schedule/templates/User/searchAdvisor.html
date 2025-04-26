@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Search Advisors</h1>
+
+<!-- Return button -->
+<a href="{% url 'view' %}" class="btn btn-secondary mb-3">Return</a>
+
+<!-- Search input -->
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Search advisors by name..." onkeyup="filterAdvisors()">
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Rating</th>
+            <th>Next Day Availability</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="advisorTable">
+        {% for entry in advisors_with_slots %}
+        <tr>
+            <td>{{ entry.advisor.user.first_name }} {{ entry.advisor.user.last_name }}</td>
+            <td>{{ entry.rating }}</td>
+            <td>
+                {% if entry.time_slots %}
+                    {% for slot in entry.time_slots %}
+                        <button class="btn btn-primary" onclick="location.href='{% url 'bookConsultation' entry.advisor.id slot.start_time %}-{{ slot.end_time }}'">
+                            {{ slot.start_time }} - {{ slot.end_time }}
+                        </button>
+                    {% endfor %}
+                {% else %}
+                    <span>No availability</span>
+                {% endif %}
+            </td>
+            <td>
+                <button class="btn btn-secondary" onclick="location.href='{% url 'advisorAvailability' entry.advisor.id %}'">
+                    View all availability
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="{% static 'js/searchAdvisor.js' %}"></script>
+{% endblock %}
