@@ -397,7 +397,8 @@ def set_availability(request):
             remove_time_slots = data.get('remove_time_slots', {})
 
             if not new_time_slots and not remove_time_slots:
-                return JsonResponse({'error_message': "No time slots provided."}, status=400)
+                # Redirect to schedule view if no changes are made
+                return JsonResponse({'redirect_url': '/schedule/view/'}, status=200)
 
             availability, created = AdvisorAvailability.objects.get_or_create(advisor=Advisor.objects.get(user=request.user))
 
