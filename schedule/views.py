@@ -430,8 +430,8 @@ def set_availability(request):
         if availability:
             for slot in availability.time_slots.all():
                 time_slots[slot.day_of_week].append({
-                    "start_time": str(slot.start_time),
-                    "end_time": str(slot.end_time)
+                    "start_time": slot.start_time,
+                    "end_time": slot.end_time
                 })
 
         return render(request, 'Advisor/set_availability.html', {

@@ -7,6 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalEndTimeInput = document.getElementById("modal-end-time");
     const timeSlots = { add: {}, remove: {} }; // Initialize add and remove properties
 
+    // Helper function to convert 24-hour time to 12-hour format
+    function formatTo12Hour(time) {
+        const [hour, minute] = time.split(":");
+        const period = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minute} ${period}`;
+    }
+
     // Open modal to add a time slot
     addTimeSlotButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -37,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const timeSlotsCell = document.getElementById(`time-slots-${day}`);
         const slotElement = document.createElement("div");
-        slotElement.textContent = `${startTime} - ${endTime}`;
+        slotElement.textContent = `${formatTo12Hour(startTime)} - ${formatTo12Hour(endTime)}`;
         timeSlotsCell.appendChild(slotElement);
 
         const modal = bootstrap.Modal.getInstance(document.getElementById("addTimeSlotModal"));

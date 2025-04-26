@@ -88,26 +88,4 @@
     </tbody>
 </table>
 
-<h2 class="text-center">Availability</h2>
-<table class="table table-bordered table-striped mx-auto" style="width: 95%;">
-    <thead class="thead-dark">
-        <tr>
-            <th>Day</th>
-            <th>Time Slots</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for day, slots in time_slots.items %}
-        <tr>
-            <td>{{ day }}</td>
-            <td>
-                {% for slot in slots %}
-                    <div>{{ slot }}</div>
-                {% endfor %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
 {% endblock %}

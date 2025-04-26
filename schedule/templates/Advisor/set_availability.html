@@ -23,7 +23,7 @@
             <td id="time-slots-{{ day }}" class="time-slots-cell">
                 {% for slot in slots %}
                     <div>
-                        {{ slot.start_time }} - {{ slot.end_time }}
+                        {{ slot.start_time|time:"h:i A" }} - {{ slot.end_time|time:"h:i A" }}
                         <button class="btn btn-danger btn-sm remove-time-slot" 
                                 data-day="{{ day }}" 
                                 data-start-time="{{ slot.start_time }}" 
