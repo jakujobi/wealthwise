@@ -77,15 +77,43 @@ document.addEventListener("DOMContentLoaded", function () {
             const day = this.dataset.day;
             const startTime = this.dataset.startTime;
             const endTime = this.dataset.endTime;
-
-            if (!timeSlots.remove[day]) {
-                timeSlots.remove[day] = [];
-            }
-            timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
-
-            // Highlight the time slot in red instead of removing it
             const parentElement = this.parentElement;
-            parentElement.classList.add("highlight-remove");
+
+            // Check if the entry is a new entry
+            const isNewEntry = timeSlots.add[day]?.some(
+                slot => slot.start_time === startTime && slot.end_time === endTime
+            );
+
+            if (isNewEntry) {
+                // Remove the new entry immediately
+                timeSlots.add[day] = timeSlots.add[day].filter(
+                    slot => slot.start_time !== startTime || slot.end_time !== endTime
+                );
+                parentElement.remove();
+            } else {
+                if (this.textContent.trim() === "Remove") {
+                    // Mark for removal
+                    if (!timeSlots.remove[day]) {
+                        timeSlots.remove[day] = [];
+                    }
+                    timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
+
+                    parentElement.classList.add("highlight-remove");
+                    this.textContent = "Keep";
+                    this.classList.remove("btn-danger");
+                    this.classList.add("btn-secondary"); // Change color to gray
+                } else {
+                    // Cancel removal
+                    timeSlots.remove[day] = timeSlots.remove[day].filter(
+                        slot => slot.start_time !== startTime || slot.end_time !== endTime
+                    );
+
+                    parentElement.classList.remove("highlight-remove");
+                    this.textContent = "Remove";
+                    this.classList.remove("btn-secondary");
+                    this.classList.add("btn-danger"); // Change color back to red
+                }
+            }
         });
 
         const modal = bootstrap.Modal.getInstance(document.getElementById("addTimeSlotModal"));
@@ -98,17 +126,45 @@ document.addEventListener("DOMContentLoaded", function () {
     removeTimeSlotButtons.forEach(button => {
         button.addEventListener("click", function () {
             const day = this.dataset.day;
-            const startTime = formatTo24Hour(this.dataset.startTime);
-            const endTime = formatTo24Hour(this.dataset.endTime);
-
-            if (!timeSlots.remove[day]) {
-                timeSlots.remove[day] = [];
-            }
-            timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
-
-            // Highlight the time slot in red instead of removing it
+            const startTime = this.dataset.startTime;
+            const endTime = this.dataset.endTime;
             const parentElement = this.parentElement;
-            parentElement.classList.add("highlight-remove");
+
+            // Check if the entry is a new entry
+            const isNewEntry = timeSlots.add[day]?.some(
+                slot => slot.start_time === startTime && slot.end_time === endTime
+            );
+
+            if (isNewEntry) {
+                // Remove the new entry immediately
+                timeSlots.add[day] = timeSlots.add[day].filter(
+                    slot => slot.start_time !== startTime || slot.end_time !== endTime
+                );
+                parentElement.remove();
+            } else {
+                if (this.textContent.trim() === "Remove") {
+                    // Mark for removal
+                    if (!timeSlots.remove[day]) {
+                        timeSlots.remove[day] = [];
+                    }
+                    timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
+
+                    parentElement.classList.add("highlight-remove");
+                    this.textContent = "Keep";
+                    this.classList.remove("btn-danger");
+                    this.classList.add("btn-secondary"); // Change color to gray
+                } else {
+                    // Cancel removal
+                    timeSlots.remove[day] = timeSlots.remove[day].filter(
+                        slot => slot.start_time !== startTime || slot.end_time !== endTime
+                    );
+
+                    parentElement.classList.remove("highlight-remove");
+                    this.textContent = "Remove";
+                    this.classList.remove("btn-secondary");
+                    this.classList.add("btn-danger"); // Change color back to red
+                }
+            }
         });
     });
 
