@@ -419,7 +419,7 @@ def set_availability(request):
                         end_time=slot.get("end_time")
                     )
 
-            return JsonResponse({'redirect_url': '/schedule/view?message=Your%20available%20time%20slots%20saved'})
+            return JsonResponse({'redirect_url': '/schedule/view/Your%20available%20time%20slots%20saved'})
         except json.JSONDecodeError:
             return JsonResponse({'error_message': "Invalid time slots format."}, status=400)
     elif request.method == 'GET':

@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<style>
+    .highlight {
+        background-color: #d4edda; /* Light green background */
+        transition: background-color 1s ease;
+    }
+    .highlight-remove {
+        background-color: #f8d7da; /* Light red background */
+        transition: background-color 1s ease;
+    }
+</style>
 <h1 class="text-center">Set Availability</h1>
 
 <!-- Include CSRF token -->

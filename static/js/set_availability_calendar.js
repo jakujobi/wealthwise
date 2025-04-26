@@ -62,7 +62,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     data-end-time="${endTime}">
                 Remove
             </button>`;
+        slotElement.classList.add("highlight"); // Add highlight class
         timeSlotsCell.appendChild(slotElement);
+
+        // Reset the highlight class to allow re-triggering the effect
+        setTimeout(() => {
+            slotElement.classList.remove("highlight");
+            void slotElement.offsetWidth; // Trigger reflow to reset the animation
+            slotElement.classList.add("highlight");
+        }, 0);
 
         // Reattach event listener for dynamically added remove buttons
         slotElement.querySelector(".remove-time-slot").addEventListener("click", function () {
@@ -75,8 +83,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
 
-            // Remove the time slot from the UI
-            this.parentElement.remove();
+            // Highlight the time slot in red instead of removing it
+            const parentElement = this.parentElement;
+            parentElement.classList.add("highlight-remove");
         });
 
         const modal = bootstrap.Modal.getInstance(document.getElementById("addTimeSlotModal"));
@@ -97,8 +106,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             timeSlots.remove[day].push({ start_time: startTime, end_time: endTime });
 
-            // Remove the time slot from the UI
-            this.parentElement.remove();
+            // Highlight the time slot in red instead of removing it
+            const parentElement = this.parentElement;
+            parentElement.classList.add("highlight-remove");
         });
     });
 
