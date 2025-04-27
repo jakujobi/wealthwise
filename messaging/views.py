@@ -26,6 +26,18 @@ class ConversationViewSet(viewsets.ModelViewSet):
         convo.participants.add(self.request.user)
         return convo
 
+    # Override create to handle simple 'new conversation' POST with no data
+    def create(self, request, *args, **kwargs):
+        # Create a new conversation instance
+        conversation = Conversation.objects.create()
+        # Add the requesting user as the initial participant
+        conversation.participants.add(request.user)
+        # Serialize the new conversation
+        serializer = self.get_serializer(conversation)
+        # Return the serialized data with a 201 status
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     @action(detail=True, methods=['get', 'post'], url_path='messages')
     def messages(self, request, pk=None):
         conversation = self.get_object()
