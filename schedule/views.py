@@ -597,7 +597,7 @@ def cancelConsultation(request, consultation_id):
                 return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
 
             consultation.status = cancellation_reason
-            consultation.session_notes += session_notes  # Save session notes if provided
+            consultation.session_notes += f" [Cancel time (UTC-6): {timezone.now().astimezone(timezone.get_fixed_timezone(-6 * 60)).strftime('%Y-%m-%d %H:%M:%S')} - Cancel reason: {session_notes}]"
             consultation.save()
 
             return JsonResponse({'success': True, 'message': "Consultation cancelled successfully."}, status=200)
@@ -608,3 +608,54 @@ def cancelConsultation(request, consultation_id):
             return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
     else:
         return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
+
+@login_required
+def updateSessionNotes(request, consultation_id):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['advisor']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to update session notes."}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            session_notes = data.get('session_notes', '')
+
+            consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+            # Ensure the advisor owns the consultation
+            if consultation.advisor_id.user != request.user:
+                return JsonResponse({'success': False, 'message': "You are not authorized to update this consultation."}, status=403)
+
+            consultation.session_notes = session_notes
+            consultation.save()
+
+            return JsonResponse({'success': True, 'message': "Session notes updated successfully."}, status=200)
+        except Consultation.DoesNotExist:
+            return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+        except Exception as e:
+            logger.error(f"Error updating session notes for consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+            return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
+
+@login_required
+def getSessionNotes(request, consultation_id):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['advisor']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to view session notes."}, status=403)
+
+    try:
+        consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+        # Ensure the advisor owns the consultation
+        if consultation.advisor_id.user != request.user:
+            return JsonResponse({'success': False, 'message': "You are not authorized to view this consultation."}, status=403)
+
+        return JsonResponse({'success': True, 'session_notes': consultation.session_notes}, status=200)
+    except Consultation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+    except Exception as e:
+        logger.error(f"Error fetching session notes for consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+        return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)

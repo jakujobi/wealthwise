@@ -25,8 +25,8 @@
         <tr>
             <th>Advisor Name</th>
             <th>Scheduled Date</th>
-            <th>Status</th>
             <th>Action</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -34,12 +34,12 @@
         <tr>
             <td>{{ consultation.advisor_name }}</td>
             <td>{{ consultation.scheduled_date }}</td>
-            <td>{{ consultation.status }}</td>
             <td>
                 {% if consultation.status == "Scheduled" %}
                 <button class="btn btn-danger cancel-consultation-btn" data-consultation-id="{{ consultation.consultation_id }}">Cancel</button>
                 {% endif %}
             </td>
+            <td>{{ consultation.status }}</td>
         </tr>
         {% endfor %}
     </tbody>

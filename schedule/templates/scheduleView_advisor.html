@@ -22,8 +22,8 @@
             <th>Client Name</th>
             <th>Scheduled Date</th>
             <th>Status</th>
-            <th>Actions</th>
             <th>Session Notes</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -32,12 +32,13 @@
             <td>{{ consultation.client_id.user.first_name }} {{ consultation.client_id.user.last_name }}</td>
             <td>{{ consultation.scheduled_date }}</td>
             <td>{{ consultation.status }}</td>
+            <td>{{ consultation.session_notes }}</td>
             <td>
+                <button class="btn btn-primary edit-session-notes-btn" data-consultation-id="{{ consultation.consultation_id }}">Edit Notes</button>
                 {% if consultation.status == "Scheduled" %}
                 <button class="btn btn-danger cancel-consultation-btn" data-consultation-id="{{ consultation.consultation_id }}">Cancel</button>
                 {% endif %}
             </td>
-            <td>{{ consultation.session_notes }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -95,5 +96,7 @@
 </table>
 
 <script src="{% static 'js/cancelConsultation.js' %}"></script>
+<script src="{% static 'js/editSessionNotes.js' %}"></script>
+
 {% endblock %}
 

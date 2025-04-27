@@ -16,4 +16,6 @@ urlpatterns = [
     path('advisorAvailability/<int:advisor_id>/', advisorAvailability, name='advisorAvailability'),
     path('bookConsultation/<int:advisor_id>/<str:time_slot>/', bookConsultation, name='bookConsultation'),
     path('cancelConsultation/<int:consultation_id>/', cancelConsultation, name='cancelConsultation'),
+    path('updateSessionNotes/<int:consultation_id>/', updateSessionNotes, name='updateSessionNotes'),
+    path('getSessionNotes/<int:consultation_id>/', getSessionNotes, name='getSessionNotes'),
 ]
