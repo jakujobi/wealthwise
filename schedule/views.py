@@ -480,7 +480,9 @@ def searchAdvisor(request):
 def advisorAvailability(request, advisor_id):
     advisor = get_object_or_404(Advisor, id=advisor_id)
     week_offset = int(request.GET.get('week', 0))  # Get the week offset from the query parameter
-    today = timezone.now().date()
+    now = timezone.now()
+    today = now.date()
+    current_time = now.time()
     start_of_week = today + timedelta(weeks=week_offset, days=-today.weekday() - 1)  # Adjust to start from Sunday
     end_of_week = start_of_week + timedelta(days=6)
 
@@ -495,12 +497,23 @@ def advisorAvailability(request, advisor_id):
         day_of_week__in=[(start_of_week + timedelta(days=i)).strftime('%A') for i in range(7)]
     )
 
+    # Fetch booked time slots for the advisor within the week
+    booked_slots = Consultation.objects.filter(
+        advisor_id=advisor,
+        scheduled_date__date__gte=start_of_week,
+        scheduled_date__date__lte=end_of_week
+    ).values_list('time_slot__day_of_week', 'time_slot__start_time', 'time_slot__end_time')
+
     weekly_availability = []
     for i in range(7):
         date = start_of_week + timedelta(days=i)
         day = date.strftime('%A')
         slots = [
-            f"{slot.start_time.strftime('%I:%M %p')} - {slot.end_time.strftime('%I:%M %p')}"
+            {
+                "time_range": f"{slot.start_time.strftime('%I:%M %p')} - {slot.end_time.strftime('%I:%M %p')}",
+                "is_booked": (day, slot.start_time, slot.end_time) in booked_slots,
+                "is_past": (date < today) or (date == today and slot.start_time <= current_time and slot.end_time <= current_time)
+            }
             for slot in availability.filter(day_of_week=day)
         ]
         weekly_availability.append((date, day, slots))
@@ -508,7 +521,7 @@ def advisorAvailability(request, advisor_id):
     context = {
         'advisor': advisor,
         'weekly_availability': weekly_availability,
-        'time_slots': sorted(set(slot for _, _, slots in weekly_availability for slot in slots)),
+        'time_slots': sorted(set(slot["time_range"] for _, _, slots in weekly_availability for slot in slots)),
         'today': today,  # Pass the current date to the template
         'previous_week': week_offset - 1 if week_offset > 0 else None,  # Disable previous week if at current week
         'current_week': 0,

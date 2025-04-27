@@ -32,13 +32,17 @@
             <td>{{ time_slot }}</td>
             {% for date, day, slots in weekly_availability %}
                 <td>
-                    {% if date < today and time_slot in slots %}
-                        <button class="btn btn-secondary" disabled>Unavailable</button>
-                    {% elif time_slot in slots %}
-                        <button class="btn btn-primary" onclick="location.href='{% url 'bookConsultation' advisor.id time_slot %}'">
-                            Book
-                        </button>
-                    {% endif %}
+                    {% for slot in slots %}
+                        {% if slot.time_range == time_slot %}
+                            {% if slot.is_past or slot.is_booked %}
+                                <button class="btn btn-secondary" disabled>Unavailable</button>
+                            {% else %}
+                                <button class="btn btn-primary" onclick="location.href='{% url 'bookConsultation' advisor.id time_slot %}'">
+                                    Book
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </td>
             {% endfor %}
         </tr>
