@@ -18,6 +18,7 @@ document.querySelectorAll('.cancel-consultation-btn').forEach(button => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    alert(data.message);
                     location.reload();
                 } else {
                     alert(data.message || "An error occurred while cancelling the consultation.");

@@ -596,6 +596,9 @@ def cancelConsultation(request, consultation_id):
             if userTypeRequested == userType['user'] and request.user.profile != consultation.client_id:
                 return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
 
+            if consultation.session_notes == None:
+                consultation.session_notes = ""
+
             consultation.status = cancellation_reason
             consultation.session_notes += f" [Cancel time (UTC-6): {timezone.now().astimezone(timezone.get_fixed_timezone(-6 * 60)).strftime('%Y-%m-%d %H:%M:%S')} - Cancel reason: {session_notes}]"
             consultation.save()
