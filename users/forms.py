@@ -12,11 +12,11 @@ class CustomUserCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        email = self.cleaned_data['email']
+        user.email = self.cleaned_data['email']  # Ensure email is stored in the User model
         if commit:
             user.save()
-            # Create a Profile instance with the email
-            Profile.objects.create(user=user, email=email)
+            # Create a Profile instance without storing the email
+            Profile.objects.create(user=user)
         return user
 
 class ProfileForm(forms.ModelForm):
