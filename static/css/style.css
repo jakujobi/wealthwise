@@ -552,6 +552,11 @@ body {
   }
 }
 
+/* Chat window styling */
+.chat-window {
+  height: 500px;
+  overflow-y: auto;
+=======
 .table-header-blue {
     background-color: #004085 !important; /* Dark blue */
     color: #ffffff !important; /* White text */
