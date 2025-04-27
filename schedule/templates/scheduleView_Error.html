@@ -2,17 +2,19 @@
 {% load static %}
 {% block content %}
 
-{% if message %}
+<div class="d-flex justify-content-center align-items-center vh-75">
+    <div class="text-center">
+        {% if message %}
+        <div class="container mt-5">
+            <h1 class="display-4 text-danger">!! Error !!</h1>
+            <p class="lead">{{message}}</p>
+        </div>
+        {% endif %}
 
-<div class="container mt-5">
-    <h1>Error</h1>
-    <p>{{message}}</p>
-</div>
-
-{% endif %}
-
-<div class="container mt-5">
-    <a href="{% url 'home' %}" class="btn btn-primary">Return to Home</a>
+        <div class="container mt-5">
+            <a href="{% url 'view' %}" class="btn btn-primary btn-lg">Return to Schedule</a>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}

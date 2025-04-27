@@ -11,6 +11,22 @@
             <h2 class="h3 mb-0">Login to Your Account</h2>
           </div>
 
+          <!-- Display Django messages -->
+          {% if messages %}
+          <div>
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Display error message -->
+          {% if error_message %}
+          <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+          {% endif %}
+
           <form method="POST" class="auth-form">
             {% csrf_token %}
 
@@ -22,6 +38,7 @@
                 id="id_username"
                 class="form-control"
                 placeholder="Username"
+                value="{{ username|default:'' }}"
                 required
               />
               <label for="id_username">Username</label>
@@ -51,7 +68,9 @@
                   >Remember me</label
                 >
               </div>
-              <a href="#" class="text-primary small">Forgot password?</a>
+              <a href="{% url 'forgot_password' %}" class="text-primary small"
+                >Forgot Password</a
+              >
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">

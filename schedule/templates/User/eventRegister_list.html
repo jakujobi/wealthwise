@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Event Registration{% endblock %}
+{% block content %}
+
+<div class="container">
+    <button class="btn btn-primary" onclick="window.location.href='{% url 'view' %}'">Return</button>
+</div>
+
+<div class="container">
+    <h2>Available Events</h2>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.event_start_timestamp }}</td>
+                <td>{{ event.event_end_timestamp }}</td>
+                <td>
+                    {% if event.status == "Registered" %}
+                        <span class="text-success">Registered</span>
+                    {% elif event.status == "Deleted" %}
+                        <span class="text-danger">Deleted</span>
+                    {% else %}
+                        <span class="text-secondary">Available</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if event.status == "Registered" %}
+                        <button class="btn btn-secondary unregister-btn" data-event-id="{{ event.event_id }}">Unregister</button>
+                    {% elif event.status == "Deleted" %}
+                        <button class="btn btn-danger" disabled>Deleted</button>
+                    {% else %}
+                        <button class="btn btn-primary register-btn" data-event-id="{{ event.event_id }}">Register</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/registerEvent.js' %}"></script>
+<script src="{% static 'js/unregisterEvent.js' %}"></script>
+
+{% endblock %}
+

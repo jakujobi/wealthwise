@@ -5,9 +5,6 @@ from decimal import Decimal
 # Profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=100)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,23 +27,24 @@ class Profile(models.Model):
                 this.profile_picture.delete(save=False)
         except Profile.DoesNotExist:
             pass
+        # Update related User model if needed
+        if hasattr(self, 'user'):
+            self.user.save()
         super(Profile, self).save(*args, **kwargs)
 
 # AdvisorProfile
 class Advisor(models.Model):
-    advisor_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='advisor')
     bio = models.TextField(blank=True, null=True)
-    certifications = models.JSONField(blank=True, null=True)
-    specialties = models.JSONField(blank=True, null=True)
+    certifications = models.TextField(blank=True, null=True)
+    specialties = models.TextField(blank=True, null=True)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.0'))
     
     def __str__(self):
-        return f"Advisor: {self.user_id.user.username}"
+        return f"Advisor: {self.user.username}"
 
 # Subsciption
 class Subscription(models.Model):
-    subscription_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     plan_type = models.CharField(max_length=10, blank=True, null=True)
     start_date = models.DateField()
@@ -55,7 +53,6 @@ class Subscription(models.Model):
 
 # PaymentHistory
 class Payment(models.Model):
-    payment_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, blank=True, null=True)
@@ -65,7 +62,6 @@ class Payment(models.Model):
 
 # Messages
 class Messaging(models.Model):
-    message_id = models.AutoField(primary_key=True)
     sender_id = models.ForeignKey('users.Profile', related_name='sender', on_delete=models.CASCADE)
     receiver_id = models.ForeignKey('users.Profile', related_name='receiver', on_delete=models.CASCADE)
     message_content = models.TextField()
@@ -74,9 +70,19 @@ class Messaging(models.Model):
 
 # Notification
 class Notification(models.Model):
-    notification_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)
     content = models.TextField()
     notification_type = models.CharField(max_length=20, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+# OTP
+class OTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OTP for {self.user.username} - {self.code}"
