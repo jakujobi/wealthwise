@@ -16,32 +16,36 @@
 {% endif %}
 
 <h2 class="text-center">Consultations</h2>
+<div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
+    <button class="btn btn-primary" onclick="location.href='{% url 'searchAdvisor' %}'">Book Consultation</button>
+</div>
+
 <table class="table table-bordered table-striped mx-auto" style="width: 95%;">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
-            <th>Client Name</th>
+            <th>Advisor Name</th>
             <th>Scheduled Date</th>
-            <th>Notes</th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for consultation in consultations %}
         <tr>
-            <td>{{ consultation.consultation_id }}</td>
-            <td>{{ consultation.client_id.user.first_name }} {{ consultation.client_id.user.last_name }}</td>
+            <td>{{ consultation.advisor_name }}</td>
             <td>{{ consultation.scheduled_date }}</td>
-            <td>{{ consultation.session_notes }}</td>
+            <td>{{ consultation.status }}</td>
+            <td>
+                {% if consultation.status != "Cancelled" %}
+                <button class="btn btn-danger cancel-consultation-btn" data-consultation-id="{{ consultation.consultation_id }}">Cancel</button>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
 <br>
-
-<div class="text-right" style="margin-inline: auto; max-width: fit-content; padding: 1rem;">
-    <button class="btn btn-primary" onclick="location.href='{% url 'searchAdvisor' %}'">Book Consultation</button>
-</div>
 
 <h2 class="text-center">Events</h2>
 
@@ -88,5 +92,35 @@
 
 <script src="{% static 'js/registerEvent.js' %}"></script>
 <script src="{% static 'js/unregisterEvent.js' %}"></script>
+<script src="{% static 'js/cancelConsultation.js' %}"></script>
+
+<script>
+document.querySelectorAll('.cancel-consultation-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const consultationId = this.dataset.consultationId;
+        if (confirm("Are you sure you want to cancel this consultation?")) {
+            fetch(`/schedule/cancelConsultation/${consultationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while cancelling the consultation.");
+            });
+        }
+    });
+});
+</script>
 
 {% endblock %}

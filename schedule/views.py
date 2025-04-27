@@ -89,7 +89,10 @@ def scheduleView(request,message=None):
                            'user_first_name': user.first_name,
                            'user_last_name': user.last_name,
                            'events': Events,
-                           'consultations': Consultation,
+                           'consultations': [{'advisor_name': f"{c.advisor_id.user.first_name} {c.advisor_id.user.last_name}", 
+                                              'scheduled_date': c.scheduled_date, 
+                                              'status': c.status,
+                                              'consultation_id': c.consultation_id} for c in Consultation],
                            'message': message,
                            'eventListRequest': eventListRequest
                            })
@@ -154,7 +157,11 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             else:
                 events = [reg.event_id for reg in registered_events]
 
-            consultation = Consultation.objects.filter(client_id=profile, scheduled_date__gte=now())
+            # Exclude consultations that have passed the current day
+            consultation = Consultation.objects.filter(
+                client_id=profile,
+                scheduled_date__gte=now()
+            )
             return events, consultation
 
         else:
@@ -562,3 +569,24 @@ def bookConsultation(request, advisor_id, time_slot):
         'time_slot': f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}",
         'scheduled_date': selected_date
     })
+
+@login_required
+def cancelConsultation(request, consultation_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            session_notes = data.get('session_notes', '')
+
+            consultation = Consultation.objects.get(consultation_id=consultation_id, client_id=request.user.profile)
+            consultation.status = "Cancelled By User"
+            consultation.session_notes = session_notes  # Save session notes if provided
+            consultation.save()
+
+            return JsonResponse({'success': True, 'message': "Consultation cancelled successfully."}, status=200)
+        except Consultation.DoesNotExist:
+            return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+        except Exception as e:
+            logger.error(f"Error cancelling consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+            return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
