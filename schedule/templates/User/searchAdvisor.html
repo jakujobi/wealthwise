@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Search Advisors</h1>
+
+<!-- Return button -->
+<a href="{% url 'view' %}" class="btn btn-secondary mb-3">Return</a>
+
+<!-- Search input -->
+<div class="table-responsive px-3">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" id="searchInput" class="form-control custom-focus shadow-on-focus" placeholder="Search advisors by name..." onkeyup="filterAdvisors()">
+        </div>
+    </div>
+</div>
+
+<!-- Table container -->
+<div class="table-responsive px-3">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="table-header-blue">Name</th>
+                <th class="table-header-blue">Rating</th>
+                <th class="table-header-blue">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="advisorTable">
+            {% for entry in advisors_with_slots %}
+            <tr>
+                <td>{{ entry.advisor.user.first_name }} {{ entry.advisor.user.last_name }}</td>
+                <td>{{ entry.rating }}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="location.href='{% url 'advisorAvailability' entry.advisor.id %}'">
+                        View all availability
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/searchAdvisor.js' %}"></script>
+{% endblock %}
