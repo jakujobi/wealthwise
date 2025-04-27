@@ -597,7 +597,7 @@ def cancelConsultation(request, consultation_id):
                 return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
 
             consultation.status = cancellation_reason
-            consultation.session_notes = session_notes  # Save session notes if provided
+            consultation.session_notes += session_notes  # Save session notes if provided
             consultation.save()
 
             return JsonResponse({'success': True, 'message': "Consultation cancelled successfully."}, status=200)
