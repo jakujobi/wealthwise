@@ -5,11 +5,17 @@ from django.utils import timezone
 
 # Consultation
 class Consultation(models.Model):
+    STATUS_CHOICES = [
+        ("Scheduled", "Scheduled"),
+        ("Cancelled By User", "Cancelled By User"),
+        ("Cancelled By Advisor", "Cancelled By Advisor"),
+        ("Cancelled By Admin", "Cancelled By Admin"),
+    ]
     consultation_id = models.AutoField(primary_key=True)
     client_id = models.ForeignKey('users.Profile', related_name='client', on_delete=models.CASCADE)
     advisor_id = models.ForeignKey('users.Advisor', on_delete=models.CASCADE)
     scheduled_date = models.DateTimeField()
-    status = models.CharField(max_length=20, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=True, null=True)
     client_rating = models.IntegerField(blank=True, null=True)
     session_notes = models.TextField(blank=True, null=True)
     time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE, null=True, blank=True)
@@ -32,6 +38,10 @@ class Event(models.Model):
         return str(self.event_id)
 
 class eventRegistration(models.Model):
+    STATUS_CHOICES = [
+        ("Registered", "Registered"),
+        ("Cancelled", "Cancelled"),
+    ]
     registration_id = models.AutoField(primary_key=True)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_id = models.ForeignKey('users.Profile', on_delete=models.CASCADE)

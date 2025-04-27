@@ -4,6 +4,17 @@ from .models import Consultation, Event, AdvisorAvailability, TimeSlot, eventReg
 class ConsultationAdmin(admin.ModelAdmin):
     list_display = ('consultation_id', 'client_id', 'advisor_id', 'scheduled_date', 'status')
     search_fields = ('consultation_id', 'client_id__user__username', 'advisor_id__user__username', 'status')
+    list_filter = ('status',)  # Add a filter for status
+
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        if db_field.name == "status":
+            kwargs['choices'] = [
+                ("Scheduled", "Scheduled"),
+                ("Cancelled By User", "Cancelled By User"),
+                ("Cancelled By Advisor", "Cancelled By Advisor"),
+                ("Cancelled By Admin", "Cancelled By Admin"),
+            ]
+        return super().formfield_for_choice_field(db_field, request, **kwargs)
 
 admin.site.register(Consultation, ConsultationAdmin)
 

@@ -577,8 +577,22 @@ def cancelConsultation(request, consultation_id):
             data = json.loads(request.body)
             session_notes = data.get('session_notes', '')
 
-            consultation = Consultation.objects.get(consultation_id=consultation_id, client_id=request.user.profile)
-            consultation.status = "Cancelled By User"
+            consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+            # Determine the cancellation reason based on the user type
+            userTypeRequested = authorizeUser(request)
+            if userTypeRequested == userType['user']:
+                cancellation_reason = "Cancelled By User"
+            elif userTypeRequested == userType['advisor']:
+                cancellation_reason = "Cancelled By Advisor"
+            else:
+                return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
+
+            # Check if the user is authorized to cancel
+            if userTypeRequested == userType['user'] and request.user.profile != consultation.client_id:
+                return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
+
+            consultation.status = cancellation_reason
             consultation.session_notes = session_notes  # Save session notes if provided
             consultation.save()
 

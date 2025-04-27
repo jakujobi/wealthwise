@@ -36,7 +36,7 @@
             <td>{{ consultation.scheduled_date }}</td>
             <td>{{ consultation.status }}</td>
             <td>
-                {% if consultation.status != "Cancelled" %}
+                {% if consultation.status == "Scheduled" %}
                 <button class="btn btn-danger cancel-consultation-btn" data-consultation-id="{{ consultation.consultation_id }}">Cancel</button>
                 {% endif %}
             </td>
@@ -90,37 +90,20 @@
     </tbody>
 </table>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.cancel-consultation-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const consultationId = this.dataset.consultationId;
+                if (consultationId) {
+                    console.log(`Cancel button clicked for consultation ID: ${consultationId}`);
+                }
+            });
+        });
+    });
+</script>
 <script src="{% static 'js/registerEvent.js' %}"></script>
 <script src="{% static 'js/unregisterEvent.js' %}"></script>
 <script src="{% static 'js/cancelConsultation.js' %}"></script>
-
-<script>
-document.querySelectorAll('.cancel-consultation-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const consultationId = this.dataset.consultationId;
-        if (confirm("Are you sure you want to cancel this consultation?")) {
-            fetch(`/schedule/cancelConsultation/${consultationId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred while cancelling the consultation.");
-            });
-        }
-    });
-});
-</script>
 
 {% endblock %}

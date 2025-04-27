@@ -6,7 +6,9 @@
     <p><strong>Advisor:</strong> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
     <p><strong>Time Slot:</strong> {{ time_slot }}</p>
     <p><strong>Date:</strong> {{ scheduled_date }}</p>
-    <p><strong>Status:</strong> Scheduled</p>
+    <p style="display: none;"><strong>Status:</strong> Scheduled</p>
+    <label for="session_notes">Session Notes (optional):</label>
+    <textarea id="session_notes" name="session_notes"></textarea>
     <button type="submit" class="btn btn-success">Confirm Booking</button>
     <a href="{% url 'searchAdvisor' %}" class="btn btn-secondary">Cancel</a>
 </form>
