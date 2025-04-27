@@ -78,7 +78,11 @@ def scheduleView(request,message=None):
                            'user_first_name': user.first_name,
                            'user_last_name': user.last_name,
                            'events': Events,
-                           'consultations': Consultation,
+                           'consultations': [{'client_name': f"{c.client_id.user.first_name} {c.client_id.user.last_name}",
+                                              'scheduled_date': c.scheduled_date,
+                                              'status': c.status,
+                                              'consultation_id': c.consultation_id,
+                                              'session_notes': c.session_notes} for c in Consultation],
                            'message': message,
                            'eventListRequest': eventListRequest})
         
