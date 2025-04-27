@@ -22,7 +22,7 @@
             <th>Client Name</th>
             <th>Scheduled Date</th>
             <th>Status</th>
-            <th>Session Notes</th>
+            <th style="width: 50%; word-wrap: break-word;">Session Notes</th> 
             <th>Actions</th>
         </tr>
     </thead>
@@ -32,7 +32,7 @@
             <td>{{ consultation.client_id.user.first_name }} {{ consultation.client_id.user.last_name }}</td>
             <td>{{ consultation.scheduled_date }}</td>
             <td>{{ consultation.status }}</td>
-            <td>{{ consultation.session_notes }}</td>
+            <td style="word-wrap: break-word;">{{ consultation.session_notes }}</td> 
             <td>
                 <button class="btn btn-primary edit-session-notes-btn" data-consultation-id="{{ consultation.consultation_id }}">Edit Notes</button>
                 {% if consultation.status == "Scheduled" %}
@@ -71,8 +71,8 @@
 <table class="table table-bordered table-striped mx-auto" style="width: 95%;">
     <thead class="thead-dark">
         <tr>
-            <th>Title</th>
-            <th>Time</th>
+            <th style="min-width: 150px; max-width: 300px;">Title</th>
+            <th style="min-width: 200px; max-width: 400px;">Time</th>
             <th>Location</th>
             <th>Description</th>
             <th>Edit</th>

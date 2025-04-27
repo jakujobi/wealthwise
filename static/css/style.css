@@ -59,6 +59,16 @@ body {
   border-color: #28a745;
 }
 
+.btn-secondary {
+  background-color: #467095; /* Grey blue button */
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a8dc2; /* Brighter grey blue on hover */
+  border-color: #6c757d;
+}
+
 .btn-primary:hover {
   background-color: #218838; /* Darker green on hover */
   border-color: #1e7e34;
@@ -540,4 +550,20 @@ body {
   .calculator-results-container {
     height: 100%;
   }
+}
+
+.table-header-blue {
+    background-color: #004085 !important; /* Dark blue */
+    color: #ffffff !important; /* White text */
+}
+
+.form-label-bold {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #212529; /* Default text color */
+}
+
+.shadow-on-focus:focus {
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  outline: none;
 }
