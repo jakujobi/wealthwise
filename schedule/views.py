@@ -506,7 +506,8 @@ def advisorAvailability(request, advisor_id):
             {
                 "time_range": f"{slot.start_time.strftime('%I:%M %p')} - {slot.end_time.strftime('%I:%M %p')}",
                 "is_booked": (day, slot.start_time, slot.end_time) in booked_slots,
-                "is_past": (date < today) or (date == today and slot.start_time <= current_time and slot.end_time <= current_time)
+                "is_past": (date < today) or (date == today and slot.start_time <= current_time and slot.end_time <= current_time),
+                "date": date.strftime('%Y-%m-%d') 
             }
             for slot in availability.filter(day_of_week=day)
         ]
@@ -526,21 +527,38 @@ def advisorAvailability(request, advisor_id):
 @login_required
 def bookConsultation(request, advisor_id, time_slot):
     advisor = get_object_or_404(Advisor, id=advisor_id)
+    selected_date = request.GET.get('date')
     try:
         # Decode and parse the time slot
         start_time, end_time = time_slot.split(" - ")
         start_time = timezone.datetime.strptime(start_time, "%I:%M %p").time()
         end_time = timezone.datetime.strptime(end_time, "%I:%M %p").time()
+        scheduled_date = timezone.datetime.strptime(selected_date, "%Y-%m-%d").date()
     except ValueError:
-        return redirect('errorPage', message="Invalid time slot format.")
+        return redirect('errorPage', message="Invalid time slot or date format.")
 
     if request.method == 'POST':
-        # Logic to book the consultation
-        # ...existing code...
+        # Save the consultation to the database
+        time_slot_obj = TimeSlot.objects.filter(
+            availability__advisor=advisor,
+            start_time=start_time,
+            end_time=end_time
+        ).first()
+
+        if not time_slot_obj:
+            return redirect('errorPage', message="Time slot not available.")
+
+        Consultation.objects.create(
+            client_id=request.user.profile,
+            advisor_id=advisor,
+            scheduled_date=timezone.datetime.combine(scheduled_date, start_time),
+            time_slot=time_slot_obj,
+            status="Scheduled"
+        )
         return redirect('view', message="Consultation booked successfully.")
 
     return render(request, 'User/bookConsultation.html', {
         'advisor': advisor,
-        'time_slot': f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}"
+        'time_slot': f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}",
+        'scheduled_date': selected_date
     })
-

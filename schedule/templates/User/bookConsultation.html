@@ -3,8 +3,10 @@
 <h1>Book Consultation</h1>
 <form method="POST">
     {% csrf_token %}
-    <p>Advisor: {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
-    <p>Time Slot: {{ time_slot }}</p>
+    <p><strong>Advisor:</strong> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
+    <p><strong>Time Slot:</strong> {{ time_slot }}</p>
+    <p><strong>Date:</strong> {{ scheduled_date }}</p>
+    <p><strong>Status:</strong> Scheduled</p>
     <button type="submit" class="btn btn-success">Confirm Booking</button>
     <a href="{% url 'searchAdvisor' %}" class="btn btn-secondary">Cancel</a>
 </form>
