@@ -461,17 +461,11 @@ def get_availability(request, advisor_id):
 @login_required
 def searchAdvisor(request):
     advisors_with_slots = []
-    next_day = timezone.now() + timedelta(days=1)
     for advisor in Advisor.objects.all():
-        time_slots = TimeSlot.objects.filter(
-            availability__advisor=advisor,
-            day_of_week=next_day.strftime('%A')
-        )
         # Fetch advisor rating directly from the Advisor model
         rating = advisor.rating
         advisors_with_slots.append({
             'advisor': advisor,
-            'time_slots': time_slots,
             'rating': round(rating, 1)  # Round to 1 decimal place
         })
     return render(request, 'User/searchAdvisor.html', {'advisors_with_slots': advisors_with_slots})
@@ -532,8 +526,21 @@ def advisorAvailability(request, advisor_id):
 @login_required
 def bookConsultation(request, advisor_id, time_slot):
     advisor = get_object_or_404(Advisor, id=advisor_id)
+    try:
+        # Decode and parse the time slot
+        start_time, end_time = time_slot.split(" - ")
+        start_time = timezone.datetime.strptime(start_time, "%I:%M %p").time()
+        end_time = timezone.datetime.strptime(end_time, "%I:%M %p").time()
+    except ValueError:
+        return redirect('errorPage', message="Invalid time slot format.")
+
     if request.method == 'POST':
         # Logic to book the consultation
+        # ...existing code...
         return redirect('view', message="Consultation booked successfully.")
-    return render(request, 'User/bookConsultation.html', {'advisor': advisor, 'time_slot': time_slot})
+
+    return render(request, 'User/bookConsultation.html', {
+        'advisor': advisor,
+        'time_slot': f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}"
+    })
 
