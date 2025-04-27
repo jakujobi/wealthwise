@@ -526,3 +526,9 @@ body {
     height: 100%;
   }
 }
+
+/* Chat window styling */
+.chat-window {
+  height: 500px;
+  overflow-y: auto;
+}
