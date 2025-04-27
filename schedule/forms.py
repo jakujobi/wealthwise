@@ -27,25 +27,27 @@ class TimeSlotForm(ModelForm):
 class ConsultationBookingForm(ModelForm):
     class Meta:
         model = Consultation
-        fields = ['advisor_id', 'scheduled_date', 'session_notes']
+        fields = ['advisor_id', 'scheduled_date', 'session_notes', 'time_slot']
 
     def clean(self):
         cleaned_data = super().clean()
         advisor = cleaned_data.get('advisor_id')
         scheduled_date = cleaned_data.get('scheduled_date')
+        time_slot = cleaned_data.get('time_slot')
 
         # Ensure scheduled_date is in the future
         if scheduled_date and scheduled_date <= now():
             raise ValidationError("The scheduled date must be in the future.")
 
-        # Check if the scheduled_date conflicts with the advisor's blocked dates
-        if advisor:
-            availability = AdvisorAvailability.objects.filter(advisor=advisor).first()
-            if availability and availability.blockedDateTime:
-                for blocked in availability.blockedDateTime:
-                    blocked_start = blocked.get('start_time')
-                    blocked_end = blocked.get('end_time')
-                    if blocked_start and blocked_end and blocked_start <= scheduled_date <= blocked_end:
-                        raise ValidationError("The selected time conflicts with the advisor's blocked schedule.")
+        # Validate time slot availability
+        if time_slot:
+            if time_slot.availability.advisor != advisor:
+                raise ValidationError("The selected time slot does not belong to the chosen advisor.")
+            overlapping_consultations = Consultation.objects.filter(
+                time_slot=time_slot,
+                scheduled_date__date=scheduled_date.date()
+            )
+            if overlapping_consultations.exists():
+                raise ValidationError("The selected time slot is already booked.")
 
         return cleaned_data

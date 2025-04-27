@@ -1,16 +1,17 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import *
 from users.models import Profile, Advisor
 from .forms import *
 from logging import getLogger
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.db import transaction
+from datetime import timedelta
 import json
 
 logger = getLogger(__name__)
@@ -77,7 +78,11 @@ def scheduleView(request,message=None):
                            'user_first_name': user.first_name,
                            'user_last_name': user.last_name,
                            'events': Events,
-                           'consultations': Consultation,
+                           'consultations': [{'client_name': f"{c.client_id.user.first_name} {c.client_id.user.last_name}",
+                                              'scheduled_date': c.scheduled_date,
+                                              'status': c.status,
+                                              'consultation_id': c.consultation_id,
+                                              'session_notes': c.session_notes} for c in Consultation],
                            'message': message,
                            'eventListRequest': eventListRequest})
         
@@ -88,7 +93,10 @@ def scheduleView(request,message=None):
                            'user_first_name': user.first_name,
                            'user_last_name': user.last_name,
                            'events': Events,
-                           'consultations': Consultation,
+                           'consultations': [{'advisor_name': f"{c.advisor_id.user.first_name} {c.advisor_id.user.last_name}", 
+                                              'scheduled_date': c.scheduled_date, 
+                                              'status': c.status,
+                                              'consultation_id': c.consultation_id} for c in Consultation],
                            'message': message,
                            'eventListRequest': eventListRequest
                            })
@@ -153,7 +161,11 @@ def listMyEvents(user, userTypeRequested, eventListRequest="UPCOMING"):
             else:
                 events = [reg.event_id for reg in registered_events]
 
-            consultation = Consultation.objects.filter(client_id=profile, scheduled_date__gte=now())
+            # Exclude consultations that have passed the current day
+            consultation = Consultation.objects.filter(
+                client_id=profile,
+                scheduled_date__gte=now()
+            )
             return events, consultation
 
         else:
@@ -458,19 +470,192 @@ def get_availability(request, advisor_id):
         return JsonResponse({'error': 'Could not retrieve availability.'}, status=500)
 
 @login_required
-def book_consultation(request):
-    userTypeRequested = authorizeUser(request)
+def searchAdvisor(request):
+    advisors_with_slots = []
+    for advisor in Advisor.objects.all():
+        # Fetch advisor rating directly from the Advisor model
+        rating = advisor.rating
+        advisors_with_slots.append({
+            'advisor': advisor,
+            'rating': round(rating, 1)  # Round to 1 decimal place
+        })
+    return render(request, 'User/searchAdvisor.html', {'advisors_with_slots': advisors_with_slots})
 
-    if userTypeRequested != userType['user']:
-        return redirect('errorPage', message="You are not authorized to book a consultation.")
+@login_required
+def advisorAvailability(request, advisor_id):
+    advisor = get_object_or_404(Advisor, id=advisor_id)
+    week_offset = int(request.GET.get('week', 0))  # Get the week offset from the query parameter
+    now = timezone.now()
+    today = now.date()
+    current_time = now.time()
+    start_of_week = today + timedelta(weeks=week_offset, days=-today.weekday() - 1)  # Adjust to start from Sunday
+    end_of_week = start_of_week + timedelta(days=6)
+
+    # Prevent navigation to past weeks
+    if start_of_week < today:
+        week_offset = 0
+        start_of_week = today + timedelta(days=-today.weekday() - 1)
+        end_of_week = start_of_week + timedelta(days=6)
+
+    availability = TimeSlot.objects.filter(
+        availability__advisor=advisor,
+        day_of_week__in=[(start_of_week + timedelta(days=i)).strftime('%A') for i in range(7)]
+    )
+
+    # Fetch booked time slots for the advisor within the week
+    booked_slots = Consultation.objects.filter(
+        advisor_id=advisor,
+        scheduled_date__date__gte=start_of_week,
+        scheduled_date__date__lte=end_of_week
+    ).values_list('time_slot__day_of_week', 'time_slot__start_time', 'time_slot__end_time')
+
+    weekly_availability = []
+    for i in range(7):
+        date = start_of_week + timedelta(days=i)
+        day = date.strftime('%A')
+        slots = [
+            {
+                "time_range": f"{slot.start_time.strftime('%I:%M %p')} - {slot.end_time.strftime('%I:%M %p')}",
+                "is_booked": (day, slot.start_time, slot.end_time) in booked_slots,
+                "is_past": (date < today) or (date == today and slot.start_time <= current_time and slot.end_time <= current_time),
+                "date": date.strftime('%Y-%m-%d') 
+            }
+            for slot in availability.filter(day_of_week=day)
+        ]
+        weekly_availability.append((date, day, slots))
+
+    context = {
+        'advisor': advisor,
+        'weekly_availability': weekly_availability,
+        'time_slots': sorted(set(slot["time_range"] for _, _, slots in weekly_availability for slot in slots)),
+        'today': today,  # Pass the current date to the template
+        'previous_week': week_offset - 1 if week_offset > 0 else None,  # Disable previous week if at current week
+        'current_week': 0,
+        'next_week': week_offset + 1,
+    }
+    return render(request, 'User/advisorAvailability.html', context)
+
+@login_required
+def bookConsultation(request, advisor_id, time_slot):
+    advisor = get_object_or_404(Advisor, id=advisor_id)
+    selected_date = request.GET.get('date')
+    try:
+        # Decode and parse the time slot
+        start_time, end_time = time_slot.split(" - ")
+        start_time = timezone.datetime.strptime(start_time, "%I:%M %p").time()
+        end_time = timezone.datetime.strptime(end_time, "%I:%M %p").time()
+        scheduled_date = timezone.datetime.strptime(selected_date, "%Y-%m-%d").date()
+    except ValueError:
+        return redirect('errorPage', message="Invalid time slot or date format.")
 
     if request.method == 'POST':
-        form = ConsultationBookingForm(request.POST)
-        if form.is_valid():
-            consultation = form.save(commit=False)
-            consultation.client_id = Profile.objects.get(user=request.user)
+        # Save the consultation to the database
+        time_slot_obj = TimeSlot.objects.filter(
+            availability__advisor=advisor,
+            start_time=start_time,
+            end_time=end_time
+        ).first()
+
+        if not time_slot_obj:
+            return redirect('errorPage', message="Time slot not available.")
+
+        Consultation.objects.create(
+            client_id=request.user.profile,
+            advisor_id=advisor,
+            scheduled_date=timezone.datetime.combine(scheduled_date, start_time),
+            time_slot=time_slot_obj,
+            status="Scheduled"
+        )
+        return redirect('view', message="Consultation booked successfully.")
+
+    return render(request, 'User/bookConsultation.html', {
+        'advisor': advisor,
+        'time_slot': f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}",
+        'scheduled_date': selected_date
+    })
+
+@login_required
+def cancelConsultation(request, consultation_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            session_notes = data.get('session_notes', '')
+
+            consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+            # Determine the cancellation reason based on the user type
+            userTypeRequested = authorizeUser(request)
+            if userTypeRequested == userType['user']:
+                cancellation_reason = "Cancelled By User"
+            elif userTypeRequested == userType['advisor']:
+                cancellation_reason = "Cancelled By Advisor"
+            else:
+                return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
+
+            # Check if the user is authorized to cancel
+            if userTypeRequested == userType['user'] and request.user.profile != consultation.client_id:
+                return JsonResponse({'success': False, 'message': "You are not authorized to cancel this consultation."}, status=403)
+
+            consultation.status = cancellation_reason
+            consultation.session_notes += f" [Cancel time (UTC-6): {timezone.now().astimezone(timezone.get_fixed_timezone(-6 * 60)).strftime('%Y-%m-%d %H:%M:%S')} - Cancel reason: {session_notes}]"
             consultation.save()
-            return redirect('view', message="Consultation booked successfully.")
+
+            return JsonResponse({'success': True, 'message': "Consultation cancelled successfully."}, status=200)
+        except Consultation.DoesNotExist:
+            return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+        except Exception as e:
+            logger.error(f"Error cancelling consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+            return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
     else:
-        form = ConsultationBookingForm()
-    return render(request, 'User/book_consultation.html', {'form': form})
+        return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
+
+@login_required
+def updateSessionNotes(request, consultation_id):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['advisor']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to update session notes."}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            session_notes = data.get('session_notes', '')
+
+            consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+            # Ensure the advisor owns the consultation
+            if consultation.advisor_id.user != request.user:
+                return JsonResponse({'success': False, 'message': "You are not authorized to update this consultation."}, status=403)
+
+            consultation.session_notes = session_notes
+            consultation.save()
+
+            return JsonResponse({'success': True, 'message': "Session notes updated successfully."}, status=200)
+        except Consultation.DoesNotExist:
+            return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+        except Exception as e:
+            logger.error(f"Error updating session notes for consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+            return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
+
+@login_required
+def getSessionNotes(request, consultation_id):
+    userTypeRequested = authorizeUser(request)
+
+    if userTypeRequested != userType['advisor']:
+        return JsonResponse({'success': False, 'message': "You are not authorized to view session notes."}, status=403)
+
+    try:
+        consultation = Consultation.objects.get(consultation_id=consultation_id)
+
+        # Ensure the advisor owns the consultation
+        if consultation.advisor_id.user != request.user:
+            return JsonResponse({'success': False, 'message': "You are not authorized to view this consultation."}, status=403)
+
+        return JsonResponse({'success': True, 'session_notes': consultation.session_notes}, status=200)
+    except Consultation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': "Consultation does not exist."}, status=404)
+    except Exception as e:
+        logger.error(f"Error fetching session notes for consultation: {consultation_id}. User: {request.user.username}. Exception: {str(e)}")
+        return JsonResponse({'success': False, 'message': "An unexpected error occurred."}, status=500)

@@ -1,48 +1,57 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<h1>Event</h1>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <div style="width: 50%; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative;">
+        <a href="{% url 'view' %}" class="btn btn-secondary" style="position: absolute; top: 25px; left: 20px;">Cancel</a>
+        <h1 style="text-align: center;">Event Detail</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" maxlength="255" required value="{{ event.title|default:'' }}">
-    <br>
-    <br>
-    
-    <label>Start Date Time - </label>
-    <t> {{ event.event_start_timestamp }}</t>
-    <br>
-    <label for="event_start_timestamp">New Start Date Time</label>
-    <input type="datetime-local" name="event_start_timestamp" id="start_timestamp" required value="{{ event.event_start_timestamp|date:"Y-m-d\TH:i" }}">
-    <br>
-    <br>
-    
-    <label>End Date Time - </label>
-    <t> {{ event.event_end_timestamp }}</t>
-    <br>
-    <label for="event_end_timestamp">New End Date Time</label>
-    <input type="datetime-local" name="event_end_timestamp" id="end_timestamp" required value="{{ event.event_end_timestamp|date:"Y-m-d\TH:i" }}">
-    <br>
-    <br>
+        <form method="POST">
+            {% csrf_token %}
+            {% if error_message %}
+                <p style="color: red; text-align: center;">{{ error_message }}</p>
+            {% endif %}
+            <div style="margin-bottom: 15px;">
+                <label for="title" class="form-label-bold">Title</label>
+                <input type="text" name="title" id="title" maxlength="255" required value="{{ event.title|default:'' }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <label for="description">Description</label>
-    <textarea name="description" id="description" rows="4" cols="50">{{ event.description|default:'' }}</textarea>
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label class="form-label-bold">Start Date Time - </label>
+                <t> {{ event.event_start_timestamp }}</t>
+                <br>
+                <label for="event_start_timestamp" class="form-label-bold">New Start Date Time</label>
+                <input type="datetime-local" name="event_start_timestamp" id="start_timestamp" required value="{{ event.event_start_timestamp|date:"Y-m-d\TH:i" }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <label for="location">Location</label>
-    <textarea name="location" id="location" rows="2" cols="50">{{ event.location|default:'' }}</textarea>
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label class="form-label-bold">End Date Time - </label>
+                <t> {{ event.event_end_timestamp }}</t>
+                <br>
+                <label for="event_end_timestamp" class="form-label-bold">New End Date Time</label>
+                <input type="datetime-local" name="event_end_timestamp" id="end_timestamp" required value="{{ event.event_end_timestamp|date:"Y-m-d\TH:i" }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <br>
-    <button type="submit" class="btn btn-primary">Modify Event</button>
-    <a class="btn" href="{% url 'view' %}">Cancel</a>
-</form>
+            <div style="margin-bottom: 15px;">
+                <label for="description" class="form-label-bold">Description</label>
+                <textarea name="description" id="description" rows="4" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">{{ event.description|default:'' }}</textarea>
+            </div>
 
-<a class="btn btn-danger" href="#" onclick="confirmDelete({{ event.event_id }})">Delete Event</a>
+            <div style="margin-bottom: 15px;">
+                <label for="location" class="form-label-bold">Location</label>
+                <textarea name="location" id="location" rows="2" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">{{ event.location|default:'' }}</textarea>
+            </div>
+
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Modify Event</button>
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a class="btn btn-danger" href="#" onclick="confirmDelete({{ event.event_id }})">Delete Event</a>
+        </div>
+    </div>
+</div>
 
 <script>
 function confirmDelete(eventId) {

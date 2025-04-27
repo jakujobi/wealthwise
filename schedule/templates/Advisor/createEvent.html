@@ -1,42 +1,52 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<h1>Create Event</h1>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <div style="width: 50%; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative;">
+        <a href="{% url 'view' %}" class="btn btn-secondary" style="position: absolute; top: 20px; left: 20px;">Return</a>
+        <h1 style="text-align: center;">Create Event</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-    {% if form_errors %}
-        <ul style="color: red;">
-            {% for field, errors in form_errors.items %}
-                <li>{{ field }}: {{ errors|join:", " }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" maxlength="255" required value="{{ title|default:'' }}">
-    <br>
+        <form method="POST">
+            {% csrf_token %}
+            {% if error_message %}
+                <p style="color: red; text-align: center;">{{ error_message }}</p>
+            {% endif %}
+            {% if form_errors %}
+                <ul style="color: red; text-align: center;">
+                    {% for field, errors in form_errors.items %}
+                        <li>{{ field }}: {{ errors|join:", " }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <div style="margin-bottom: 15px;">
+                <label for="title" class="form-label-bold">Title</label>
+                <input type="text" name="title" id="title" maxlength="255" required value="{{ title|default:'' }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <label for="event_start_timestamp">Start Date Time</label>
-    <input type="datetime-local" name="event_start_timestamp" id="event_start_timestamp" required value="{{ start_timestamp|default:'' }}">
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label for="event_start_timestamp" class="form-label-bold">Start Date Time</label>
+                <input type="datetime-local" name="event_start_timestamp" id="event_start_timestamp" required value="{{ start_timestamp|default:'' }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <label for="event_start_timestamp">End Date Time</label>
-    <input type="datetime-local" name="event_end_timestamp" id="event_end_timestamp" required value="{{ end_timestamp|default:'' }}">
-    <br>
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label for="event_end_timestamp" class="form-label-bold">End Date Time</label>
+                <input type="datetime-local" name="event_end_timestamp" id="event_end_timestamp" required value="{{ end_timestamp|default:'' }}" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">
+            </div>
 
-    <label for="description">Description</label>
-    <textarea name="description" id="description" rows="4" cols="50">{{ description|default:'' }}</textarea>
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label for="description" class="form-label-bold">Description</label>
+                <textarea name="description" id="description" rows="4" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">{{ description|default:'' }}</textarea>
+            </div>
 
-    <label for="location">Location</label>
-    <textarea name="location" id="location" rows="2" cols="50">{{ location|default:'' }}</textarea>
-    <br>
+            <div style="margin-bottom: 15px;">
+                <label for="location" class="form-label-bold">Location</label>
+                <textarea name="location" id="location" rows="2" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px;">{{ location|default:'' }}</textarea>
+            </div>
 
-    <br>
-    <button type="submit" class="btn btn-primary">Create Event</button>
-
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">Create Event</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock content %}
