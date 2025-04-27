@@ -90,18 +90,7 @@
     </tbody>
 </table>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.cancel-consultation-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const consultationId = this.dataset.consultationId;
-                if (consultationId) {
-                    console.log(`Cancel button clicked for consultation ID: ${consultationId}`);
-                }
-            });
-        });
-    });
-</script>
+
 <script src="{% static 'js/registerEvent.js' %}"></script>
 <script src="{% static 'js/unregisterEvent.js' %}"></script>
 <script src="{% static 'js/cancelConsultation.js' %}"></script>
