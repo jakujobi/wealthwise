@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     msgEl.setAttribute('data-message-id', id);
     const isCurrentUser = sender === currentUser;
     msgEl.classList.add('message', isCurrentUser ? 'sent' : 'received');
+
     msgEl.innerHTML = `
       <div class="message-bubble ${isCurrentUser ? 'bg-primary text-white' : 'bg-light text-dark'}">
         ${!isCurrentUser ? `<strong>${sender}</strong>:<br>` : ''}
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatSocket.send(JSON.stringify({ delete_id: id }));
       });
     }
+
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
@@ -112,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           if (data.message && data.sender && data.timestamp) {
             appendMessage(data.sender, data.message, data.timestamp, data.id);
+
           } else if (data.error) {
             console.error('Server error message:', data.error);
             // Optionally display server error in chat window

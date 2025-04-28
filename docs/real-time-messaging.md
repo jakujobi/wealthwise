@@ -35,6 +35,7 @@ docker compose down --remove-orphans
 - **List Messages in Conversation**: `GET /messaging/api/conversations/{conversation_id}/messages/`
 - **Send Message via REST**: `POST /messaging/api/conversations/{conversation_id}/messages/` with JSON `{ "body": "..." }`
 - **Delete Message**: `DELETE /messaging/api/conversations/{conversation_id}/messages/{message_id}/`
+=======
 
 ## WebSocket Endpoint
 - **URL**: `ws://<host>/ws/chat/{conversation_id}/`
