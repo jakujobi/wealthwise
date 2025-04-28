@@ -35,3 +35,6 @@ daphne -b 127.0.0.1 -p 8000 core.asgi:application
 
 # Or start with Uvicorn
 uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
+
+# Celery worker for notifications
+celery -A core worker -l info

@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from .models import Message, Conversation
+from .tasks import send_notifications_for_message
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,6 +39,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
+            # Handle message deletion request
+            if 'delete_id' in data:
+                message_id = data['delete_id']
+                user = self.scope['user']
+                success = await self.delete_message_db(message_id, user)
+                if success:
+                    await self.channel_layer.group_send(
+                        self.room_group_name,
+                        {
+                            'type': 'delete_message',
+                            'message_id': message_id
+                        }
+                    )
+                return
             message_text = data.get('message')
             user = self.scope["user"]
 
@@ -46,11 +61,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 return
 
             msg_obj = await self.create_message(self.conversation_id, user, message_text)
+            # Schedule notifications to other participants
+            send_notifications_for_message.delay(msg_obj.id)
 
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_message',
+                    'id': msg_obj.id,
                     'message': message_text,
                     'sender': user.username,
                     'timestamp': str(msg_obj.timestamp)
@@ -66,8 +84,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
             'message': event['message'],
+            'id': event['id'],
             'sender': event['sender'],
             'timestamp': event['timestamp']
+        }))
+
+    async def delete_message(self, event):
+        await self.send(text_data=json.dumps({
+            'delete_id': event['message_id']
         }))
 
     @database_sync_to_async
@@ -93,4 +117,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return Conversation.objects.filter(id=conversation_id, participants=user).exists()
         except Exception as e:
             logger.exception(f"Database error checking participation for user {user.id} in convo {conversation_id}: {e}")
+            return False
+
+    @database_sync_to_async
+    def delete_message_db(self, message_id, user):
+        try:
+            conv_id = int(self.conversation_id)
+            qs = Message.objects.filter(id=message_id, conversation_id=conv_id, sender=user)
+            if not qs.exists():
+                return False
+            qs.delete()
+            return True
+        except Exception as e:
+            logger.exception(f"Error deleting message {message_id} by user {user.id}: {e}")
             return False

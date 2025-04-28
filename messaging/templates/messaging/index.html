@@ -59,18 +59,26 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   const csrftoken = getCookie('csrftoken');
 
-  function appendMessage(sender, body, timestamp) {
+  function appendMessage(sender, body, timestamp, id) {
     const msgEl = document.createElement('div');
+    msgEl.setAttribute('data-message-id', id);
     const isCurrentUser = sender === currentUser;
-    msgEl.classList.add('message', isCurrentUser ? 'sent' : 'received'); // Add classes for styling
+    msgEl.classList.add('message', isCurrentUser ? 'sent' : 'received');
     msgEl.innerHTML = `
       <div class="message-bubble ${isCurrentUser ? 'bg-primary text-white' : 'bg-light text-dark'}">
         ${!isCurrentUser ? `<strong>${sender}</strong>:<br>` : ''}
         ${body}
         <small class="message-timestamp">${new Date(timestamp).toLocaleString()}</small>
+        ${isCurrentUser ? `<button class=\"btn btn-sm btn-danger delete-button\" data-delete-id=\"${id}\">&times;</button>` : ''}
       </div>
     `;
     chatWindow.appendChild(msgEl);
+    if (isCurrentUser) {
+      const delBtn = msgEl.querySelector('.delete-button');
+      delBtn.addEventListener('click', () => {
+        chatSocket.send(JSON.stringify({ delete_id: id }));
+      });
+    }
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
@@ -97,8 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
           const data = JSON.parse(e.data);
           console.log('Message received:', data);
+          if (data.delete_id) {
+            const delEl = chatWindow.querySelector(`[data-message-id="${data.delete_id}"]`);
+            if (delEl) delEl.remove();
+            return;
+          }
           if (data.message && data.sender && data.timestamp) {
-            appendMessage(data.sender, data.message, data.timestamp);
+            appendMessage(data.sender, data.message, data.timestamp, data.id);
           } else if (data.error) {
             console.error('Server error message:', data.error);
             // Optionally display server error in chat window
@@ -155,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(data => {
         chatWindow.innerHTML = ''; // Clear loading message
         data.forEach(msg => {
-          appendMessage(msg.sender, msg.body, msg.timestamp);
+          appendMessage(msg.sender, msg.body, msg.timestamp, msg.id);
         });
         // 2. Connect WebSocket *after* loading initial messages
         connectWebSocket(convoId);
