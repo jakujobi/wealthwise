@@ -1,0 +1,116 @@
+{% extends 'base.html' %} {# Assumes you have a base.html template #}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<h2>Chat - Conversation {{ conversation_id }}</h2>
+
+<div id="chat-log" style="height: 400px; overflow-y: scroll; border: 1px solid #ccc; margin-bottom: 10px; padding: 5px;">
+    <!-- Messages will appear here -->
+    Loading history...
+</div>
+
+<input id="chat-message-input" type="text" size="100" placeholder="Type your message..."><br>
+<button id="chat-message-submit">Send</button>
+
+{{ conversation_id|json_script:"conversation-id" }}
+{{ user_id|json_script:"user-id" }}
+
+<script>
+    const conversationId = JSON.parse(document.getElementById('conversation-id').textContent);
+    const userId = JSON.parse(document.getElementById('user-id').textContent); // Get current user ID
+    const chatLog = document.getElementById('chat-log');
+    const messageInput = document.getElementById('chat-message-input');
+    const messageSubmit = document.getElementById('chat-message-submit');
+
+    // Function to append message to chat log
+    function appendMessage(data) {
+        const message = data.message; // The actual message object is nested
+        const messageDiv = document.createElement('div');
+        const timestamp = new Date(message.timestamp).toLocaleTimeString();
+        const senderUsername = message.sender.username;
+
+        messageDiv.textContent = `[${timestamp}] ${senderUsername}: ${message.content}`;
+        // Simple styling to differentiate user's messages
+        if (message.sender.id === userId) {
+            messageDiv.style.fontWeight = 'bold';
+            messageDiv.style.textAlign = 'right'; // Align user's messages to the right
+        } else {
+            messageDiv.style.textAlign = 'left'; // Align others' messages to the left
+        }
+        chatLog.appendChild(messageDiv);
+        chatLog.scrollTop = chatLog.scrollHeight; // Scroll to bottom
+    }
+
+    // Fetch message history
+    // Note the URL change to match the namespaced API URL
+    fetch(`/messaging/api/conversations/${conversationId}/messages/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(history => {
+            chatLog.innerHTML = ''; // Clear loading message
+            history.forEach(msgData => {
+                 // Wrap message data similarly to how WebSocket sends it
+                appendMessage({ message: msgData });
+            });
+        })
+        .catch(e => {
+            console.error('Error fetching message history:', e);
+            chatLog.innerHTML = 'Error loading message history.';
+        });
+
+    // --- WebSocket Setup ---
+    const chatSocket = new WebSocket(
+        'ws://' // Use wss:// for HTTPS
+        + window.location.host
+        + '/ws/chat/'
+        + conversationId
+        + '/'
+    );
+
+    chatSocket.onopen = function(e) {
+        console.log('WebSocket connection established');
+    };
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        console.log("Message received:", data);
+        appendMessage(data); // Append the received message object
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+        chatLog.innerHTML += '<p>Connection lost. Please refresh the page.</p>';
+    };
+
+    chatSocket.onerror = function(e) {
+        console.error("WebSocket error:", e);
+        chatLog.innerHTML += '<p>An error occurred with the connection.</p>';
+    };
+
+    // --- Send Message ---
+    messageSubmit.onclick = function(e) {
+        const message = messageInput.value;
+        if (message.trim() === '') return; // Don't send empty messages
+
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInput.value = ''; // Clear input field
+        messageInput.focus();
+    };
+
+    // Allow sending with Enter key
+    messageInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent default Enter behavior (like form submission)
+            messageSubmit.click(); // Trigger send button click
+        }
+    });
+
+</script>
+{% endblock %} 

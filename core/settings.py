@@ -30,15 +30,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'calculators',
     'users',
-    'schedule'
+    'schedule',
+    'messaging',
 ]
 
 MIDDLEWARE = [
@@ -154,5 +157,16 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
+    },
+}
+
+# Channels
+ASGI_APPLICATION = 'core.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)], # Replace with your Redis host if different
+        },
     },
 }

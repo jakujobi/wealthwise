@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %} {# Load static if needed for CSS/JS #}
+
+{% block title %}My Conversations{% endblock %}
+
+{% block content %}
+<h2>My Conversations</h2>
+
+<div id="conversation-list">
+    Loading conversations...
+</div>
+
+{# Consider adding a button/link here to start a new conversation later #}
+
+<script>
+    const conversationListDiv = document.getElementById('conversation-list');
+
+    // Fetch conversations from the API
+    fetch("{% url 'messaging:api:conversation-list' %}") // Use the namespaced URL
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(conversations => {
+            conversationListDiv.innerHTML = ''; // Clear loading message
+            if (conversations.length === 0) {
+                conversationListDiv.innerHTML = '<p>You have no conversations yet.</p>';
+                return;
+            }
+
+            const ul = document.createElement('ul');
+            conversations.forEach(conv => {
+                const li = document.createElement('li');
+                const link = document.createElement('a');
+
+                // Create a display name for the conversation (e.g., list participants)
+                // This assumes a simple 2-person chat for display, adjust as needed
+                const participantNames = conv.participants
+                                         .map(p => p.username)
+                                         .join(', '); // Adjust how participants are displayed
+
+                link.textContent = `Conversation with ${participantNames} (ID: ${conv.id})`;
+                // Link to the specific chat view
+                link.href = `/messaging/chat/${conv.id}/`; // Adjust if your URL structure differs
+
+                li.appendChild(link);
+                ul.appendChild(li);
+            });
+            conversationListDiv.appendChild(ul);
+        })
+        .catch(error => {
+            console.error('Error fetching conversations:', error);
+            conversationListDiv.innerHTML = '<p>Error loading conversations. Please try again later.</p>';
+        });
+</script>
+{% endblock %} 

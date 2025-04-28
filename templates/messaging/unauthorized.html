@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {# Assuming you have a base template #}
+
+{% block title %}Unauthorized Access{% endblock %}
+
+{% block content %}
+  <h2>Unauthorized Access</h2>
+  <p>You do not have permission to view this conversation.</p>
+  <a href="{% url 'home' %}">Go to Home</a> {# Link back to home or another appropriate page #}
+{% endblock %} 

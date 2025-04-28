@@ -3,3 +3,6 @@ djangorestframework
 psycopg2
 pillow
 gunicorn
+channels>=4.2.2,<5.0.0
+channels-redis>=4.2.1,<5.0.0
+celery
