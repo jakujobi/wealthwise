@@ -32,14 +32,17 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const items = document.querySelectorAll('.conversation-item');
   const chatWindow = document.getElementById('chat-window');
   const messageInput = document.getElementById('message-input');
   const sendButton = document.getElementById('send-message');
-  let selectedConvo = null;
   const newConvoButton = document.getElementById('new-convo');
+  const convoList = document.querySelector('.list-group'); // Get convo list container
 
-  // CSRF helper
+  let selectedConvoId = null;
+  let chatSocket = null;
+  const currentUser = "{{ request.user.username }}"; // Get current user for comparison
+
+  // --- Helper Functions ---
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -56,9 +59,133 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   const csrftoken = getCookie('csrftoken');
 
+  function appendMessage(sender, body, timestamp) {
+    const msgEl = document.createElement('div');
+    const isCurrentUser = sender === currentUser;
+    msgEl.classList.add('message', isCurrentUser ? 'sent' : 'received'); // Add classes for styling
+    msgEl.innerHTML = `
+      <div class="message-bubble ${isCurrentUser ? 'bg-primary text-white' : 'bg-light text-dark'}">
+        ${!isCurrentUser ? `<strong>${sender}</strong>:<br>` : ''}
+        ${body}
+        <small class="message-timestamp">${new Date(timestamp).toLocaleString()}</small>
+      </div>
+    `;
+    chatWindow.appendChild(msgEl);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function connectWebSocket(convoId) {
+    console.log(`Attempting to connect WebSocket for conversation ${convoId}`);
+    // Close existing socket if open
+    if (chatSocket && chatSocket.readyState !== WebSocket.CLOSED) {
+      console.log('Closing previous WebSocket.');
+      chatSocket.close();
+    }
+
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const wsPath = `${wsScheme}://${window.location.host}/ws/chat/${convoId}/`;
+    chatSocket = new WebSocket(wsPath);
+
+    chatSocket.onopen = function(e) {
+      console.log(`WebSocket connection opened for conversation ${convoId}`);
+      messageInput.disabled = false;
+      sendButton.disabled = false;
+      messageInput.focus();
+    };
+
+    chatSocket.onmessage = function(e) {
+      try {
+          const data = JSON.parse(e.data);
+          console.log('Message received:', data);
+          if (data.message && data.sender && data.timestamp) {
+            appendMessage(data.sender, data.message, data.timestamp);
+          } else if (data.error) {
+            console.error('Server error message:', data.error);
+            // Optionally display server error in chat window
+            appendMessage('System', `Error: ${data.error}`, new Date().toISOString());
+          } else {
+              console.warn('Received unexpected WebSocket message format:', data);
+          }
+      } catch (error) {
+          console.error('Failed to parse incoming message or process data:', e.data, error);
+      }
+    };
+
+    chatSocket.onerror = function(e) {
+      console.error('WebSocket error:', e);
+      chatWindow.innerHTML += '<p class="text-danger">WebSocket connection error.</p>';
+      messageInput.disabled = true;
+      sendButton.disabled = true;
+    };
+
+    chatSocket.onclose = function(e) {
+      console.log(`WebSocket connection closed for conversation ${convoId}. Code: ${e.code}, Reason: ${e.reason}`);
+      // Optionally disable input if not already selecting another convo
+      // if (selectedConvoId === convoId) { // Check if the closed socket is the selected one
+      //    messageInput.disabled = true;
+      //    sendButton.disabled = true;
+      // }
+      chatSocket = null; // Clear the reference
+    };
+  }
+
+  function selectConversation(convoId) {
+    if (selectedConvoId === convoId) return; // Don't re-select the same convo
+
+    console.log(`Selecting conversation ${convoId}`);
+    selectedConvoId = convoId;
+
+    // Highlight the selected conversation in the list (optional)
+    document.querySelectorAll('.conversation-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.id === convoId);
+    });
+
+    chatWindow.innerHTML = `<p class="text-muted p-3">Loading conversation ${convoId}...</p>`;
+    messageInput.disabled = true; // Disable until WS connects
+    sendButton.disabled = true;
+
+    // 1. Fetch initial messages
+    fetch(`/messaging/api/conversations/${convoId}/messages/`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        chatWindow.innerHTML = ''; // Clear loading message
+        data.forEach(msg => {
+          appendMessage(msg.sender, msg.body, msg.timestamp);
+        });
+        // 2. Connect WebSocket *after* loading initial messages
+        connectWebSocket(convoId);
+      })
+      .catch(error => {
+        console.error('Error fetching messages:', error);
+        chatWindow.innerHTML = `<p class="text-danger p-3">Error loading conversation ${convoId}. Please try again.</p>`;
+        selectedConvoId = null; // Deselect on error
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+      });
+  }
+
+  // --- Event Listeners ---
+
+  // Add click listener to initial conversation items
+  document.querySelectorAll('.conversation-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      const convoId = this.dataset.id;
+      selectConversation(convoId);
+    });
+  });
+
+  // Handle creating a new conversation
   newConvoButton.addEventListener('click', function(e) {
     e.preventDefault();
-    // Create a new conversation via API
+    console.log('Creating new conversation...');
+    newConvoButton.disabled = true; // Prevent double clicks
+
     fetch('/messaging/api/conversations/', {
       method: 'POST',
       headers: {
@@ -66,87 +193,89 @@ document.addEventListener('DOMContentLoaded', function() {
         'X-CSRFToken': csrftoken
       }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            // Try to get error details from response body if available
+            return response.json().then(errData => {
+                throw new Error(`HTTP error ${response.status}: ${JSON.stringify(errData)}`);
+            }).catch(() => {
+                // Fallback if response body isn't JSON or empty
+                throw new Error(`HTTP error ${response.status}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
+      console.log('New conversation created:', data);
+      if (typeof data.id === 'undefined') {
+        console.error('New conversation created but ID is missing:', data);
+        chatWindow.innerHTML = '<p class="text-danger p-3">Error creating conversation: Invalid response from server.</p>';
+        newConvoButton.disabled = false;
+        return;
+      }
+
       // Add new conversation to the list
-      const convoList = document.querySelector('.list-group');
       const newConvoItem = document.createElement('a');
       newConvoItem.href = '#';
       newConvoItem.className = 'list-group-item list-group-item-action conversation-item';
       newConvoItem.dataset.id = data.id;
-      newConvoItem.innerHTML = `New Conversation<br><small class="text-muted">${data.created_at}</small>`;
+      // Display participants (or 'New Conversation' if none initially)
+      const participantsText = data.participants && data.participants.length > 0 ? data.participants.join(', ') : 'New Conversation';
+      newConvoItem.innerHTML = `${participantsText}<br><small class="text-muted">${new Date(data.created_at).toLocaleString()}</small>`;
       convoList.appendChild(newConvoItem);
+
       // Add event listener to the new conversation item
       newConvoItem.addEventListener('click', function(e) {
         e.preventDefault();
-        const convoId = this.dataset.id;
-        selectedConvo = convoId;
-        messageInput.disabled = false;
-        sendButton.disabled = false;
-        chatWindow.innerHTML = '<p>Loading conversation ' + convoId + '...</p>';
-        // Fetch messages via AJAX
-        fetch(`/messaging/api/conversations/${convoId}/messages/`)
-          .then(response => response.json())
-          .then(data => {
-            chatWindow.innerHTML = '';
-            data.forEach(msg => {
-              const msgEl = document.createElement('div');
-              msgEl.innerHTML = `<strong>${msg.sender}</strong>: ${msg.body} <br><small class="text-muted">${new Date(msg.timestamp).toLocaleString()}</small>`;
-              chatWindow.appendChild(msgEl);
-            });
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-          });
+        selectConversation(this.dataset.id);
       });
+
+      // Automatically select the newly created conversation
+      selectConversation(data.id);
+      newConvoButton.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error creating new conversation:', error);
+        chatWindow.innerHTML = `<p class="text-danger p-3">Error creating conversation: ${error.message}. Please check console and server logs.</p>`;
+        newConvoButton.disabled = false; // Re-enable button on error
     });
   });
 
-  items.forEach(item => {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      const convoId = this.dataset.id;
-      selectedConvo = convoId;
-      messageInput.disabled = false;
-      sendButton.disabled = false;
-      chatWindow.innerHTML = '<p>Loading conversation ' + convoId + '...</p>';
-      // Fetch messages via AJAX
-      fetch(`/messaging/api/conversations/${convoId}/messages/`)
-        .then(response => response.json())
-        .then(data => {
-          chatWindow.innerHTML = '';
-          data.forEach(msg => {
-            const msgEl = document.createElement('div');
-            msgEl.innerHTML = `<strong>${msg.sender}</strong>: ${msg.body} <br><small class="text-muted">${new Date(msg.timestamp).toLocaleString()}</small>`;
-            chatWindow.appendChild(msgEl);
-          });
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-        });
-    });
-  });
-
-  // Send message
+  // Handle sending a message
   sendButton.addEventListener('click', function(e) {
     e.preventDefault();
-    if (!selectedConvo) return;
-    const body = messageInput.value.trim();
-    if (!body) return;
-    fetch(`/messaging/api/conversations/${selectedConvo}/messages/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ body })
-    })
-    .then(response => response.json())
-    .then(msg => {
-      const msgEl = document.createElement('div');
-      msgEl.innerHTML = `<strong>${msg.sender}</strong>: ${msg.body} <br><small class="text-muted">${new Date(msg.timestamp).toLocaleString()}</small>`;
-      chatWindow.appendChild(msgEl);
-      messageInput.value = '';
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    });
+    const message = messageInput.value.trim();
+
+    if (!message) {
+      return; // Don't send empty messages
+    }
+
+    if (!chatSocket || chatSocket.readyState !== WebSocket.OPEN) {
+      console.error('WebSocket is not connected.');
+      appendMessage('System', 'Not connected. Please wait or select a conversation.', new Date().toISOString());
+      return;
+    }
+
+    console.log(`Sending message: ${message}`);
+    chatSocket.send(JSON.stringify({
+      'message': message
+    }));
+
+    // Clear input field immediately (Optimistic UI update)
+    messageInput.value = '';
+    messageInput.focus(); // Keep focus on input
+
+    // Note: The message will be displayed when it's received back via chatSocket.onmessage
   });
+
+  // Allow sending with Enter key
+  messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          e.preventDefault(); // Prevent default form submission/newline
+          sendButton.click(); // Trigger the send button click
+      }
+  });
+
 });
 </script>
 {% endblock %}
