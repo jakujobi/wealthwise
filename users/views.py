@@ -11,10 +11,14 @@ from django.core.mail import send_mail  # Add this import
 from django.contrib.auth.hashers import check_password  # Add this import
 from django.contrib.auth.password_validation import validate_password  # Add this import
 from django.core.exceptions import ValidationError  # Add this import
+from logging import getLogger  
 
 from users.models import Payment, Subscription, OTP  # Add this import
 from .forms import AdvisorForm, ProfileForm, CustomUserCreationForm  # Import the ProfileForm and CustomUserCreationForm
 from datetime import timedelta, date  # Add this import
+
+
+logger = getLogger(__name__)
 
 def register(request):
     if request.method == 'POST':
@@ -216,6 +220,8 @@ def forgot_password(request):
             request.session['reset_user_id'] = user.pk # type: ignore
 
             # Send OTP via email (debugging purposes, uncomment in production)
+            # log the otp code
+            logger.info(f"Generated OTP for {email}: {otp_code}")
             print(f"Generated OTP for {email}: {otp_code}")
             # send_mail(
             #     'Password Reset OTP',

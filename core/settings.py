@@ -69,7 +69,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -143,3 +142,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Login URL. If the user is not logged in, they will be redirected to this URL to login
 # before they can access the page they are trying to access.
 LOGIN_URL = '/users/login/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
