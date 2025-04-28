@@ -25,3 +25,13 @@ install requirements:
 
 # Docker commands
 docker-compose up
+
+# Real-Time Messaging Commands
+# Start Redis via Docker
+docker run -d --name redis -p 6379:6379 redis:latest
+
+# Start ASGI server with Daphne
+daphne -b 127.0.0.1 -p 8000 core.asgi:application
+
+# Or start with Uvicorn
+uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
