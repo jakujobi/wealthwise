@@ -1,0 +1,68 @@
+{# messaging/templates/messaging/inbox.html #}
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %} {# Load humanize template tags #}
+
+{% block title %}Inbox{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{% static 'css/messaging.css' %}">
+    <style>
+        /* Add some basic styling for the new conversation list */
+        .new-conversation-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .user-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .user-list li {
+            margin-bottom: 0.5rem;
+        }
+        .user-list a {
+            text-decoration: none;
+            color: #007bff; /* Or your theme color */
+        }
+        .user-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Inbox</h2>
+    <hr>
+
+    {% if conversations %}
+        <div class="list-group mb-4">
+            {% for conv in conversations %}
+                <a href="{% url 'messaging:conversation_detail' user_id=conv.user.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if conv.unread_count > 0 %}list-group-item-primary{% endif %}">
+                    <div>
+                        <h5 class="mb-1">{{ conv.user.username }}</h5>
+                        <p class="mb-1 text-muted">
+                            {% if conv.latest_message.sender == request.user %}You: {% endif %}
+                            {{ conv.latest_message.content|truncatechars:50 }}
+                        </p>
+                        <small class="text-muted">{{ conv.latest_message.timestamp|naturaltime }}</small>
+                    </div>
+                    {% if conv.unread_count > 0 %}
+                        <span class="badge bg-primary rounded-pill">{{ conv.unread_count }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted">You haven't started any conversations yet.</p>
+    {% endif %}
+
+    {# Section to start a new conversation #}
+    <div class="new-conversation-section">
+        <h4>Start a New Conversation</h4>
+        {% if all_users %}<ul class="user-list">{% for other_user in all_users %}<li><a href="{% url 'messaging:conversation_detail' user_id=other_user.id %}">Message {{ other_user.username }}</a></li>{% endfor %}</ul>{% else %}<p class="text-muted">No other users to message.</p>{% endif %}
+    </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,12 @@
+/* static/css/messaging.css */
+
+.chat-log-container {
+  height: 60vh; /* Adjust as needed */
+  overflow-y: scroll;
+}
+
+.message-card {
+  max-width: 70%; /* Max width for message bubbles */
+}
+
+/* Add any other messaging-specific styles here */

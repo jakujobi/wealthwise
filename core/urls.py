@@ -28,4 +28,5 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('learning/', include('learning.urls')),  # Add this line
     path('schedule/', include('schedule.urls')),  # Add this line
+    path('messages/', include('messaging.urls')), # Add messaging URLs
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,162 @@
+{# messaging/templates/messaging/conversation_detail.html #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %} {# Assumes a block like this exists in base.html head #}
+  <link rel="stylesheet" href="{% static 'css/messaging.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Conversation with {{ other_user.username }}</h4>
+            <a href="{% url 'messaging:inbox' %}" class="btn btn-sm btn-outline-secondary">&larr; Back to Inbox</a>
+        </div>
+
+        {# Apply CSS class instead of inline style #}
+        <div class="card-body chat-log-container" id="chat-log">
+            {% for message in messages %}
+                <div class="d-flex {% if message.sender == request.user %}justify-content-end{% else %}justify-content-start{% endif %} mb-3">
+                    {# Apply CSS class instead of inline style #}
+                    <div class="card message-card {% if message.sender == request.user %}bg-primary text-white{% else %}bg-light{% endif %}">
+                        <div class="card-body p-2">
+                            <p class="card-text mb-0">{{ message.content }}</p>
+                            <small class="text-muted {% if message.sender == request.user %}text-white-50{% endif %} float-end">{{ message.timestamp|timesince }} ago</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">No messages yet. Start the conversation!</p>
+            {% endfor %}
+             <!-- New messages will be appended here by JavaScript -->
+             <div id="latest-message-marker" data-timestamp="{% if messages %}{{ messages.last.timestamp.isoformat }}{% else %}{{ '1970-01-01T00:00:00+00:00' }}{% endif %}"></div>
+        </div>
+
+        <div class="card-footer">
+            <form method="post" id="message-form">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="content" class="form-control" placeholder="Type your message..." required autofocus>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Use json_script to pass data safely #}
+{{ other_user.id|json_script:"other-user-id" }}
+{{ request.user.username|json_script:"current-username" }}
+
+{% block extra_js %} {# Optional: Define a block in base.html for page-specific JS #}
+<script>
+    const chatLog = document.getElementById('chat-log');
+    const messageForm = document.getElementById('message-form');
+    // Get data from json_script tags
+    const otherUserId = JSON.parse(document.getElementById('other-user-id').textContent);
+    const currentUsername = JSON.parse(document.getElementById('current-username').textContent);
+    const marker = document.getElementById('latest-message-marker');
+    let lastTimestamp = marker.getAttribute('data-timestamp');
+
+    function scrollToBottom() {
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function formatTimestamp(isoString) {
+        // Basic relative time (can be improved with a library like moment.js/date-fns)
+        const date = new Date(isoString);
+        const now = new Date();
+        const seconds = Math.round((now - date) / 1000);
+
+        if (seconds < 60) return `${seconds} sec ago`;
+        const minutes = Math.round(seconds / 60);
+        if (minutes < 60) return `${minutes} min ago`;
+        const hours = Math.round(minutes / 60);
+        if (hours < 24) return `${hours} hr ago`;
+        // Basic date formatting for older messages
+        return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+
+    function appendMessage(msg) {
+        const messageElement = document.createElement('div');
+        // Use username from fetched message data
+        const isSender = msg.sender__username === currentUsername;
+
+        messageElement.classList.add('d-flex', 'mb-3');
+        messageElement.classList.add(isSender ? 'justify-content-end' : 'justify-content-start');
+
+        const cardElement = document.createElement('div');
+        // Apply CSS class
+        cardElement.classList.add('card', 'message-card', 'p-2');
+        cardElement.classList.add(isSender ? 'bg-primary' : 'bg-light');
+        cardElement.classList.add(isSender ? 'text-white' : ''); // Ensure text is white on primary bg
+
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body', 'p-2');
+
+
+        const textElement = document.createElement('p');
+        textElement.classList.add('card-text', 'mb-0');
+        textElement.textContent = msg.content;
+
+        const timeElement = document.createElement('small');
+        timeElement.classList.add('float-end'); // Keep float-end
+        timeElement.classList.add(isSender ? 'text-white-50' : 'text-muted'); // Apply correct text color class
+        timeElement.textContent = formatTimestamp(msg.timestamp); // Format timestamp
+
+        cardBody.appendChild(textElement);
+        cardBody.appendChild(timeElement);
+        cardElement.appendChild(cardBody);
+        messageElement.appendChild(cardElement);
+
+        // Insert before the marker div
+        chatLog.insertBefore(messageElement, marker);
+
+        // Update the last timestamp seen
+        if (msg.timestamp > lastTimestamp) { // Only update if newer
+            lastTimestamp = msg.timestamp; // Store the ISO string from the server
+            marker.setAttribute('data-timestamp', lastTimestamp);
+        }
+    }
+
+
+    async function fetchNewMessages() {
+        // Ensure timestamp is properly encoded
+        const url = `/messages/api/fetch/${otherUserId}/?since=${encodeURIComponent(lastTimestamp)}`;
+        // console.log(`Fetching: ${url}`); // Debugging
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                console.error("Error fetching messages:", response.status, await response.text());
+                return;
+            }
+            const data = await response.json();
+
+            if (data.messages && data.messages.length > 0) {
+                data.messages.forEach(appendMessage);
+                scrollToBottom(); // Scroll down only if new messages were added
+            }
+        } catch (error) {
+            console.error("Network error fetching messages:", error);
+        }
+    }
+
+    // Scroll to bottom on initial load
+    scrollToBottom();
+
+    // Poll for new messages every 15 seconds
+    const pollingInterval = setInterval(fetchNewMessages, 15000);
+
+    // Optional: Clear interval when page is unloaded (good practice)
+    // window.addEventListener('beforeunload', () => {
+    //    clearInterval(pollingInterval);
+    // });
+
+</script>
+{% endblock extra_js %}
+
+{% endblock content %}
