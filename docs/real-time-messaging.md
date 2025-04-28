@@ -23,6 +23,10 @@ daphne -b 127.0.0.1 -p 8000 core.asgi:application
 
 # Or with Uvicorn
 uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
+
+# Run all services via Docker Compose
+docker compose up --build
+docker compose down --remove-orphans
 ```
 
 ## API Endpoints
@@ -30,6 +34,7 @@ uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
 - **Create Conversation**: `POST /messaging/api/conversations/` (no body required)
 - **List Messages in Conversation**: `GET /messaging/api/conversations/{conversation_id}/messages/`
 - **Send Message via REST**: `POST /messaging/api/conversations/{conversation_id}/messages/` with JSON `{ "body": "..." }`
+- **Delete Message**: `DELETE /messaging/api/conversations/{conversation_id}/messages/{message_id}/`
 
 ## WebSocket Endpoint
 - **URL**: `ws://<host>/ws/chat/{conversation_id}/`
@@ -41,6 +46,10 @@ uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
   1. Client connects to `/ws/chat/{id}/`.
   2. Server adds client to group `chat_{id}`.
   3. When a new message arrives, server broadcasts to the group.
+
+## Notifications
+- **New Message Notification**: Sent when a new message is received in a conversation.
+- **Message Deleted Notification**: Sent when a message is deleted from a conversation.
 
 ## Front-End Integration
 - The messaging center UI is available at `http://<host>/messaging/`.

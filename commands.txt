@@ -39,3 +39,10 @@ uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
 
 # Run Celery worker for notifications
 python -m celery -A core worker -l info
+
+
+
+Simple how to start
+|    docker compose up
+|    daphne -b 127.0.0.1 -p 8000 core.asgi:application
+

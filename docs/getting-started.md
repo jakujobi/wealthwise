@@ -72,7 +72,12 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-The server will start at `http://localhost:8000/`.
+Alternatively, you can launch all services with Docker Compose:
+```bash
+docker compose up --build
+docker compose down --remove-orphans
+```
+Then visit `http://localhost:8001/`.
 
 ## Docker Setup (Alternative)
 
@@ -80,13 +85,14 @@ If you prefer to use Docker for development:
 
 ```bash
 # Build and start containers
-docker-compose up -d
+docker compose up --build
+docker compose down --remove-orphans
 
 # Create superuser
-docker-compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 
-The server will be available at `http://localhost:8000/`.
+The server will now be available at `http://localhost:8001/`.
 
 ## Project Commands
 
