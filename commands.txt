@@ -23,8 +23,9 @@ create admin user:
 install requirements:
     pip install -r requirements.txt
 
-# Docker commands
-docker-compose up
+# Docker Compose commands
+docker compose up --build
+docker compose down --remove-orphans
 
 # Real-Time Messaging Commands
 # Start Redis via Docker
@@ -36,5 +37,5 @@ daphne -b 127.0.0.1 -p 8000 core.asgi:application
 # Or start with Uvicorn
 uvicorn core.asgi:application --reload --host 127.0.0.1 --port 8000
 
-# Celery worker for notifications
-celery -A core worker -l info
+# Run Celery worker for notifications
+python -m celery -A core worker -l info

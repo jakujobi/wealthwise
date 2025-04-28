@@ -13,22 +13,52 @@ services:
       - db-data:/var/lib/postgresql/data
     restart: on-failure
 
+  redis:
+    image: redis:latest
+    container_name: wealthwise-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: on-failure
+
   web:
     build: .
     container_name: wealthwise-web
     restart: on-failure
     depends_on:
       - db
+      - redis
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       DATABASE_NAME: wealthwise_db
       DATABASE_USER: wealthwise_user
       DATABASE_PASSWORD: securepassword
       DATABASE_HOST: db
       DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379
     volumes:
       - .:/app
+    command: sh -c "python manage.py migrate && uvicorn core.asgi:application --reload --host 0.0.0.0 --port 8000"
+
+  worker:
+    build: .
+    container_name: wealthwise-worker
+    command: sh -c "python -m celery -A core worker -l info"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_NAME: wealthwise_db
+      DATABASE_USER: wealthwise_user
+      DATABASE_PASSWORD: securepassword
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379
 
 volumes:
   db-data:
+  redis-data:
