@@ -8,8 +8,8 @@ from users.models import Profile
 
 @login_required
 def message(request):
-    recipient_id = float(request.POST.get('one_year_savings_goal'))
-    sending_message = float(request.POST.get('sending_message'))
+    recipient_id = request.POST.get('one_year_savings_goal')
+    sending_message = request.POST.get('sending_message')
 
     # Get user profile for various later operations
     profile = request.user.profile
@@ -18,7 +18,7 @@ def message(request):
     user_list = Profile.objects.values_list('user', flat=True)
 
     # Fetch messages related to the profile
-    all_messages = Messaging.objects.filter(Q(sender_id = profile) | Q(recipient_id = profile)).order_by('sent_at')
+    all_messages = Messaging.objects.filter(sender_id = Messaging.sender_id).order_by('sent_at')
 
     # Dictionary to store messages grouped by non-profile user
     messages_dict = defaultdict(list)
