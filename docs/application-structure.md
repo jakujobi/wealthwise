@@ -13,6 +13,7 @@ wealthwise/
 ├── docs/                # Documentation
 ├── learning/            # Educational resources
 ├── media/               # User-uploaded files
+├── messaging/           # User-to-user messaging system
 ├── schedule/            # Event and consultation scheduling
 ├── static/              # Static files (CSS, JS, images)
 ├── templates/           # Project-wide templates
