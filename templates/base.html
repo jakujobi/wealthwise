@@ -69,6 +69,11 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'message' %}">
+                <i class="bi bi-chat-dots me-1"></i>Messages
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'profile' %}">
                 <i class="bi bi-person-circle me-1"></i>Profile
               </a>
