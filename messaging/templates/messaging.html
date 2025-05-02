@@ -38,12 +38,12 @@
                                                     <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}" class="rounded-circle">
                                                 {% else %}
                                                     <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
-                                                        {{ profile.user.first_name|slice:":1"|upper }} {{ profile.user.last_name|slice:":1"|upper }}
+                                                        {{ profile.user.username|slice:":1"|upper }}
                                                     </div>
                                                 {% endif %}
                                             </div>
                                             <div>
-                                                <h6 class="mb-0">{{ profile.user.username }}</h6>
+                                                <h6 class="mb-0">{{ profile.user.first_name }} {{ profile.user.last_name }}</h6>
                                                 <small class="text-muted">{{ messages.last.sent_at|date:"M d, g:i a" }}</small>
                                             </div>
                                             {% if profile.unread_count %}
@@ -115,11 +115,9 @@
                             
                             <div class="input-group">
                                 <textarea class="form-control" name="sending_message" rows="2" placeholder="Type your message..." required></textarea>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-paper-plane"></i> Send
-                                    </button>
-                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
                             </div>
                         </form>
                     </div>
