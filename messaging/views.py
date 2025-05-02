@@ -23,7 +23,26 @@ def message(request):
         sending_message = request.POST.get('sending_message')
         
         if recipient_id and sending_message:
-            recipient_profile = get_object_or_404(Profile, id=recipient_id)
+            # Handle potential issues with recipient_id format
+            try:
+                # Try to convert to integer directly
+                recipient_id_int = int(recipient_id)
+            except ValueError:
+                # If it's a string representation of a tuple, extract the first element
+                import re
+                match = re.match(r'\(([0-9]+),.*\)', recipient_id)
+                if match:
+                    recipient_id_int = int(match.group(1))
+                else:
+                    # If we can't parse it, return an error
+                    return render(request, 'messaging.html', {
+                        'messages_by_user': {},
+                        'user_list': user_list,
+                        'selected_profile': selected_profile,
+                        'error': 'Invalid recipient selected.'
+                    })
+            
+            recipient_profile = get_object_or_404(Profile, id=recipient_id_int)
             
             message_entry = Messaging(
                 sender_id=profile,

@@ -5,6 +5,12 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
     <div class="row">
         <!-- Left sidebar - Conversations list -->
         <div class="col-md-4 col-lg-3 conversation-sidebar">
@@ -147,9 +153,9 @@
                         <label for="recipient_id">Send to:</label>
                         <select class="form-control" id="recipient_id" name="recipient_id" required>
                             <option value="">Select a recipient</option>
-                            {% for profile_id in user_list %}
+                            {% for profile_id, username in user_list %}
                                 {% if profile_id != request.user.profile.id %}
-                                    <option value="{{ profile_id }}">{{ profile_id }}</option>
+                                    <option value="{{ profile_id }}">{{ username }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
