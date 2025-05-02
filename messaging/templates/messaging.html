@@ -82,10 +82,10 @@
                         {% if messages_by_user and selected_profile in messages_by_user %}
                             {% for message in messages_by_user|get_item:selected_profile %}
                                 <div class="message-bubble {% if message.sender_id == request.user.profile %}sent{% else %}received{% endif %} mb-3">
-                                    <div class="message-content p-3">
+                                    <div class="message-content">
                                         {{ message.message_content }}
                                     </div>
-                                    <div class="message-time small text-muted {% if message.sender_id == request.user.profile %}text-right{% endif %}">
+                                    <div class="message-time small text-muted {% if message.sender_id == request.user.profile %}text-end{% endif %}">
                                         {{ message.sent_at|date:"M d, g:i a" }}
                                     </div>
                                 </div>
@@ -170,22 +170,66 @@
 
 <!-- CSS for the messaging interface -->
 <style>
+/* Layout and Container Styles */
 .conversation-sidebar {
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.03);
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+
+.message-content {
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+}
+
+.card.shadow {
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%) !important;
+    border: none;
+    padding: 15px;
+}
+
+/* Conversation List Styling */
+.conversation-list {
+    height: calc(100% - 60px);
+    overflow-y: auto;
 }
 
 .conversation-item {
-    transition: background-color 0.2s;
+    transition: all 0.25s ease;
+    border-left: 3px solid transparent;
+    padding: 12px 16px !important;
 }
 
-.conversation-item:hover, .conversation-item.active {
-    background-color: #f8f9fa;
+.conversation-item:hover {
+    background-color: rgba(37, 117, 252, 0.05);
+    border-left: 3px solid #2575fc;
 }
 
+.conversation-item.active {
+    background-color: rgba(37, 117, 252, 0.1);
+    border-left: 3px solid #2575fc;
+}
+
+.conversation-item a {
+    color: #333;
+}
+
+/* Avatar Styling */
 .avatar-circle {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-circle img {
@@ -197,34 +241,158 @@
 .avatar-placeholder {
     width: 100%;
     height: 100%;
-    background-color: #6c757d;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
     color: white;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Messages Container */
 .messages-container {
-    height: 400px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Message Bubbles */
 .message-bubble {
     max-width: 75%;
-    border-radius: 16px;
+    margin-bottom: 15px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-bubble .message-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 12px 16px;
+    border-radius: 18px;
+    height: auto;
 }
 
 .message-bubble.sent {
     margin-left: auto;
-    background-color: #dcf8c6;
+    align-self: flex-end;
+}
+
+.message-bubble.sent .message-content {
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    color: white;
     border-bottom-right-radius: 4px;
 }
 
 .message-bubble.received {
     margin-right: auto;
-    background-color: #f1f0f0;
+    align-self: flex-start;
+}
+
+.message-bubble.received .message-content {
+    background-color: white;
     border-bottom-left-radius: 4px;
 }
 
-.message-content {
-    white-space: pre-wrap;
+.message-time {
+    font-size: 0.7rem;
+    margin-top: 4px;
+    padding: 0 8px;
+}
+
+/* Message Form Styling */
+.card-footer {
+    background-color: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 15px;
+}
+
+.input-group {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+textarea.form-control {
+    border: none;
+    padding: 12px 20px;
+    resize: none;
+    border-radius: 24px 0 0 24px !important;
+}
+
+textarea.form-control:focus {
+    box-shadow: none;
+}
+
+.input-group-append .btn {
+    border-radius: 0 24px 24px 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    border: none;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header.bg-primary {
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%) !important;
+    border-bottom: none;
+}
+
+.btn-close.text-white {
+    filter: brightness(0) invert(1);
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+/* Empty State Styling */
+.text-center.text-muted {
+    padding: 30px 0;
+}
+
+.bi-chat-dots-fill {
+    font-size: 3rem;
+    color: #6a11cb;
+    opacity: 0.6;
+    margin-bottom: 20px;
+}
+
+/* Badge for unread count */
+.badge.badge-primary {
+    background-color: #2575fc;
+    color: white;
+    font-weight: normal;
+    padding: 5px 8px;
+    border-radius: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .conversation-sidebar,
+    .message-content {
+        height: calc(100vh - 200px);
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
 }
 </style>
 {% endblock %}
