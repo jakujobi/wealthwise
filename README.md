@@ -206,6 +206,10 @@ Detailed documentation is available in the `docs/` directory:
 - [User Guide](docs/user-guide.md)
 - [Messaging Module](docs/messaging-module.md)
 
+### External Documentation
+
+For more extensive documentation, visit our [WealthWise DeepWiki](https://deepwiki.com/jakujobi/wealthwise) repository.
+
 ## 🤝 Contributing
 
 We welcome contributions to WealthWise! To contribute:
