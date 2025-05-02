@@ -11,6 +11,7 @@ Welcome to the WealthWise documentation. This directory contains comprehensive d
 - [Calculators Module](./calculators-module.md) - Financial calculators and tools
 - [Schedule Module](./schedule-module.md) - Event and consultation scheduling
 - [Learning Module](./learning-module.md) - Educational content and resources
+- [Messaging Module](./messaging-module.md) - User-to-user communication system
 - [Database Schema](./database-schema.md) - Database models and relationships
 - [API Reference](./api-reference.md) - REST API endpoints and usage
 - [Testing](./testing.md) - Testing strategy and implementation

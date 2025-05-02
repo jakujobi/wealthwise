@@ -103,6 +103,16 @@ WealthWise uses PostgreSQL as its primary database. The schema consists of table
 | advisor_id    | ForeignKey   | Reference to Advisor             |
 | scheduled_date| DateTimeField| When consultation is scheduled   |
 | status        | CharField    | Status (scheduled, completed, cancelled) |
+
+#### Messaging
+
+| Field           | Type         | Description                                |
+|-----------------|--------------|--------------------------------------------|
+| sender_id       | ForeignKey   | Reference to Profile sending the message   |
+| receiver_id     | ForeignKey   | Reference to Profile receiving the message |
+| message_content | TextField    | Content of the message                     |
+| sent_at         | DateTimeField| When the message was sent                  |
+| read_status     | BooleanField | Whether the message has been read          |
 | client_rating | IntegerField | Rating given by client (1-5)     |
 | session_notes | TextField    | Notes from the consultation      |
 
