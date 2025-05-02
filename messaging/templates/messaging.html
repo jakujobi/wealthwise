@@ -33,12 +33,12 @@
                                 <div class="conversation-item p-3 border-bottom {% if selected_profile == profile %}active{% endif %}">
                                     <a href="{% url 'message' %}?conversation_with={{ profile.id }}" class="text-decoration-none">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar-circle mr-3">
+                                            <div class="avatar-circle me-3">
                                                 {% if profile.profile_picture %}
                                                     <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}" class="rounded-circle">
                                                 {% else %}
                                                     <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
-                                                        {{ profile.user.username|slice:":1"|upper }}
+                                                        {{ profile.user.first_name|slice:":1"|upper }} {{ profile.user.last_name|slice:":1"|upper }}
                                                     </div>
                                                 {% endif %}
                                             </div>
@@ -47,7 +47,7 @@
                                                 <small class="text-muted">{{ messages.last.sent_at|date:"M d, g:i a" }}</small>
                                             </div>
                                             {% if profile.unread_count %}
-                                                <span class="badge badge-primary ml-auto">{{ profile.unread_count }}</span>
+                                                <span class="badge badge-primary ms-auto">{{ profile.unread_count }}</span>
                                             {% endif %}
                                         </div>
                                     </a>
@@ -69,17 +69,20 @@
                 {% if selected_profile %}
                     <!-- Conversation header -->
                     <div class="card-header bg-light border-bottom">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-circle mr-3">
-                                {% if selected_profile.profile_picture %}
-                                    <img src="{{ selected_profile.profile_picture.url }}" alt="{{ selected_profile.user.username }}" class="rounded-circle">
-                                {% else %}
-                                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
-                                        {{ selected_profile.user.username|slice:":1"|upper }}
-                                    </div>
-                                {% endif %}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-circle me-3">
+                                    {% if selected_profile.profile_picture %}
+                                        <img src="{{ selected_profile.profile_picture.url }}" alt="{{ selected_profile.user.username }}" class="rounded-circle">
+                                    {% else %}
+                                        <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
+                                            {{ selected_profile.user.username|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <h5 class="mb-0">{{ selected_profile.user.first_name }} {{ selected_profile.user.last_name }}</h5>
                             </div>
-                            <h5 class="mb-0">{{ selected_profile.user.username }}</h5>
+                            <h5 class="mb-0 text-end text-muted" style="font-size: 1rem;">username: {{ selected_profile.user.username }}</h5>
                         </div>
                     </div>
                     
